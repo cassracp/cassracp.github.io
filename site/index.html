@@ -77,6 +77,7 @@
         <button onclick="generateHTML()">Gerar Código HTML</button>
         <button onclick="clearFields()">Limpar Campos</button>
         <textarea id="htmlCode" readonly></textarea>
+        <button onclick="copyHTML()">Copiar HTML</button>
     </div>
 
     <script>
@@ -93,6 +94,13 @@
             document.getElementById("imageLink").value = "";
             document.getElementById("thumbnailLink").value = "";
             document.getElementById("htmlCode").value = "";
+        }
+
+        function copyHTML() {
+            const htmlCodeTextArea = document.getElementById("htmlCode");
+            htmlCodeTextArea.select();
+            document.execCommand("copy");
+            alert("O código HTML foi copiado para a área de transferência.");
         }
     </script>
 </body>
