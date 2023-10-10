@@ -69,39 +69,39 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <label for="imageLink">Link da Imagem:</label>
-        <input type="text" id="imageLink">
-        <label for="thumbnailLink">Link da Thumbnail:</label>
-        <input type="text" id="thumbnailLink">
-        <button onclick="generateHTML()">Gerar Código HTML</button>
-        <button onclick="clearFields()">Limpar Campos</button>
-        <textarea id="htmlCode" readonly></textarea>
-        <button onclick="copyHTML()">Copiar HTML</button>
-    </div>
+	  <div class="container">
+			<label for="imageLink">Link da Imagem:</label>
+			<input type="text" id="imageLink">
+			<label for="thumbnailLink">Link da Thumbnail:</label>
+			<input type="text" id="thumbnailLink">
+			<button onclick="generateAndCopyHTML()">Gerar Código HTML e Copiar</button>
+			<button onclick="clearFields()">Limpar Campos</button>
+			<textarea id="htmlCode" readonly></textarea>
+		</div>
 
-    <script>
-        function generateHTML() {
-            const imageLink = document.getElementById("imageLink").value;
-            const thumbnailLink = document.getElementById("thumbnailLink").value;
+		<script>
+			function generateAndCopyHTML() {
+				const imageLink = document.getElementById("imageLink").value;
+				const thumbnailLink = document.getElementById("thumbnailLink").value;
 
-            const htmlCode = `<a href="${imageLink}" target='_blank'><img src='${thumbnailLink}'/></a>`;
-            
-            document.getElementById("htmlCode").value = htmlCode;
-        }
+				const htmlCode = `<a href="${imageLink}" target='_blank'><img src='${thumbnailLink}'/></a>`;
+				
+				document.getElementById("htmlCode").value = htmlCode;
+				
+				// Copia o HTML gerado para a área de transferência
+				const htmlCodeTextArea = document.getElementById("htmlCode");
+				htmlCodeTextArea.select();
+				document.execCommand("copy");
+				
+				// Alerta que o código HTML foi copiado
+				alert("O código HTML foi copiado para a área de transferência.");
+			}
 
-        function clearFields() {
-            document.getElementById("imageLink").value = "";
-            document.getElementById("thumbnailLink").value = "";
-            document.getElementById("htmlCode").value = "";
-        }
-
-        function copyHTML() {
-            const htmlCodeTextArea = document.getElementById("htmlCode");
-            htmlCodeTextArea.select();
-            document.execCommand("copy");
-            alert("O código HTML foi copiado para a área de transferência.");
-        }
-    </script>
+			function clearFields() {
+				document.getElementById("imageLink").value = "";
+				document.getElementById("thumbnailLink").value = "";
+				document.getElementById("htmlCode").value = "";
+			}
+		</script>
 </body>
 </html>
