@@ -1,6 +1,44 @@
+/* Estilo para o menu lateral */
+.menu {
+    background-color: #0097a7; /* Cor de fundo do menu (Azul Padrão) */
+    color: #fff; /* Cor do texto no menu (Branco) */
+    width: 200px; /* Largura do menu */
+    height: 100%; /* Tamanho da tela inteira */
+    position: fixed; /* Fixa o menu à esquerda */
+    top: 0;
+    left: 0;
+    padding: 20px;
+}
+
+/* Estilo para o título "Ferramentas" */
+.menu-title {
+    font-size: 24px; /* Tamanho da fonte */
+    font-weight: bold; /* Texto em negrito */
+    margin: 10px 0; /* Espaçamento superior e inferior */
+    color: red; /* Cor do título "Ferramentas" (Vermelho) */
+}
+
+/* Estilo para a lista não ordenada dentro do menu */
+.menu ul {
+    list-style: none; /* Remove os marcadores de lista */
+    padding: 0; /* Remove o espaçamento interno da lista */
+}
+
+/* Estilo para os itens de lista dentro do menu */
+.menu ul li {
+    margin-bottom: 10px; /* Adiciona espaçamento entre os itens da lista */
+}
+
+/* Estilo para os links dentro do menu */
+.menu a {
+    color: #fff; /* Cor dos links (Branco) */
+    text-decoration: none; /* Remove a decoração de texto dos links */
+}
+
+/* Estilo para o corpo (body) da página */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    background-color: #f5f5f5; /* Cor de fundo do corpo (Cinza Claro) */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,54 +46,61 @@ body {
     margin: 0;
 }
 
+/* Estilo para o contêiner (container) principal */
 .container {
     width: 80%;
-    max-width: 800px;
+    max-width: 800px; /* Largura máxima do contêiner */
     padding: 40px;
-    background-color: #fff;
+    background-color: #fff; /* Cor de fundo do contêiner (Branco) */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo para rótulos (labels) */
 label {
     display: block;
     margin-bottom: 6px;
     font-weight: bold;
-    color: #0097a7;
+    color: #0097a7; /* Cor do texto do rótulo (Azul Padrão) */
 }
 
+/* Estilo para campos de entrada de texto */
 input[type="text"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #ccc; /* Cor da borda do campo de entrada (Cinza Claro) */
     border-radius: 4px;
 }
 
+/* Estilo para botões */
 button {
-    background-color: #0097a7;
-    color: #fff;
+    background-color: #0097a7; /* Cor de fundo dos botões (Azul Padrão) */
+    color: #fff; /* Cor do texto dos botões (Branco) */
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 20px;
+    margin-right: 20px; /* Margem à direita entre os botões */
 }
 
+/* Estilo para o último botão */
 button:last-child {
-    margin-right: 10px;
+    margin-right: 10px; /* Define uma margem menor no último botão */
 }
 
+/* Estilo para botões quando o mouse passa por cima (hover) */
 button:hover {
-    background-color: #007d8a;
+    background-color: #007d8a; /* Cor de fundo dos botões em hover (Azul mais escuro) */
 }
 
+/* Estilo para áreas de texto (textarea) */
 textarea {
     width: 100%;
     height: 100px;
     padding: 10px;
     margin-top: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ccc; /* Cor da borda da área de texto (Cinza Claro) */
     border-radius: 4px;
-    resize: none;
+    resize: none; /* Impede a redimensionamento da área de texto */
 }
