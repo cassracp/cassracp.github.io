@@ -1,3 +1,4 @@
+/* Contexto de funções para Formartar links de imagens em HTML */ 
 function Img2HTML() {
 	const imageLink = document.getElementById("imageLink").value;
 	const thumbnailLink = document.getElementById("thumbnailLink").value;
@@ -20,7 +21,9 @@ function LimparCamposImg2HTML() {
 	document.getElementById("thumbnailLink").value = "";
 	document.getElementById("htmlCode").value = "";
 }
+/* Fim do contexto da tela para Formatar links de imagens em HTML */
 
+/* Contexto de funções para Formatar números de telefone */
 function FormatNumerTel() {
 	const numTel = document.getElementById("numTel").value;
 	let numeroTel = numTel.replace(/[^0-9]/g, ""); // Remove espaços e caracteres especiais
@@ -66,3 +69,4 @@ function LimparCamposNumerTel() {
 	document.getElementById("numTel").value = "";
 	document.getElementById("numeroFormatado").value = "";
 }
+/* Fim do contexto da tela para Formartar número de telefones*/
