@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatador de Números de Telefone</title>
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Adicione o link para o seu arquivo "styles.css" -->
+</head>
+<body>
+    <div class="container">
+        <label for="phoneInput">Insira o número de telefone:</label>
+        <input type="text" id="phoneInput" class="input-field"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+        <button onclick="formatPhoneNumber()" class="btn">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
+        <label for="formattedPhone" class="label">Número Formatado:</label> <!-- Adicione a classe "label" para estilos de rótulo -->
+        <input type="text" id="formattedPhone" readonly class="input-field"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+    </div>
+
+    <script>
+        function formatPhoneNumber() {
+            const phoneInput = document.getElementById("phoneInput").value;
+            let formattedPhone = phoneInput.replace(/[^0-9]/g, ""); // Remove espaços e caracteres especiais
+            if (formattedPhone.startsWith("55")) {
+                formattedPhone = formattedPhone.substring(2); // Remove o código do país
+            }
+            if (formattedPhone.startsWith("0")) {
+                formattedPhone = formattedPhone.substring(1); // Remove o zero inicial
+            }
+            if (formattedPhone.length === 11 && formattedPhone[2] === "9") {
+                // Se for celular e já tem o nono dígito
+                formattedPhone = "50" + formattedPhone;
+            } else if (formattedPhone.length === 10 && formattedPhone[2] !== "9") {
+                // Se for telefone fixo
+                formattedPhone = "00" + formattedPhone;
+            }
+            document.getElementById("formattedPhone").value = formattedPhone;
+        }
+    </script>
+</body>
+</html>
