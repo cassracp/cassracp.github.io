@@ -8,32 +8,60 @@
 </head>
 <body>
     <div class="container">
-        <label for="phoneInput">Insira o número de telefone:</label>
-        <input type="text" id="phoneInput" class="input-field"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
-        <button onclick="formatPhoneNumber()" class="btn">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
-        <label for="formattedPhone" class="label">Número Formatado:</label> <!-- Adicione a classe "label" para estilos de rótulo -->
-        <input type="text" id="formattedPhone" readonly class="input-field"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+        <label for="numTel">Insira o número de telefone:</label>
+        <input type="text" id="numTel" class="input-field" onkeydown="if (event.keyCode === 13) formatNumeroTel();"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+        <button onclick="formatNumeroTel()" class="btn">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
+		<button onclick="limparCampos()" class="btn">Limpar Campos</button>
+        <label for="numeroFormatado" class="label-posbtn">Número Formatado:</label> <!-- Adicione a classe "label" para estilos de rótulo -->
+        <input type="text" id="numeroFormatado" readonly class="input-field"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
     </div>
 
     <script>
-        function formatPhoneNumber() {
-            const phoneInput = document.getElementById("phoneInput").value;
-            let formattedPhone = phoneInput.replace(/[^0-9]/g, ""); // Remove espaços e caracteres especiais
-            if (formattedPhone.startsWith("55")) {
-                formattedPhone = formattedPhone.substring(2); // Remove o código do país
-            }
-            if (formattedPhone.startsWith("0")) {
-                formattedPhone = formattedPhone.substring(1); // Remove o zero inicial
-            }
-            if (formattedPhone.length === 11 && formattedPhone[2] === "9") {
-                // Se for celular e já tem o nono dígito
-                formattedPhone = "50" + formattedPhone;
-            } else if (formattedPhone.length === 10 && formattedPhone[2] !== "9") {
-                // Se for telefone fixo
-                formattedPhone = "00" + formattedPhone;
-            }
-            document.getElementById("formattedPhone").value = formattedPhone;
-        }
+		function formatNumeroTel() {
+			const numTel = document.getElementById("numTel").value;
+			let numeroTel = numTel.replace(/[^0-9]/g, ""); // Remove espaços e caracteres especiais
+
+			let ddd = ""; // Variável para armazenar o DDD
+			let numeroFormatado = ""; // Variável para armazenar o número de telefone
+
+			if (numeroTel.startsWith("55")) {
+				numeroTel = numeroTel.substring(2); // Remove o código do país
+			} else if (numeroTel.startsWith("0")) {
+				numeroTel = numeroTel.substring(1); // Remove o zero inicial
+			} else if (numeroTel.length > 11) {
+				alert("Numero de telefone em formato inválido ou não é do Brasil.");
+			}
+			if (numeroTel.length >= 2) {
+				ddd = numeroTel.substring(0, 2); // Extrai o DDD
+				numeroTel = numeroTel.substring(2); // Remove o DDD
+			}
+			
+
+			if (numeroTel.length === 9 && numeroTel.startsWith("9")) {
+				// Verifica se é um celular com o nono dígito
+				numeroFormatado = "50" + ddd + numeroTel;
+			} else if (numeroTel.length === 8 && (numeroTel.startsWith("9") || numeroTel.startsWith("8") || numeroTel.startsWith("7"))) {
+				// Verifica se é um celular sem o nono dígito
+				numeroFormatado = "50" + ddd + "9" + numeroTel;
+			} else if (numeroTel.length === 8) {
+				// Se for um telefone fixo
+				numeroFormatado = "00" + ddd + numeroTel;
+			} 
+
+			document.getElementById("numeroFormatado").value = numeroFormatado;
+			
+			 // Copia o resultado para a área de transferência
+			const textArea = document.getElementById("numeroFormatado");
+			textArea.select();
+			document.execCommand("copy");
+
+			alert("Número de telefone formatado copiado para área de transferência.");
+		}
+		
+		function limparCampos() {
+			document.getElementById("numTel").value = "";
+			document.getElementById("numeroFormatado").value = "";
+		}
     </script>
 </body>
 </html>

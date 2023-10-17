@@ -64,6 +64,15 @@ label {
     color: #0097a7; /* Cor do texto do rótulo (Azul Padrão) */
 }
 
+/* Estilo para rótulos (labels) pós botão */
+.label-posbtn {
+    display: block;
+	margin-top: 20px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #0097a7; /* Cor do texto do rótulo (Azul Padrão) */
+}
+
 /* Estilo para campos de entrada de texto */
 input[type="text"] {
     width: 100%;
