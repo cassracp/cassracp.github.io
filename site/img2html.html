@@ -12,34 +12,13 @@
 			<input type="text" id="imageLink">
 			<label for="thumbnailLink">Link da Thumbnail:</label>
 			<input type="text" id="thumbnailLink">
-			<button onclick="generateAndCopyHTML()">Gerar Código HTML e Copiar</button>
-			<button onclick="clearFields()">Limpar Campos</button>
+			<button onclick="Img2HTML()">Gerar Código HTML e Copiar</button>
+			<button onclick="LimparCamposImg2HTML()">Limpar Campos</button>
 			<textarea id="htmlCode" readonly></textarea>
 		</div>
 
 		<script>
-			function generateAndCopyHTML() {
-				const imageLink = document.getElementById("imageLink").value;
-				const thumbnailLink = document.getElementById("thumbnailLink").value;
-
-				const htmlCode = `<a href="${imageLink}" target='_blank'><img src='${thumbnailLink}'/></a>`;
-				
-				document.getElementById("htmlCode").value = htmlCode;
-				
-				// Copia o HTML gerado para a área de transferência
-				const htmlCodeTextArea = document.getElementById("htmlCode");
-				htmlCodeTextArea.select();
-				document.execCommand("copy");
-				
-				// Alerta que o código HTML foi copiado
-				alert("O código HTML foi copiado para a área de transferência.");
-			}
-
-			function clearFields() {
-				document.getElementById("imageLink").value = "";
-				document.getElementById("thumbnailLink").value = "";
-				document.getElementById("htmlCode").value = "";
-			}
+			
 		</script>
 </body>
 </html>
