@@ -11,7 +11,7 @@
 }
 
 /* Estilo para o título "Ferramentas" */
-menu-title {
+.menu-title {
     font-size: 24px; /* Tamanho da fonte */
     font-weight: bold; /* Texto em negrito */
     margin: 10px 0; /* Espaçamento superior e inferior */
