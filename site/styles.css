@@ -10,7 +10,7 @@ body {
 
 .container {
     width: 80%;
-    max-width: 600px;
+    max-width: 800px;
     padding: 40px;
     background-color: #fff;
     border-radius: 8px;
@@ -39,11 +39,11 @@ button {
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 20px;
 }
 
 button:last-child {
-    margin-right: 0;
+    margin-right: 10px;
 }
 
 button:hover {
