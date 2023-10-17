@@ -3,105 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Código HTML Generator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            width: 80%;
-            max-width: 400px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-            color: #0097a7;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: #0097a7;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-
-        button:last-child {
-            margin-right: 0;
-        }
-
-        button:hover {
-            background-color: #007d8a;
-        }
-
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: none;
-        }
+    
     </style>
 </head>
 <body>
-	  <div class="container">
-			<label for="imageLink">Link da Imagem:</label>
-			<input type="text" id="imageLink">
-			<label for="thumbnailLink">Link da Thumbnail:</label>
-			<input type="text" id="thumbnailLink">
-			<button onclick="generateAndCopyHTML()">Gerar Código HTML e Copiar</button>
-			<button onclick="clearFields()">Limpar Campos</button>
-			<textarea id="htmlCode" readonly></textarea>
-		</div>
+    <div class="menu">
+        <ul>
+            <li><a href="#" onclick="loadTool('img2html.html')">Gerar Código HTML para Imagens</a></li>
+            <!-- Adicione outras ferramentas no menu com funções JavaScript para carregar seus conteúdos -->
+        </ul>
+    </div>
+    <div class="content">
+        <!-- Aqui será carregado o conteúdo da ferramenta selecionada -->
+    </div>
 
-		<script>
-			function generateAndCopyHTML() {
-				const imageLink = document.getElementById("imageLink").value;
-				const thumbnailLink = document.getElementById("thumbnailLink").value;
-
-				const htmlCode = `<a href="${imageLink}" target='_blank'><img src='${thumbnailLink}'/></a>`;
-				
-				document.getElementById("htmlCode").value = htmlCode;
-				
-				// Copia o HTML gerado para a área de transferência
-				const htmlCodeTextArea = document.getElementById("htmlCode");
-				htmlCodeTextArea.select();
-				document.execCommand("copy");
-				
-				// Alerta que o código HTML foi copiado
-				alert("O código HTML foi copiado para a área de transferência.");
-			}
-
-			function clearFields() {
-				document.getElementById("imageLink").value = "";
-				document.getElementById("thumbnailLink").value = "";
-				document.getElementById("htmlCode").value = "";
-			}
-		</script>
+    <script>
+		function loadTool(toolName) {
+			fetch(toolName)
+				.then(response => response.text())
+				.then(data => {
+					document.querySelector(".content").innerHTML = data;
+				});
+		}
+	</script>
 </body>
 </html>
