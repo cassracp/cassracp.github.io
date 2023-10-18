@@ -5,19 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Código HTML Generator</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="styles.css">
 	<script src="js/bootstrap.min.js"></script>
 	<script src="functions.js"></script>
 </head>
 <body>
-	  <div id="img2htmlContent" class="container custom-center">
+	  <div id="img2htmlContent" class="container">
 			<label for="imageLink">Link da Imagem:</label>
-			<input type="text" id="imageLink">
+			<input type="text" id="imageLink" class="form-control">
 			<label for="thumbnailLink">Link da Thumbnail:</label>
-			<input type="text" id="thumbnailLink">
-			<button onclick="Img2HTML()">Gerar Código HTML e Copiar</button>
-			<button onclick="LimparCamposImg2HTML()">Limpar Campos</button>
-			<textarea id="htmlCode" readonly></textarea>
+			<input type="text" id="thumbnailLink" class="form-control">
+			<br>
+			<button onclick="Img2HTML()" class="btn btn-primary">Gerar Código HTML e Copiar</button>
+			<br><br>
+			<label type="text" id="formatLink">HTML das Imagens:</label>
+			<textarea id="htmlCode" readonly class="form-control" rows="6"></textarea>
+			<br><br>
+			<button onclick="LimparCamposImg2HTML()" class="btn btn-secondary">Limpar Campos</button>
 		</div>
 
 		<script>
