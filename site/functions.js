@@ -1,13 +1,3 @@
-/* Carregador de ferramentas*/
-function loadTool(toolName) {
-	fetch(toolName)
-		.then(response => response.text())
-		.then(data => {
-			document.querySelector(".content").innerHTML = data;
-		});
-}
-/*Fim do contexto do carregador de ferramentas*/
-
 /* Contexto de funções para Formartar links de imagens em HTML */ 
 function Img2HTML() {
 	const imageLink = document.getElementById("imageLink").value;

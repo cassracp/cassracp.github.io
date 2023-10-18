@@ -30,5 +30,17 @@
             </main>
         </div>
     </div>
+
+	<script>
+		/* Carregador de ferramentas*/
+		function loadTool(toolName) {
+			fetch(toolName)
+				.then(response => response.text())
+				.then(data => {
+					document.querySelector(".content").innerHTML = data;
+				});
+		}
+		/*Fim do contexto do carregador de ferramentas*/
+	</script>
 </body>
 </html>
