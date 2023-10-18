@@ -1,3 +1,12 @@
+/* Estilo personalizado para centralizar o conteúdo */
+.custom-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
 /* Estilo para o menu lateral */
 .menu {
     background-color: #0097a7; /* Cor de fundo do menu (Azul Padrão) */
