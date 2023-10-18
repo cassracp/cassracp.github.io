@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css\bootstrap.min.css">
-	<script src="js\bootstrap.min.js"></script>
-	<script src="functions.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
+    <script src="functions.js"></script>
 </head>
 <body>
-    <div class="container">
-		<h1 class="menu-title">Ferramentas</h1>
-		<ul class="list-group">
-			<li class="list-group-item">
-				<a href="#" onclick="loadTool('img2html.html')">Gerar Código HTML para Imagens</a>
-			</li>
-			<li class="list-group-item">
-				<a href="#" onclick="loadTool('numertel.html')">Formatar Número de Telefone</a>
-			</li>
-		</ul>
-	</div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Menu Lateral -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <h1 class="menu-title">Ferramentas</h1>
+                    <ul class="nav flex-column list-group">
+                        <li class="list-group-item">
+                            <a class="nav-link" href="#" onclick="loadTool('img2html.html')">Gerar Código HTML para Imagens</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a class="nav-link" href="#" onclick="loadTool('numertel.html')">Formatar Número de Telefone</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
-    <div class="container">
-        <!-- Aqui será carregado o conteúdo da ferramenta selecionada -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <!-- Conteúdo principal da página -->
+            </main>
+        </div>
     </div>
-
-    <script>
-
-	</script>
 </body>
 </html>
