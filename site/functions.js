@@ -24,7 +24,11 @@ function LimparCamposImg2HTML() {
 /* Fim do contexto da tela para Formatar links de imagens em HTML */
 
 /* Contexto de funções para Formatar números de telefone */
-function FormatNumerTel() {
+function FormatarNumeroDeTelefone(evt) {
+
+	if(evt && evt.keyCode != 13)
+		return;
+
 	const numTel = document.getElementById("numTel").value;
 	let numeroTel = numTel.replace(/[^0-9]/g, ""); // Remove espaços e caracteres especiais
 
