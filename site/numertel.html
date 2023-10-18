@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formatador de Números de Telefone</title>
-    <link rel="stylesheet" href="css\bootstrap.min.css">
-    <script src="js\bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
 	<script src="functions.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="numertelContent">
         <label for="numTel">Insira o número de telefone:</label>
         <input type="text" id="numTel" class="form-control" onkeydown="if (event.keyCode === 13) formatNumeroTel();"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
         <br>
