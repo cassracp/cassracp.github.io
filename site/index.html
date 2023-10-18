@@ -3,33 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="css\bootstrap.min.css">
+	<script src="js\bootstrap.min.js"></script>
 	<script src="functions.js"></script>
 </head>
 <body>
-    <div class="menu">
-		<h1 class=".menu-title">Ferramentas</h1>
-		<hr>
-		<ul>
-			<li><a href="#" onclick="loadTool('img2html.html')">Gerar Código HTML para Imagens</a></li>
-			<hr>
-			<li><a href="#" onclick="loadTool('numertel.html')">Formatar Número de Telefone</a></li>
-
+    <div class="container">
+		<h1 class="menu-title">Ferramentas</h1>
+		<ul class="list-group">
+			<li class="list-group-item">
+				<a href="#" onclick="loadTool('img2html.html')">Gerar Código HTML para Imagens</a>
+			</li>
+			<li class="list-group-item">
+				<a href="#" onclick="loadTool('numertel.html')">Formatar Número de Telefone</a>
+			</li>
 		</ul>
 	</div>
 
-    <div class="content">
+    <div class="container">
         <!-- Aqui será carregado o conteúdo da ferramenta selecionada -->
     </div>
 
     <script>
-		function loadTool(toolName) {
-			fetch(toolName)
-				.then(response => response.text())
-				.then(data => {
-					document.querySelector(".content").innerHTML = data;
-				});
-		}
+
 	</script>
 </body>
 </html>

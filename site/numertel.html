@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formatador de Números de Telefone</title>
-    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Adicione o link para o seu arquivo "styles.css" -->
+    <link rel="stylesheet" href="css\bootstrap.min.css">
+    <script src="js\bootstrap.min.js"></script>
 	<script src="functions.js"></script>
 </head>
 <body>
     <div class="container">
         <label for="numTel">Insira o número de telefone:</label>
-        <input type="text" id="numTel" class="input-field" onkeydown="if (event.keyCode === 13) formatNumeroTel();"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
-        <button onclick="FormatNumerTel()" class="btn">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
-		<button onclick="LimparCamposNumerTel()" class="btn">Limpar Campos</button>
-        <label for="numeroFormatado" class="label-posbtn">Número Formatado:</label> <!-- Adicione a classe "label" para estilos de rótulo -->
-        <input type="text" id="numeroFormatado" readonly class="input-field"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+        <input type="text" id="numTel" class="form-control" onkeydown="if (event.keyCode === 13) formatNumeroTel();"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+        <br>
+        <button onclick="FormatNumerTel()" class="btn btn-primary">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
+        <br><br>
+        <label for="numeroFormatado">Número Formatado:</label> <!-- Adicione a classe "label" para estilos de rótulo -->
+        <br><input type="text" id="numeroFormatado" readonly class="form-control"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+        <br>
+        <button onclick="LimparCamposNumerTel()" class="btn btn-secondary">Limpar Campos</button>
     </div>
 </body>
 </html>
