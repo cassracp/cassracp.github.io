@@ -11,7 +11,7 @@
 <body>
     <div class="container" id="numertelContent">
         <label for="numTel">Insira o número de telefone:</label>
-        <input type="text" id="numTel" class="form-control" onkeydown="if (event.keyCode === 13) formatNumeroTel();"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
+        <input type="text" id="numTel" class="form-control" onkeyup="if (event.keyCode === 13) formatNumeroTel();"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
         <br>
         <button onclick="FormatNumerTel()" class="btn btn-primary">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
         <br><br>
