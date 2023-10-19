@@ -27,8 +27,12 @@ function LimparCamposImg2HTML() {
 function FormatarNumeroDeTelefone(evt) {
 
 	if(evt && evt.keyCode != 13)
+	{
 		return;
+	}
 
+
+	const codigoSelecionado = document.querySelector('input[name="codigoRadio"]:checked').value;
 	const numTel = document.getElementById("numTel").value;
 	let numeroTel = numTel.replace(/[^0-9]/g, ""); // Remove espaços e caracteres especiais
 
@@ -50,13 +54,13 @@ function FormatarNumeroDeTelefone(evt) {
 
 	if (numeroTel.length === 9 && numeroTel.startsWith("9")) {
 		// Verifica se é um celular com o nono dígito
-		numeroFormatado = "50" + ddd + numeroTel;
+		numeroFormatado = codigoSelecionado + ddd + numeroTel;
 	} else if (numeroTel.length === 8 && (numeroTel.startsWith("9") || numeroTel.startsWith("8") || numeroTel.startsWith("7"))) {
 		// Verifica se é um celular sem o nono dígito
-		numeroFormatado = "50" + ddd + "9" + numeroTel;
+		numeroFormatado = codigoSelecionado + ddd + "9" + numeroTel;
 	} else if (numeroTel.length === 8) {
 		// Se for um telefone fixo
-		numeroFormatado = "00" + ddd + numeroTel;
+		numeroFormatado = codigoSelecionado + ddd + numeroTel;
 	} 
 
 	document.getElementById("numeroFormatado").value = numeroFormatado;
@@ -66,7 +70,7 @@ function FormatarNumeroDeTelefone(evt) {
 	textArea.select();
 	document.execCommand("copy");
 
-	alert("Número de telefone formatado copiado para área de transferência.");
+	//alert("Número de telefone formatado copiado para área de transferência.");
 }
 		
 function LimparCamposNumerTel() {

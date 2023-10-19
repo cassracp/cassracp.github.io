@@ -11,20 +11,25 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Menu Lateral -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-info sidebar">
-                <div class="position-sticky">
-                    <h1 class="menu-title text-white">Ferramentas</h1>
-                    <ul class="nav flex-column list-group">
-                        <li class="list-group-item">
-                            <a class="nav-link" href="#" onclick="loadTool('img2html.html')">Gerar Código HTML para Imagens</a>
+            <nav class="navbar navbar-dark bg-info">
+                <a class="navbar-brand" href="#"><b>Ferramentas DeMaria</b></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="true" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            
+                <div class="collapse navbar-collapse" id="sidebar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="#" onclick="loadTool('img2html.html')">Gerar Código HTML para Imagens</a>
                         </li>
-                        <li class="list-group-item">
-                            <a class="nav-link" href="#" onclick="loadTool('numertel.html')">Formatar Número de Telefone</a>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="#" onclick="loadTool('numertel.html')">Formatar Número de Telefone</a>
                         </li>
                     </ul>
                 </div>
             </nav>
-
+            
+            <br>
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 				<div class="content">
 					<!-- Conteúdo principal da página -->
