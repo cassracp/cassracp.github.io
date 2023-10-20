@@ -65,7 +65,7 @@ function FormatarNumeroDeTelefone(evt) {
 
 	document.getElementById("numeroFormatado").value = numeroFormatado;
 	
-		// Copia o resultado para a área de transferência
+	// Copia o resultado para a área de transferência
 	const textArea = document.getElementById("numeroFormatado");
 	textArea.select();
 	document.execCommand("copy");
@@ -78,3 +78,69 @@ function LimparCamposNumerTel() {
 	document.getElementById("numeroFormatado").value = "";
 }
 /* Fim do contexto da tela para Formartar número de telefones*/
+
+
+/* Função para oculta o numero da OS no topicotarefa.html*/
+function TemNumeroOS() {
+    const checkbox = document.getElementById("osAssociada");
+    const divNumeroOS = document.getElementById("divNumeroOS");
+
+    if (checkbox.checked) {
+        divNumeroOS.classList.remove("d-none");
+    } else {
+        divNumeroOS.classList.add("d-none");
+    }
+}
+/*Fim*/
+
+/*Limpar campos da topicotarefa.html*/
+function LimparCamposTopicoTarefa() {
+	const checkbox = document.getElementById("osAssociada");
+    const divNumeroOS = document.getElementById("divNumeroOS");
+
+    // Limpa o campo Nº Tópico
+    document.getElementById("numeroTarefa").value = "";
+
+    // Limpa o campo Título Tópico
+    document.getElementById("tituloTopicoSelect").value = "ANALISE";
+
+    // Limpa o campo Nº OS
+    document.getElementById("numeroOS").value = "";
+
+    // Limpa o campo Código HTML
+    document.getElementById("codigoHTML").value = "";
+
+    // Desmarca o checkbox Tem OS Associada
+    checkbox.checked = false;
+
+    // Oculta o campo Nº OS, se estiver visível
+    if (!divNumeroOS.classList.contains("d-none")) {
+        divNumeroOS.classList.add("d-none");
+    }
+}
+/*fim*/
+
+/* Função para gerar o HTML do tópico na tarefa*/
+function FormatarTopicoTarefa() {
+    const numeroTarefa = document.getElementById("numeroTarefa").value;
+    const tituloTopico = document.getElementById("tituloTopico").value;
+    const osAssociada = document.getElementById("osAssociada").checked;
+    const numeroOS = document.getElementById("numeroOS").value;
+
+    let codigoHTML = '';
+
+    if (osAssociada) {
+        codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b> - Ver <a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><u>OS ${numeroOS}</u></a></BIG>`;
+    } else {
+        codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b></BIG>`;
+    }
+
+	const textArea = document.getElementById("codigoHTML");
+
+    textArea.value = codigoHTML;
+
+
+	textArea.select();
+	document.execCommand("copy");
+}
+/* FIM */
