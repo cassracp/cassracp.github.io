@@ -13,7 +13,7 @@ function Img2HTML() {
 	document.execCommand("copy");
 	
 	// Alerta que o código HTML foi copiado
-	alert("O código HTML foi copiado para a área de transferência.");
+	//alert("O código HTML foi copiado para a área de transferência.");
 }
 
 function LimparCamposImg2HTML() {
