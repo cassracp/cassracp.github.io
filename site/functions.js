@@ -129,17 +129,23 @@ function FormatarTopicoTarefa() {
 
     let codigoHTML = '';
 
-    if (osAssociada) {
+    if (osAssociada && tituloTopico != "DATA DA IMPLANTAÇÃO") {
         codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b> - Ver <a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><u>OS ${numeroOS}</u></a></BIG>`;
-    } else {
+    } else if (tituloTopico != "DATA DA IMPLANTAÇÃO") {
         codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b></BIG>`;
-    }
+    } else { 
+		const today = new Date();
+		const dd = String(today.getDate()).padStart(2, '0');
+		const mm = String(today.getMonth() + 1).padStart(2, '0'); // Janeiro é 0!
+		const yyyy = today.getFullYear();
+		const formattedDate = dd + '/' + mm + '/' + yyyy;
+		codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico} ${formattedDate}</b></BIG>`;
+	}
+
 
 	const textArea = document.getElementById("codigoHTML");
 
     textArea.value = codigoHTML;
-
-
 	textArea.select();
 	document.execCommand("copy");
 }
