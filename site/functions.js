@@ -84,11 +84,14 @@ function LimparCamposNumerTel() {
 function TemNumeroOS() {
     const checkbox = document.getElementById("osAssociada");
     const divNumeroOS = document.getElementById("divNumeroOS");
+	const numeroOS = document.getElementById("numeroOS");
 
     if (checkbox.checked) {
         divNumeroOS.classList.remove("d-none");
+		numeroOS.required = true;
     } else {
         divNumeroOS.classList.add("d-none");
+		numeroOS.required = false;
     }
 }
 /*Fim*/
@@ -102,7 +105,7 @@ function LimparCamposTopicoTarefa() {
     document.getElementById("numeroTarefa").value = "";
 
     // Limpa o campo Título Tópico
-    document.getElementById("tituloTopicoSelect").value = "ANALISE";
+    document.getElementById("tituloTopicoSelect").value = "ANÁLISE";
 
     // Limpa o campo Nº OS
     document.getElementById("numeroOS").value = "";
@@ -126,21 +129,32 @@ function FormatarTopicoTarefa() {
     const tituloTopico = document.getElementById("tituloTopicoSelect").value;
     const osAssociada = document.getElementById("osAssociada").checked;
     const numeroOS = document.getElementById("numeroOS").value;
+	const today = new Date();
+	const dd = String(today.getDate()).padStart(2, '0');
+	const mm = String(today.getMonth() + 1).padStart(2, '0'); // Janeiro é 0!
+	const yyyy = today.getFullYear();
+	const formattedDate = dd + '/' + mm + '/' + yyyy;
+
+	if ((osAssociada && numeroOS === "") || (numeroTarefa === ""))
+	{
+		return;
+	}
 
     let codigoHTML = '';
 
-    if (osAssociada && tituloTopico != "DATA DA IMPLANTAÇÃO") {
-        codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b> - Ver <a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><u>OS ${numeroOS}</u></a></BIG>`;
-    } else if (tituloTopico != "DATA DA IMPLANTAÇÃO") {
-        codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b></BIG>`;
-    } else { 
-		const today = new Date();
-		const dd = String(today.getDate()).padStart(2, '0');
-		const mm = String(today.getMonth() + 1).padStart(2, '0'); // Janeiro é 0!
-		const yyyy = today.getFullYear();
-		const formattedDate = dd + '/' + mm + '/' + yyyy;
-		codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}: ${formattedDate}</b></BIG>`;
+	if (osAssociada) {
+		const osLink = `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><u>OS ${numeroOS}</u></a>`;
+		const titlePart = tituloTopico === "DATA DA IMPLANTAÇÃO" ? `: ${formattedDate}` : "";
+	
+		codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}${titlePart}</b> - Ver ${osLink}</BIG>`;
+	} else {
+		if (tituloTopico === "DATA DA IMPLANTAÇÃO") {
+			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}: ${formattedDate}</b></BIG>`;
+		} else {
+			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b></BIG>`;
+		}
 	}
+	
 
 
 	const textArea = document.getElementById("codigoHTML");
