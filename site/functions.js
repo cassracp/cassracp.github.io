@@ -139,7 +139,7 @@ function FormatarTopicoTarefa() {
 		const mm = String(today.getMonth() + 1).padStart(2, '0'); // Janeiro é 0!
 		const yyyy = today.getFullYear();
 		const formattedDate = dd + '/' + mm + '/' + yyyy;
-		codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico} ${formattedDate}</b></BIG>`;
+		codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}: ${formattedDate}</b></BIG>`;
 	}
 
 
