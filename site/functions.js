@@ -88,10 +88,8 @@ function TemNumeroOS() {
 
     if (checkbox.checked) {
         divNumeroOS.classList.remove("d-none");
-		numeroOS.required = true;
     } else {
         divNumeroOS.classList.add("d-none");
-		numeroOS.required = false;
     }
 }
 /*Fim*/
