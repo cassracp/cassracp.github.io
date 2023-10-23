@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
+    <script src="functions.js"></script>
+    <script src="jquery/jquery-3.7.1.js"></script>
+    <title>Editor de Texto HTML</title>
+</head>
+<body>
+    <div class="container mt-3">
+        <br>
+        <div class="btn-group mt-2">
+            <button class="btn btn-secondary border-dark" onclick="CopiarTexto()">Copiar</button>
+            <button class="btn btn-info border-dark" onclick="addTag('b')"><b>N</b></button>
+            <button class="btn btn-info border-dark" onclick="addTag('i')"><i>I</i></button>
+            <button class="btn btn-info border-dark" onclick="addTag('u')"><u>S</u></button>
+            <button class="btn btn-info border-dark" onclick="addTag('s')"><s>T</s></button>
+            <button class="btn btn-info border-dark" onclick="addBlockquote()">Blockquote</button>
+            <button class="btn btn-info border-dark" onclick="addPre()">Pre</button>
+            <button class="btn btn-info border-dark" onclick="addCode()">Code</button>
+            <button class="btn btn-info border-dark" id="spoilerButton" onclick="openModal()">Spoiler</button>
+        </div>
+        <br><br>
+        <div class="btn-toolbar">
+            <textarea id="editor" class="form-control" rows="20"></textarea>
+        </div>
+        <br><br>
+        <button onclick="LimparEditor()" class="btn btn-secondary">Limpar</button>
+    </div>
+
+    <!-- Modal para inserir texto do spoiler -->
+    <div class="modal fade" id="spoilerModal" tabindex="-1" role="dialog" aria-labelledby="spoilerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="spoilerModalLabel">Insira o Título do Spoiler</h5>
+                </div>
+                <div class="modal-body">
+                    <input type="checkbox" class="form-check-input" id="usarModelo" onchange="UsarTituloModelo()" checked> Usar modelo pré-definido
+                    <br><br>
+                    <div class="form-group row" id="divSelecionarModelo">Selecione um modelo:
+                        <select id="modeloTitulo" class="form-control">
+                            <option value="Especificações de Hardware Servidor">Especificações de Hardware Servidor</option>
+                            <option value="Informações Importantes">Informações Importantes</option>
+                            <option value="Aviso">Aviso</option>
+                            <!-- Adicione mais modelos de título conforme necessário -->
+                        </select>
+                    </div>
+                    <div class="form-group row d-none" id="divInserirTitulo">
+                        <textarea id="tituloSpoiler" class="form-control" rows="2" placeholder="Insira o Título do spoiler" required></textarea>
+                    </div>     
+                </div>
+                  
+                <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" onclick="insertSpoiler()">Inserir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const modeloTitulo = document.getElementById('modeloTitulo');
+        const tituloSpoiler = document.getElementById('tituloSpoiler');
+        modeloTitulo.addEventListener("change", function() {
+            if (tituloSpoiler.value != "")
+            {
+                tituloSpoiler.value = modeloTitulo.value;
+            } else {
+                tituloSpoiler.value = "";
+                tituloSpoiler.value = modeloTitulo.value;
+            }
+	        
+        });
+    </script>
+</body>
+</html>
