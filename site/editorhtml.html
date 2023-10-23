@@ -12,6 +12,12 @@
 </head>
 <body>
     <div class="container mt-3">
+        <div class="btn-toolbar">
+            <div class="btn-group mt-1">
+                <button class="btn btn-secondary border-dark" onclick="CopiarTexto()">Copiar</button>
+                <button class="btn btn-secondary border-dark" onclick="LimparEditor()" >Limpar</button>
+            </div>
+        </div>
         <br>
         <div class="btn-group mt-2">
             <button class="btn btn-group border-dark" disabled>Simples: </button> 
@@ -22,22 +28,17 @@
             <button class="btn btn-info border-dark" onclick="addBlockquote()">Quote</button>
             <button class="btn btn-info border-dark" onclick="addPre()">Pre</button>
             <button class="btn btn-info border-dark" onclick="addCode()">Code</button>
-            
-        </div>
-        <br>
-        <div class="btn-group mt-1">
             <button class="btn btn-group border-dark" disabled>Especiais: </button> 
             <button class="btn btn-info border-dark" id="spoilerButton" onclick="openModal()">Spoiler</button>
-            <button class="btn btn-info border-dark" id="btnLinkOS" onclick="InserirOS()">Link OS</button>
+            <button class="btn btn-info border-dark" id="btnLinkOS" onclick="InserirOS()">Link OS</button>            
         </div>
+        <textarea id="editor" class="form-control" rows="20"></textarea>
+        <!--<br>
+        <div class="btn-group mt-1">
+            
+        </div>-->
         <br><br>
-        <div class="btn-toolbar">
-            <div class="btn-group mt-1">
-                <button class="btn btn-secondary border-dark" onclick="CopiarTexto()">Copiar</button>
-                <button class="btn btn-secondary border-dark" onclick="LimparEditor()" >Limpar</button>
-            </div>
-            <textarea id="editor" class="form-control" rows="20"></textarea>
-        </div>
+        
         <br>
     </div>
 
