@@ -178,7 +178,7 @@ function addTag(tag) {
 function addBlockquote() {
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
-	const newText = `<blockquote>${selectedText}</blockquote>`;
+	const newText = `<blockquote><font face="calibri" size="2">${selectedText}</font></blockquote>`;
 	const start = editor.selectionStart;
 	const end = editor.selectionEnd;
 	editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
@@ -201,6 +201,27 @@ function addCode() {
 	const end = editor.selectionEnd;
 	editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
 }
+
+function addLinkOS(evt) {
+	if(evt && evt.keyCode != 13)
+	{
+		return;
+	}
+
+	const editor = document.getElementById("editor");
+	const numeroOS = document.getElementById("numeroOS").value;
+	const newText = `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><b><u>OS ${numeroOS}</u></b></a>`
+	const start = editor.selectionStart;
+	const end = editor.selectionEnd;
+	editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
+	$('#linkOSModal').modal('hide');
+}
+
+function InserirOS() {
+    $('#linkOSModal').modal('show');
+	$('#numeroOS').focus();
+}
+
 
 function CopiarTexto(){
 	const textArea = document.getElementById("editor");

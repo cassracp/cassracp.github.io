@@ -5,31 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="jquery/jquery-3.7.1.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="functions.js"></script>
-    <script src="jquery/jquery-3.7.1.js"></script>
     <title>Editor de Texto HTML</title>
 </head>
 <body>
     <div class="container mt-3">
         <br>
         <div class="btn-group mt-2">
-            <button class="btn btn-secondary border-dark" onclick="CopiarTexto()">Copiar</button>
+            <button class="btn btn-group border-dark" disabled>Simples: </button> 
             <button class="btn btn-info border-dark" onclick="addTag('b')"><b>N</b></button>
             <button class="btn btn-info border-dark" onclick="addTag('i')"><i>I</i></button>
             <button class="btn btn-info border-dark" onclick="addTag('u')"><u>S</u></button>
             <button class="btn btn-info border-dark" onclick="addTag('s')"><s>T</s></button>
-            <button class="btn btn-info border-dark" onclick="addBlockquote()">Bloco de Quote</button>
+            <button class="btn btn-info border-dark" onclick="addBlockquote()">Quote</button>
             <button class="btn btn-info border-dark" onclick="addPre()">Pre</button>
             <button class="btn btn-info border-dark" onclick="addCode()">Code</button>
+            
+        </div>
+        <br>
+        <div class="btn-group mt-1">
+            <button class="btn btn-group border-dark" disabled>Especiais: </button> 
             <button class="btn btn-info border-dark" id="spoilerButton" onclick="openModal()">Spoiler</button>
+            <button class="btn btn-info border-dark" id="btnLinkOS" onclick="InserirOS()">Link OS</button>
         </div>
         <br><br>
         <div class="btn-toolbar">
+            <div class="btn-group mt-1">
+                <button class="btn btn-secondary border-dark" onclick="CopiarTexto()">Copiar</button>
+                <button class="btn btn-secondary border-dark" onclick="LimparEditor()" >Limpar</button>
+            </div>
             <textarea id="editor" class="form-control" rows="20"></textarea>
         </div>
-        <br><br>
-        <button onclick="LimparEditor()" class="btn btn-secondary">Limpar</button>
+        <br>
     </div>
 
     <!-- Modal para inserir texto do spoiler -->
@@ -61,5 +70,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para inserir Número da OS -->
+    <div class="modal fade" id="linkOSModal" tabindex="-1" role="dialog" aria-labelledby="linkOSModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="linkOSModalLabel">Insira o Número da OS</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row" id="divInserirNumOS">
+                        <textarea id="numeroOS" class="form-control" rows="1" placeholder="Insira o número da OS" onkeyup="addLinkOS(event)" required></textarea>
+                    </div>     
+                </div>
+                  
+                <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" onclick="addLinkOS()">Inserir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
