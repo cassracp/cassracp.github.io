@@ -1,0 +1,4 @@
+headers:
+  - path: /*
+    headers:
+      Permissions-Policy: interest-cohort=()
