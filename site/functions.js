@@ -222,6 +222,62 @@ function InserirOS() {
 	$('#numeroOS').focus();
 }
 
+function addLinkTarefa(evt) {
+	if(evt && evt.keyCode != 13)
+	{
+		return;
+	}
+
+	const editor = document.getElementById("editor");
+	const numeroTarefa = document.getElementById("numeroTarefa").value;
+	const newText = `<a href="https://www.demaria.com.br/intranet/v3/tarefa/detalhe.php?tarefa_id=${numeroOS}" target="_blank"><b><u>Tarefa ${numeroOS}</u></b></a>`
+	const start = editor.selectionStart;
+	const end = editor.selectionEnd;
+	editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
+	$('#linkTarefaModal').modal('hide');
+}
+
+function InserirTarefa() {
+    $('#linkTarefaModal').modal('show');
+	$('#numeroTarefa').focus();
+}
+
+function formatarData(data) {
+    // Substitua "até" por "das" e "⋅" por "às"
+	if (data.includes('até')){
+		data = data.replace(/⋅/g, ' das ');
+	} else {    
+    	data = data.replace(/⋅/g, ' às ');
+	}
+
+    // Adicione "h" para indicar as horas
+    data = data.replace(/(\d+:\d+)/g, '$1h');
+
+    return data;
+}
+
+
+function addDataCalendar(evt) {
+	if(evt && evt.keyCode != 13)
+	{
+		return;
+	}
+
+	const editor = document.getElementById("editor");
+	const dataCalendar = document.getElementById("dataCalendar").value;
+	const dataFormatada = formatarData(dataCalendar);
+	const newText = dataFormatada;
+	const start = editor.selectionStart;
+	const end = editor.selectionEnd;
+	editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
+	$('#DataCalendarModal').modal('hide');
+}
+
+function InserirData() {
+    $('#DataCalendarModal').modal('show');
+	$('#dataCalendar').focus();
+}
+
 
 function CopiarTexto(){
 	const textArea = document.getElementById("editor");

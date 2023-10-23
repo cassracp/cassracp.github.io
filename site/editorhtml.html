@@ -14,24 +14,26 @@
     <div class="container mt-3">
         <div class="btn-toolbar">
             <div class="btn-group mt-4">
-                <button class="btn btn-outline-secondary border-dark" onclick="CopiarTexto()">Copiar</button>
+                <button class="btn btn-outline-secondary border-dark" title="Copiar" onclick="CopiarTexto()">Copiar <img src="icons/copiar.png" alt="Copiar"></button>
                 <button class="btn btn-group border-dark-subtle" disabled>          </button> 
-                <button class="btn btn-outline-warning border-dark" onclick="LimparEditor()" >Limpar</button>
+                <button class="btn btn-outline-warning border-dark" title="Limpar" onclick="LimparEditor()" >Limpar <img src="icons/limpar.png" alt="Limpar"></button>
             </div>
         </div>
         <br>
         <div class="btn-group mt-2">
             <button class="btn btn-group" disabled>Simples: </button> 
-            <button class="btn btn-info border-dark" onclick="addTag('b')"><b>N</b></button>
-            <button class="btn btn-info border-dark" onclick="addTag('i')"><i>I</i></button>
-            <button class="btn btn-info border-dark" onclick="addTag('u')"><u>S</u></button>
-            <button class="btn btn-info border-dark" onclick="addTag('s')"><s>T</s></button>
-            <button class="btn btn-info border-dark" onclick="addBlockquote()">Quote</button>
-            <button class="btn btn-info border-dark" onclick="addPre()">Pre</button>
-            <button class="btn btn-info border-dark" onclick="addCode()">Code</button>
+            <button class="btn btn-outline-info border-dark" title="Negrito" onclick="addTag('b')"><b><img src="icons/negrito.png" alt="Negrito"></b></button>
+            <button class="btn btn-outline-info border-dark" title="Itálico" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
+            <button class="btn btn-outline-info border-dark" title="Sublinhado" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
+            <button class="btn btn-outline-info border-dark" title="Tachado" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
+            <button class="btn btn-outline-info border-dark" title="Inserir Quote" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
+            <button class="btn btn-outline-info border-dark" onclick="addPre()"><b>Pre</b></button>
+            <button class="btn btn-outline-info border-dark" onclick="addCode()"><b>Code</b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
-            <button class="btn btn-info border-dark" id="spoilerButton" onclick="openModal()">Spoiler</button>
-            <button class="btn btn-info border-dark" id="btnLinkOS" onclick="InserirOS()">Link OS</button>            
+            <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="openModal()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
+            <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="InserirOS()"><img src=icons\link_os.png alt="Link OS"></button> 
+            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="InserirTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>     
+            <button class="btn btn-outline-info border-dark" id="btnInserirData" title="Data da Agenda do Google" onclick="InserirData()"><img src="icons\calendar.png" alt="Agenda do Google"/></button>         
         </div>
         <textarea id="editor" class="form-control" rows="20"></textarea>
         <!--<br>
@@ -52,7 +54,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="checkbox" class="form-check-input" id="usarModelo" onchange="UsarTituloModelo()" checked> Usar modelo pré-definido
-                    <br><br>
+                    <br>
                     <div class="form-group row" id="divSelecionarModelo">Selecione um modelo:
                         <select id="modeloTitulo" class="form-control">
                             <option value="Especificações de Hardware Servidor">Especificações de Hardware Servidor</option>
@@ -93,5 +95,45 @@
         </div>
     </div>
 
+     <!-- Modal para inserir Número da Tarefa -->
+     <div class="modal fade" id="linkTarefaModal" tabindex="-1" role="dialog" aria-labelledby="linkTarefaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="linkTarefaModalLabel">Insira o Número da Tarefa</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row" id="divInserirNumTarefa">
+                        <textarea id="numeroTarefa" class="form-control" rows="1" placeholder="Insira o número da Tarefa" onkeyup="addLinkTarefa(event)" required></textarea>
+                    </div>     
+                </div>
+                  
+                <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" onclick="addLinkTarefa()">Inserir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+         <!-- Modal para inserir Data do Calendario do Google -->
+         <div class="modal fade" id="DataCalendarModal" tabindex="-1" role="dialog" aria-labelledby="DataCalendarModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DataCalendarModalLabel">Insira a data do Calendario</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row" id="divInserirNumTarefa">
+                            <textarea id="dataCalendar" class="form-control" rows="1" placeholder="Insira o texto da data" onkeyup="addDataCalendar(event)" required></textarea>
+                        </div>     
+                    </div>
+                      
+                    <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" onclick="addDataCalendar()">Inserir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer><small>icons by <a href="https://icons8.com">Icons8</a></small></footer>
 </body>
 </html>
