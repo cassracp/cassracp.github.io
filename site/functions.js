@@ -190,7 +190,7 @@ function addLista() {
 	editor.value += newText;
 }
 
-/*function addListaNumerada() {
+function addListaNumerada() {
     const editor = document.getElementById("editor");
     const text = editor.value;
 
@@ -209,36 +209,7 @@ function addLista() {
         const newText = "\n<b>1. </b>";
         editor.value += newText;
     }
-}*/
-
-function addListaNumerada() {
-    const editor = document.getElementById("editor");
-    const text = editor.value;
-    const cursorPosition = editor.selectionStart;
-
-    // Verifique se já existe uma lista numerada anterior
-    const regex = /<b>(\d+)\. <\/b>/g;
-    const matches = text.match(regex);
-
-    if (matches && matches.length > 0 && text.trim() !== "") {
-        // Encontre o número mais alto na lista
-        const lastNumber = parseInt(matches[matches.length - 1].match(/\d+/)[0]);
-        const currentNumber = lastNumber + 1;
-        const newText = `\n<b>${currentNumber}. </b>`;
-        
-        // Insira o novo texto na posição do cursor
-        editor.value = text.slice(0, cursorPosition) + newText + text.slice(cursorPosition);
-        editor.setSelectionRange(cursorPosition + newText.length, cursorPosition + newText.length);
-    } else {
-        // Se não há lista numerada anterior ou a última linha está vazia, comece com 1 na linha seguinte
-        const newText = `\n<b>1. </b>`;
-        editor.value = text.slice(0, cursorPosition) + newText + text.slice(cursorPosition);
-        editor.setSelectionRange(cursorPosition + newText.length, cursorPosition + newText.length);
-    }
 }
-
-
-
 
 function addPre() {
 	const editor = document.getElementById("editor");
