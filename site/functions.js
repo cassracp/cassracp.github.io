@@ -60,7 +60,7 @@ function FormatarNumeroDeTelefone(evt) {
 		numeroFormatado = codigoSelecionado + ddd + "9" + numeroTel;
 	} else if (numeroTel.length === 8) {
 		// Se for um telefone fixo
-		numeroFormatado = codigoSelecionado + ddd + numeroTel;
+		numeroFormatado = "00" + ddd + numeroTel;
 	} 
 
 	document.getElementById("numeroFormatado").value = numeroFormatado;
