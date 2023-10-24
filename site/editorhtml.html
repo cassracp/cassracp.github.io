@@ -30,14 +30,15 @@
             <button class="btn btn-outline-info border-dark" title="Inserir Quote" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
             <button class="btn btn-outline-info border-dark" title="Inserir Item de Lista" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
             <button class="btn btn-outline-info border-dark" title="Inserir Item de Lista Numerada" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
-            <button class="btn btn-outline-info border-dark" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
-            <button class="btn btn-outline-info border-dark" onclick="addCode()"><b>code</font></b></button>
+            <button class="btn btn-outline-info border-dark" title="Inserir pre" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
+            <button class="btn btn-outline-info border-dark" title="Inserir code" onclick="addCode()"><b>code</font></b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
             <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="openModal()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
             <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="InserirOS()"><img src=icons\link_os.png alt="Link OS"></button> 
             <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="InserirTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>
-            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="InserirImagem()"><img src="icons/imagem2.png" alt="Imagem"></button>
-            <button class="btn btn-outline-info border-dark" id="btnInserirData" title="Data da Agenda do Google" onclick="InserirData()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="InserirImagem()"><img src="icons\imagem2.png" alt="Imagem"></button>
+            <button class="btn btn-outline-info border-dark" id="btnInserirData" title="Inserir Data" onclick="InserirData()"><img src="icons\calendar.png" alt="Data"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnInserirDataGoogle" title="Data da Agenda do Google" onclick="InserirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
         </div>
         <textarea id="editor" class="form-control" rows="20"></textarea>
         <!--<br>
@@ -144,21 +145,40 @@
             </div>
         </div>
 
-         <!-- Modal para inserir Data do Calendario do Google -->
-         <div class="modal fade" id="DataCalendarModal" tabindex="-1" role="dialog" aria-labelledby="DataCalendarModalLabel" aria-hidden="true">
+         <!-- Modal para inserir Data -->
+         <div class="modal fade" id="DataModal" tabindex="-1" role="dialog" aria-labelledby="DataModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="DataCalendarModalLabel">Insira a data do Calendario</h5>
+                        <h5 class="modal-title" id="DataModalLabel">Insira a Data</h5>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group row" id="divInserirNumTarefa">
-                            <textarea id="dataCalendar" class="form-control" rows="1" placeholder="Insira o texto da data" onkeyup="addDataCalendar(event)" required></textarea>
+                        <input type="date" id="dataSelecionada" onchange="UsarDataFormatada(document.getElementById('dataSelecionada').value)"><br>
+                        <input type="checkbox" class="form-check-input" id="chkDataFormatada" onchange="UsarDataFormatada()" checked> Usar Data Formatada
+                        <p>Exemplo: <span class="" id="exemploDataFormatada"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" onclick="addData()">Inserir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Modal para inserir Data do Calendario do Google -->
+         <div class="modal fade" id="DataGoogleModal" tabindex="-1" role="dialog" aria-labelledby="DataGoogleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DataGoogleModalLabel">Insira a Data da Agenda do Google</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row" id="divInserirDataGoogle">
+                            <textarea id="dataGoogle" class="form-control" rows="1" placeholder="Insira o texto da data" onkeyup="addDataGoogle(event)" required></textarea>
                         </div>     
                     </div>
                       
                     <div class="modal-footer">
-                          <button type="button" class="btn btn-primary" onclick="addDataCalendar()">Inserir</button>
+                          <button type="button" class="btn btn-primary" onclick="addDataGoogle()">Inserir</button>
                     </div>
                 </div>
             </div>

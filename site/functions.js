@@ -269,7 +269,7 @@ function InserirTarefa() {
 	$('#numeroTarefa').focus();
 }
 
-function formatarData(data) {
+function formatarDataGoogle(data) {
     // Substitua "até" por "das" e "⋅" por "às"
 	if (data.includes('até')){
 		data = data.replace(/⋅/g, ' das ');
@@ -316,26 +316,74 @@ function InserirImagem() {
 	urlImagem.focus();	
 }
 
+function UsarDataFormatada() {
+    const exemploDataFormatada = document.getElementById("exemploDataFormatada");
+    const dataSelecionada = document.getElementById("dataSelecionada").value;
+    const dataFormatada = FormatarData(dataSelecionada);
+    
+	exemploDataFormatada.textContent = `${dataFormatada}`;
+}
 
-function addDataCalendar(evt) {
+function FormatarData (data) {
+	const chkDataFormatada = document.getElementById("chkDataFormatada");
+	if (chkDataFormatada.checked){
+		const meses = [
+			"janeiro", "fevereiro", "março", "abril", "maio", "junho",
+			"julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+		];
+	
+		const partesData = data.split("-");
+		if (partesData.length === 3) {
+			const dia = partesData[2];
+			const mes = parseInt(partesData[1]);
+			const ano = partesData[0];
+			return `${dia} de ${meses[mes - 1]} de ${ano}`;
+		} else {
+			return "Formato de data inválido";
+		}
+	} else {
+		const partesData = data.split("-");
+        if (partesData.length === 3) {
+            return partesData[2] + '/' + partesData[1] + '/' + partesData[0];
+        } else {
+            return "Formato de data inválido";
+		}
+	}
+}
+
+function addData() {
+	const editor = document.getElementById("editor");
+    const dataSelecionada = document.getElementById("dataSelecionada").value;
+    const dataFormatada = FormatarData(dataSelecionada);
+
+	editor.value += " " + dataFormatada;
+	$('#DataModal').modal('hide');	
+}
+
+function InserirData() {
+    $('#DataModal').modal('show');
+	
+}
+
+
+function addDataGoogle(evt) {
 	if(evt && evt.keyCode != 13)
 	{
 		return;
 	}
 
 	const editor = document.getElementById("editor");
-	const dataCalendar = document.getElementById("dataCalendar").value;
-	const dataFormatada = formatarData(dataCalendar);
+	const dataGoogle = document.getElementById("dataGoogle").value;
+	const dataFormatada = formatarDataGoogle(dataGoogle);
 	const newText = dataFormatada;
 	const start = editor.selectionStart;
 	const end = editor.selectionEnd;
 	editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
-	$('#DataCalendarModal').modal('hide');
+	$('#DataGoogleModal').modal('hide');
 }
 
-function InserirData() {
-    $('#DataCalendarModal').modal('show');
-	$('#dataCalendar').focus();
+function InserirDataGoogle() {
+    $('#DataGoogleModal').modal('show');
 }
 
 
