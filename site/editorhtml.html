@@ -28,12 +28,15 @@
             <button class="btn btn-outline-info border-dark" title="Sublinhado" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
             <button class="btn btn-outline-info border-dark" title="Tachado" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
             <button class="btn btn-outline-info border-dark" title="Inserir Quote" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
+            <button class="btn btn-outline-info border-dark" title="Inserir Item de Lista" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
+            <button class="btn btn-outline-info border-dark" title="Inserir Item de Lista Numerada" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
             <button class="btn btn-outline-info border-dark" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
             <button class="btn btn-outline-info border-dark" onclick="addCode()"><b>code</font></b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
             <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="openModal()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
             <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="InserirOS()"><img src=icons\link_os.png alt="Link OS"></button> 
-            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="InserirTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>     
+            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="InserirTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>
+            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="InserirImagem()"><img src="icons/imagem2.png" alt="Imagem"></button>
             <button class="btn btn-outline-info border-dark" id="btnInserirData" title="Data da Agenda do Google" onclick="InserirData()"><img src="icons\calendar.png" alt="Agenda do Google"/></button>         
         </div>
         <textarea id="editor" class="form-control" rows="20"></textarea>
@@ -116,6 +119,31 @@
         </div>
     </div>
 
+            <!-- Modal para inserir Imagem -->
+            <div class="modal fade" id="ImagemModal" tabindex="-1" role="dialog" aria-labelledby="ImagemModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ImagemModalLabel">Insira a data do Calendario</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row" id="divInserirURLImagem">
+                            <textarea id="urlImagem" class="form-control" rows="1" placeholder="Insira a URL da Imagem:" onkeyup="addURLImagem(event)" required></textarea>
+                        </div>
+                        <br>
+                        Descrição da imagem: 
+                        <div class="form-group row" id="divInserirDescImagem">
+                            <textarea id="descImagem" class="form-control" rows="1" placeholder="Insira a descrição da Imagem (opcional)" onkeyup="addURLImagem(event)"></textarea>
+                        </div>     
+                    </div>
+                        
+                    <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="addURLImagem()">Inserir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
          <!-- Modal para inserir Data do Calendario do Google -->
          <div class="modal fade" id="DataCalendarModal" tabindex="-1" role="dialog" aria-labelledby="DataCalendarModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -135,6 +163,7 @@
                 </div>
             </div>
         </div>
+
         <footer><small>icons by <a href="https://icons8.com">Icons8</a></small></footer>
 </body>
 </html>

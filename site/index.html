@@ -33,7 +33,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" href="#" onclick="loadTool('topicotarefa.html')">- Tópico de Tarefa</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item d-none">
                             <a class="nav-link text-light" href="#" onclick="loadTool('img2html.html')">- Gerar Código HTML para Imagens</a>
                         </li>
                         </b></font></ul>
@@ -43,8 +43,7 @@
             <br>
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 				<div class="content">
-					<!-- Conteúdo principal da página -->
-                    
+					                 
 				</div>
             </main>
         </div>
@@ -59,6 +58,8 @@
 					document.querySelector(".content").innerHTML = data;
 				});
 		}
+
+        loadTool('editorhtml.html');   
 		/*Fim do contexto do carregador de ferramentas*/
 	</script>
 </body>

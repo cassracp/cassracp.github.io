@@ -184,6 +184,62 @@ function addBlockquote() {
 	editor.value = editor.value.substring(0, start) + newText + editor.value.substring(end);
 }
 
+function addLista() {
+	const editor = document.getElementById("editor");
+	const newText = "\n<b>• <\\b>";
+	editor.value += newText;
+}
+
+/*function addListaNumerada() {
+    const editor = document.getElementById("editor");
+    const text = editor.value;
+
+    // Verifique se já existe uma lista numerada anterior
+    const regex = /<b>(\d+)\. <\/b>/g;
+    const matches = text.match(regex);
+
+    if (matches && matches.length > 0) {
+        // Encontre o número mais alto na lista
+        const lastNumber = parseInt(matches[matches.length - 1].match(/\d+/)[0]);
+        const currentNumber = lastNumber + 1;
+        const newText = `\n<b>${currentNumber}. </b>`;
+        editor.value += newText;
+    } else {
+        // Se não há lista numerada anterior, comece com 1
+        const newText = "\n<b>1. </b>";
+        editor.value += newText;
+    }
+}*/
+
+function addListaNumerada() {
+    const editor = document.getElementById("editor");
+    const text = editor.value;
+    const cursorPosition = editor.selectionStart;
+
+    // Verifique se já existe uma lista numerada anterior
+    const regex = /<b>(\d+)\. <\/b>/g;
+    const matches = text.match(regex);
+
+    if (matches && matches.length > 0 && text.trim() !== "") {
+        // Encontre o número mais alto na lista
+        const lastNumber = parseInt(matches[matches.length - 1].match(/\d+/)[0]);
+        const currentNumber = lastNumber + 1;
+        const newText = `\n<b>${currentNumber}. </b>`;
+        
+        // Insira o novo texto na posição do cursor
+        editor.value = text.slice(0, cursorPosition) + newText + text.slice(cursorPosition);
+        editor.setSelectionRange(cursorPosition + newText.length, cursorPosition + newText.length);
+    } else {
+        // Se não há lista numerada anterior ou a última linha está vazia, comece com 1 na linha seguinte
+        const newText = `\n<b>1. </b>`;
+        editor.value = text.slice(0, cursorPosition) + newText + text.slice(cursorPosition);
+        editor.setSelectionRange(cursorPosition + newText.length, cursorPosition + newText.length);
+    }
+}
+
+
+
+
 function addPre() {
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
@@ -254,6 +310,39 @@ function formatarData(data) {
     data = data.replace(/(\d+:\d+)/g, '$1h');
 
     return data;
+}
+
+function addURLImagem(evt) {
+	if(evt && evt.keyCode != 13)
+	{
+		return;
+	}
+
+	const editor = document.getElementById("editor");
+	const urlImagem = document.getElementById("urlImagem").value;
+	if(urlImagem === "" || !urlImagem.includes('https://') || urlImagem.includes('http://'))
+	{
+		alert("URL da Imagem em branca ou inválida!\n\nFavor inserir o a url completa da imagem")
+		return;
+	}
+	const descImagemInput = document.getElementById('descImagem');
+	descImagemInput.value = descImagemInput.value === "" ? "Imagem sem descrição" : descImagemInput.value;
+	const descImagem = descImagemInput.value;
+	const newText = `<a href ="${urlImagem}" target="_blank"><img src="${urlImagem}" width="150" height="150" alt="${descImagem}"></a>`;
+
+	editor.value += "\n" + newText;
+	$('#ImagemModal').modal('hide');
+
+
+}
+
+function InserirImagem() {
+	const urlImagem = document.getElementById('urlImagem');
+	const descImagem = document.getElementById('descImagem');
+	urlImagem.value = "";
+	descImagem.value = "";
+    $('#ImagemModal').modal('show');
+	urlImagem.focus();	
 }
 
 
