@@ -6,6 +6,7 @@
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <script src="jquery/jquery-3.7.1.js"></script>
+    <script src="mousetrap/mousetrap.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="functions.js"></script>
     <title>Editor de Texto HTML</title>
@@ -23,15 +24,15 @@
         <br>
         <div class="btn-group mt-2">
             <button class="btn btn-group" disabled>Simples: </button> 
-            <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito" onclick="addTag('b')"><b><img src="icons/negrito.png" alt="Negrito"></b></button>
-            <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
-            <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
-            <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Inserir Quote" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
-            <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Inserir Item de Lista" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
-            <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Inserir Item de Lista Numerada" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
-            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Inserir pre" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
-            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Inserir code" onclick="addCode()"><b>code</font></b></button>
+            <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito (Alt+B)" onclick="addTag('b')"><b><img src="icons/negrito.png" alt="Negrito"></b></button>
+            <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico (Alt+I)" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
+            <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado (alt+U)" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
+            <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado (Alt+T)" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
+            <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
+            <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
+            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Pre (Alt+P)" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
+            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Code (Alt+C)" onclick="addCode()"><b>code</font></b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
             <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="openModal()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
             <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="InserirOS()"><img src=icons\link_os.png alt="Link OS"></button> 
@@ -187,27 +188,55 @@
         <footer><small>icons by <a href="https://icons8.com">Icons8</a></small></footer>
 
         <script>
-            document.addEventListener("keydown", function (event) {
-            if (event.altKey) {
-                switch (event.key) {
-                    case "b":
-                        document.getElementById("btnBold").click();
-                        break;
-                    case "i":
-                        document.getElementById("btnItalic").click();
-                        break;
-                    case "u":
-                        document.getElementById("btnUnderln").click();
-                        break;
-                    case "t":
-                        document.getElementById("btnStike").click();
-                        break;
-                    case "q":
-                        document.getElementById("btnQuote").click();
-                        break;
-                }
-            }
-        });
+            // Atalho para negrito (Alt + B)
+            Mousetrap.bind('alt+b', function() {
+                addTag('b');
+            });
+
+            // Atalho para itálico (Alt + I)
+            Mousetrap.bind('alt+i', function() {
+                addTag('i');
+            });
+
+            // Atalho para Sublinhado (Alt + U)
+            Mousetrap.bind('alt+u', function() {
+                addTag('u');
+            });
+
+            // Atalho para Tachado (Alt + T)
+            Mousetrap.bind('alt+t', function() {
+                addTag('t');
+            });
+
+            // Atalho para Quote (Alt + Q)
+            Mousetrap.bind('alt+q', function() {
+                addTag('q');
+            });
+
+            // Atalho para Lista (Alt + L)
+            Mousetrap.bind('alt+l', function() {
+                addTag('s');
+            });
+
+            // Atalho para Lista (Alt + L)
+            Mousetrap.bind('alt+1', function() {
+                addLista();
+            });
+
+            // Atalho para Lista Numerada (Alt + 1)
+            Mousetrap.bind('alt+l', function() {
+                addListaNumerada();
+            });
+
+            // Atalho para Pre (Alt + P)
+            Mousetrap.bind('alt+p', function() {
+                addPre();
+            });
+
+            // Atalho para Copde (Alt + C)
+            Mousetrap.bind('alt+c', function() {
+                addCode();
+            });
         </script>
 </body>
 </html>
