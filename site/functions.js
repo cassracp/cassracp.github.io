@@ -186,7 +186,7 @@ function addBlockquote() {
 
 function addLista() {
 	const editor = document.getElementById("editor");
-	const newText = "\n<b>• <\\b>";
+	const newText = "\n<b>• <\/b>";
 	editor.value += newText;
 }
 
