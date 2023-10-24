@@ -194,7 +194,6 @@ function addData() {
 
 function InserirData() {
     $('#DataModal').modal('show');
-	
 }
 
 
