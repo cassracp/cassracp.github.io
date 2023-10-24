@@ -23,15 +23,15 @@
         <br>
         <div class="btn-group mt-2">
             <button class="btn btn-group" disabled>Simples: </button> 
-            <button class="btn btn-outline-info border-dark" title="Negrito" onclick="addTag('b')"><b><img src="icons/negrito.png" alt="Negrito"></b></button>
-            <button class="btn btn-outline-info border-dark" title="Itálico" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
-            <button class="btn btn-outline-info border-dark" title="Sublinhado" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
-            <button class="btn btn-outline-info border-dark" title="Tachado" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
-            <button class="btn btn-outline-info border-dark" title="Inserir Quote" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
-            <button class="btn btn-outline-info border-dark" title="Inserir Item de Lista" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
-            <button class="btn btn-outline-info border-dark" title="Inserir Item de Lista Numerada" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
-            <button class="btn btn-outline-info border-dark" title="Inserir pre" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
-            <button class="btn btn-outline-info border-dark" title="Inserir code" onclick="addCode()"><b>code</font></b></button>
+            <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito" onclick="addTag('b')"><b><img src="icons/negrito.png" alt="Negrito"></b></button>
+            <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
+            <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
+            <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Inserir Quote" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
+            <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Inserir Item de Lista" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
+            <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Inserir Item de Lista Numerada" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
+            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Inserir pre" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
+            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Inserir code" onclick="addCode()"><b>code</font></b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
             <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="openModal()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
             <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="InserirOS()"><img src=icons\link_os.png alt="Link OS"></button> 
@@ -185,5 +185,29 @@
         </div>
 
         <footer><small>icons by <a href="https://icons8.com">Icons8</a></small></footer>
+
+        <script>
+            /* document.addEventListener("keydown", function (event) {
+            if (event.altKey) {
+                switch (event.key) {
+                    case "b":
+                        document.getElementById("btnBold").click(); // Seleciona o código 50
+                        break;
+                    case "2":
+                        document.getElementById("codigo60").click(); // Seleciona o código 60
+                        break;
+                    case "3":
+                        document.getElementById("codigo70").click(); // Seleciona o código 70
+                        break;
+                    case "4":
+                        document.getElementById("codigo80").click(); // Seleciona o código 80
+                        break;
+                    case "5":
+                        document.getElementById("codigo90").click(); // Seleciona o código 90
+                        break;
+                }
+            }
+        });*/
+        </script>
 </body>
 </html>
