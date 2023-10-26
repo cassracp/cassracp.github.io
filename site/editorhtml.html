@@ -14,16 +14,16 @@
 </head>
 <body>
     
-    <div class="container mt-3">
+    <div class="container mt-lg-auto">
         <div class="btn-toolbar">
-            <div class="btn-group mt-4">
+            <div class="btn-group mt-auto">
                 <button class="btn btn-outline-secondary border-dark" title="Copiar" onclick="CopiarTexto()">Copiar <img src="icons/copiar.png" alt="Copiar"></button>
                 <button class="btn btn-group border-dark-subtle" disabled>          </button> 
                 <button class="btn btn-outline-warning border-dark" title="Limpar" onclick="LimparEditor()" >Limpar <img src="icons/limpar.png" alt="Limpar"></button>
             </div>
         </div>
         <br>
-        <div class="btn-group mt-2">
+        <div class="btn-group mt-lg-auto">
             <button class="btn btn-group" disabled>Simples: </button> 
             <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito (Alt+B)" onclick="addTag('b')"><b><img src="icons/negrito.png" alt="Negrito"></b></button>
             <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico (Alt+I)" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
@@ -42,7 +42,9 @@
             <button class="btn btn-outline-info border-dark" id="btnInserirData" title="Inserir Data" onclick="InserirData()"><img src="icons\calendar.png" alt="Data"/></button>         
             <button class="btn btn-outline-info border-dark" id="btnInserirDataGoogle" title="Data da Agenda do Google" onclick="InserirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
         </div>
-        <textarea id="editor" class="form-control" rows="20"></textarea>
+        <div class="container mt-lg-auto">
+            <textarea id="editor" class="form-control" rows="20"></textarea>
+        </div>
         <br><br>        
         <br>
     </div>
