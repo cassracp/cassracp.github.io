@@ -502,7 +502,8 @@ button:not(:disabled),
 }
 
 textarea {
-  resize: vertical;
+  resize: auto !important;;
+  overflow: auto;
 }
 
 fieldset {
@@ -2159,14 +2160,18 @@ progress {
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  resize: auto !important;;
+  overflow: auto;
 }
 @media (prefers-reduced-motion: reduce) {
   .form-control {
     transition: none;
+    resize: auto !important;;
+    overflow: auto;
   }
 }
 .form-control[type=file] {
-  overflow: hidden;
+  overflow: auto;
 }
 .form-control[type=file]:not(:disabled):not([readonly]) {
   cursor: pointer;
@@ -2305,12 +2310,18 @@ progress {
 
 textarea.form-control {
   min-height: calc(1.5em + 0.75rem + calc(var(--bs-border-width) * 2));
+  resize: auto !important;;
+  overflow: auto;
 }
 textarea.form-control-sm {
   min-height: calc(1.5em + 0.5rem + calc(var(--bs-border-width) * 2));
+  resize: auto !important;;
+  overflow: auto;
 }
 textarea.form-control-lg {
   min-height: calc(1.5em + 1rem + calc(var(--bs-border-width) * 2));
+  resize: auto !important;;
+  overflow: auto;
 }
 
 .form-control-color {
@@ -2868,6 +2879,8 @@ textarea.form-control-lg {
 .was-validated textarea.form-control:valid, textarea.form-control.is-valid {
   padding-right: calc(1.5em + 0.75rem);
   background-position: top calc(0.375em + 0.1875rem) right calc(0.375em + 0.1875rem);
+  resize: auto !important;;
+  overflow: auto;
 }
 
 .was-validated .form-select:valid, .form-select.is-valid {

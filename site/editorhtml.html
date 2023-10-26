@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        textarea {
+            resize: auto !important;
+        }
+    </style>
     <script src="jquery/jquery-3.7.1.js"></script>
     <script src="mousetrap/mousetrap.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -42,8 +47,8 @@
             <button class="btn btn-outline-info border-dark" id="btnInserirData" title="Inserir Data" onclick="InserirData()"><img src="icons\calendar.png" alt="Data"/></button>         
             <button class="btn btn-outline-info border-dark" id="btnInserirDataGoogle" title="Data da Agenda do Google" onclick="InserirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
         </div>
-        <div class="container mt-lg-30">
-            <textarea id="editor" class="form-control" rows="20" data-ms-editor="true" placeholder="Digite aqui..."></textarea></textarea>
+        <div class="col-md-12 text-left">
+            <textarea id="editor" class="form-control" rows="20" placeholder="Digite aqui..."></textarea>
         </div>
         <br><br>        
         <br>

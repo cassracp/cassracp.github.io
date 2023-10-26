@@ -502,7 +502,8 @@ button:not(:disabled),
 }
 
 textarea {
-  resize: vertical;
+  resize: auto !important;;
+  overflow: auto;
 }
 
 fieldset {
