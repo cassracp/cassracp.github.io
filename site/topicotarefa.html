@@ -12,14 +12,16 @@
     <div class="container">
         <form action="#">
             <div class="form-group row">
-                <label for="numeroTarefa" class="col-sm-1 col-form-label"><font size=2>Nº Tópico:</font></label>
-                <label for="tituloTopico" class="col-sm-4 col-form-label">Título Tópico:</label>
+                <!--<label for="numeroTarefa" class="col-sm-1 col-form-label"><font size=2>Nº Tópico:</font></label>
+                <label for="tituloTopico" class="col-sm-4 col-form-label">Título Tópico:</label>-->
             </div>
             <div class="form-group row">
-                <div class="col-sm-1">
+                <div class="col-md-2">
+                    <font size=2>Nº Tópico:</font>
                     <input type="number" id="numeroTarefa" class="form-control" required>
                 </div>
                 <div class="col-sm-6">
+                    Título Tópico:
                     <select id="tituloTopicoSelect" class="form-control">
                         <option value="ANÁLISE" id="ANALISE">ANÁLISE</option>
                         <option value="ACERTO COMERCIAL" id="CML">ACERTO COMERCIAL</option>
@@ -34,7 +36,7 @@
                         <option value="TREINAMENTO" id="TRN">TREINAMENTO</option>
                         <option value="VALIDAÇÃO" id="VALID">VALIDAÇÃO</option>
                     </select>
-                    <input type="text" id="tituloTopicoInput" class="form-control" style="display: none;" required placeholder="Título Tópico" >
+                                        <input type="text" id="tituloTopicoInput" class="form-control" style="display: none;" required placeholder="Título Tópico" >
                     
                 </div>
             </div>
