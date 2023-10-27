@@ -51,8 +51,11 @@ function IniciaLinha(){
 function addTag(tag) {
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
-	const abreTag = `<${tag}>`;
-	const texto = `${abreTag}${selectedText}</${tag}>`;
+	var abreTag = `<${tag}>`;
+	if (!IniciaLinha() && tag === "hr"){
+		abreTag = "\n"+abreTag
+	}
+	var texto = tag === "hr" ? texto = abreTag : texto = `${abreTag}${selectedText}</${tag}>`;
 
 	IncluirEPosicionar(texto, abreTag);
 }

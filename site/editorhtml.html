@@ -41,6 +41,7 @@
             <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
             <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
             <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
+            <button class="btn btn-outline-info border-dark" id="btnLinha" accesskey="h" title="Linha (Alt+H)" onclick="addTag('hr')"><img src="icons/h-line.png" alt="Linha Horizontal"></button>
             <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Pre (Alt+P)" onclick="addTag('pre')"><b><font face="courier" color="black">pre</b></button>
             <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Code (Alt+C)" onclick="addTag('code')"><b>code</font></b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
@@ -231,6 +232,11 @@
 
             // Atalho para Lista Numerada (Alt + 1)
             Mousetrap.bind('alt+l', function() {
+                addListaNumerada();
+            });
+
+            // Atalho para Linha Horizontal (Alt + H)
+            Mousetrap.bind('alt+h', function() {
                 addListaNumerada();
             });
 
