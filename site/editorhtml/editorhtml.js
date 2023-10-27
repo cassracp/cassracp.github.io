@@ -393,7 +393,7 @@ function addData(data) {
 		$('#DataModal').modal('hide');
 		editor.focus();
 	} else {
-		if (data != "" || data === undefined){	
+		if (data != "" || data != undefined){	
 			IncluirEPosicionar(data, data)
 			$('#DataModal').modal('hide');
 			editor.focus();
