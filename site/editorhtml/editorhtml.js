@@ -1,8 +1,19 @@
-function manterFocoNoTextarea() {
-    const editor = document.getElementById("editor");
-    editor.focus();
+/* BOTÕES DE COPIAR E LIMAR */
+
+function CopiarTexto(){
+	const textArea = document.getElementById("editor");
+	textArea.select();
+	document.execCommand("copy");
 }
 
+
+function LimparEditor() {
+	document.getElementById("editor").value = "";
+}
+
+/* FUNÇÕES AUXILIARES*/
+
+// INCLUIR UMA TAG E POSICIONAR O CURSOR DE TEXTO
 function IncluirEPosicionar(texto, abreTag){
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
@@ -30,6 +41,7 @@ function IncluirEPosicionar(texto, abreTag){
 	editor.focus();
 }
 
+// INCLUIR UMA TAG E POSICIONAR O CURSOR SEM A NECESSIDADE DE SELECIONAR O TEXTO (Obs.: Utilizado para as Listas)
 function IncluirEPosicionarSemSelecao(texto, abreTag){
 	const editor = document.getElementById("editor");
 	const cursorPosition = editor.selectionStart;
@@ -39,15 +51,21 @@ function IncluirEPosicionarSemSelecao(texto, abreTag){
 	editor.focus();
 }
 
+// VERIFICAR SE O CURSOR DE TEXTO ESTÁ NO INICIO DE UMA LINHA DO EDITOR.
 function IniciaLinha(){
-	const textarea = document.getElementById("editor"); // Substitua "editor" pelo ID do seu textarea
+	const textarea = document.getElementById("editor");
 	const cursorPosition = textarea.selectionStart;
 
 	if (cursorPosition === 0 || textarea.value[cursorPosition - 1] === "\n") {
+		// Retorna verdadeiro se estiver no inicio de uma linha
 		return true;
 	}
 }
 
+
+/* SIMPLES */
+
+// ADICIONA UMA TAG SIMPLES COMO <B>, <I>, <U>, ETC... (Obs.: Exceto para Blockquote e as Listas)
 function addTag(tag) {
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
@@ -60,6 +78,7 @@ function addTag(tag) {
 	IncluirEPosicionar(texto, abreTag);
 }
 
+// ADICIONA A TAG DE BLOCKQUOTE NO EDITOR
 function addBlockquote() {
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
@@ -70,9 +89,11 @@ function addBlockquote() {
 	IncluirEPosicionar(texto, abreTag)
 }
 
+
+// ADICIONA A TAG DE LISTA NO EDITOR
 function addLista() {
 	const editor = document.getElementById("editor");
-	if (IniciaLinha() === true){
+	if (IniciaLinha()){
 		var abreTag = "<b>• ";
 	} else {
 		var abreTag = "\n<b>• ";
@@ -83,6 +104,7 @@ function addLista() {
 	IncluirEPosicionarSemSelecao(texto, abreTag)
 }
 
+// ADICIONA A TAG DE LISTA NUMERADA NO EDITOR
 function addListaNumerada() {
     const editor = document.getElementById("editor");
 	const cursorPosition = editor.selectionStart;
@@ -90,7 +112,7 @@ function addListaNumerada() {
 	var abreTag;
 	
 
-    // Verifique se já existe uma lista numerada anterior
+    // Verifica se já existe uma lista numerada anterior
     const regex = /<b>(\d+)\. <\/b>/g;
     const matches = text.match(regex);
 
@@ -98,7 +120,7 @@ function addListaNumerada() {
         // Encontre o número mais alto na lista
         const lastNumber = parseInt(matches[matches.length - 1].match(/\d+/)[0]);
         const currentNumber = lastNumber + 1;
-		if (IniciaLinha() === true){
+		if (IniciaLinha()){
 			abreTag = `<b>${currentNumber}. `;
 		} else {
 			abreTag = `\n<b>${currentNumber}. `;
@@ -108,7 +130,7 @@ function addListaNumerada() {
         IncluirEPosicionarSemSelecao(texto, abreTag)
     } else {
         // Se não há lista numerada anterior, comece com 1
-		if (IniciaLinha() === true){
+		if (IniciaLinha()){
 			abreTag = "<b>1. ";
 		} else {
 			abreTag = "\n<b>1. ";
@@ -119,6 +141,68 @@ function addListaNumerada() {
     }
 }
 
+
+
+
+
+
+/* ESPECIAIS */
+
+//ABRE O MODAL PARA INSERIR SPOILER
+function AbrirSpoiler() {
+	const editor = document.getElementById("editor");
+	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+	if (selectedText.length === 0){
+		alert("Selecione um texto antes.");
+		return
+	}
+
+	$('#spoilerModal').modal('show');
+}
+
+// CHECKBOX PARA USAR TITULO PADRÃO DO SPOILER
+function UsarTituloModelo(){
+	const checkbox = document.getElementById('usarModelo');
+	const divSelecionarModelo = document.getElementById('divSelecionarModelo');
+	const divInserirTitulo = document.getElementById('divInserirTitulo');
+
+	if (checkbox.checked){
+		divSelecionarModelo.classList.remove("d-none");
+		divInserirTitulo.classList.add("d-none");
+	} else {
+		divSelecionarModelo.classList.add("d-none");
+		divInserirTitulo.classList.remove("d-none");
+	}
+}
+
+
+// INSERE O SPOILER NO EDITOR
+function InserirSpoiler() {
+	const editor = document.getElementById("editor");
+	const cursorPosition = editor.selectionStart;
+	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+	const checkbox = document.getElementById("usarModelo");
+	const tituloSpoiler = checkbox.checked ? document.getElementById("modeloTitulo").value : document.getElementById("tituloSpoiler").value;	
+	const inicio = editor.selectionStart;
+	const fim = editor.selectionEnd;
+	const abreTag = `<div style="margin: 5px 20px 20px;"><div class="smallfont" style="margin-bottom: 2px;"><b>${tituloSpoiler}</b>: <input value="Open" style="margin: 0px; padding: 0px; width: 55px; font-size: 11px;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" type="button"></div><div class="alt2" style="border: 1px inset ; margin: 0px; padding: 6px;"><div style="display: none;">`;
+	const texto = `${abreTag}${selectedText}</div></div></div>`;
+
+	
+
+	editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+	$('#spoilerModal').modal('hide');
+
+	editor.setSelectionRange(cursorPosition + abreTag.length, cursorPosition + abreTag.length + selectedText.length);
+	editor.focus();
+}
+
+// ABRE O MODAL PARA LINK DE OS
+function AbrirLinkOS() {
+    $('#linkOSModal').modal('show');
+}
+
+// ADICIONA UM LIK DE OS NO EDITOR
 function addLinkOS(evt) {
 	if(evt && evt.keyCode != 13)
 	{
@@ -126,20 +210,27 @@ function addLinkOS(evt) {
 	}
 
 	const editor = document.getElementById("editor");
+	const cursorPosition = editor.selectionStart;
 	const numeroOS = document.getElementById("numeroOS").value;
 	const texto = `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><b><u>OS ${numeroOS}</u></b></a>`
-	const inicio = editor.selectionStart;
-	const fim = editor.selectionEnd;
-	editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+
+	if (numeroOS === "" || numeroOS === undefined){
+		alert("Insira um Número de OS.");
+		return;
+	}
+
+	editor.value = editor.value.substring(0, cursorPosition) + texto + editor.value.substring(cursorPosition);
 	$('#linkOSModal').modal('hide');
 	editor.focus();
 }
 
-function InserirOS() {
-    $('#linkOSModal').modal('show');
-	$('#numeroOS').focus();
+// ABRE O MODAL PARA LINK DE TAREFA
+function AbrirLinkTarefa() {
+    $('#linkTarefaModal').modal('show');
+	$('#numeroTarefa').focus();
 }
 
+// ADICIONA UM LINK DE TAREFA NO EDITOR
 function addLinkTarefa(evt) {
 	if(evt && evt.keyCode != 13)
 	{
@@ -148,37 +239,20 @@ function addLinkTarefa(evt) {
 
 	const editor = document.getElementById("editor");
 	const numeroTarefa = document.getElementById("numeroTarefa").value;
-	const texto = `<a href="https://www.demaria.com.br/intranet/v3/tarefa/detalhe.php?tarefa_id=${numeroOS}" target="_blank"><b><u>Tarefa ${numeroOS}</u></b></a>`
-	const inicio = editor.selectionStart;
-	const fim = editor.selectionEnd;
-	editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+	const texto = `<a href="https://www.demaria.com.br/intranet/v3/tarefa/detalhe.php?tarefa_id=${numeroTarefa}" target="_blank"><b><u>Tarefa ${numeroTarefa}</u></b></a>`
+	const cursorPosition = editor.selectionStart;
+
+	if (numeroTarefa === "" || numeroTarefa === undefined){
+		alert("Insira um Número de Tarefa.");
+		return;
+	}
+
+	editor.value = editor.value.substring(0, cursorPosition) + texto + editor.value.substring(cursorPosition);
 	$('#linkTarefaModal').modal('hide');
 	editor.focus();
 }
 
-function InserirTarefa() {
-    $('#linkTarefaModal').modal('show');
-	$('#numeroTarefa').focus();
-}
-
-function formatarDataGoogle(data) {
-    // Substitua "até" por "das" e "⋅" por "às"
-	if (data.includes('até')){
-		data = data.replace(/⋅/g, ' das ');
-	} else {    
-    	data = data.replace(/⋅/g, ' às ');
-	}
-
-    // Adicione "h" para indicar as horas
-    data = data.replace(/(\d+:\d+)/g, '$1h');
-
-    return data;
-}
-
-
-/* ESPECIAIS */
-
-/* INSERIR IMAGEM*/ 
+// ABRE O MODAL PARA INSERIR UMA IMAGEM
 function AbrirImagem() {
 	$('#ImagemModal').modal('show');
 
@@ -187,7 +261,7 @@ function AbrirImagem() {
 	document.getElementById("urlImagem").focus();
 }
 
-
+// ADICIONA A TAG DA IMAGEM NO EDITOR
 function addURLImagem(evt) {
 	if(evt && evt.keyCode != 13)
 	{
@@ -213,10 +287,11 @@ function addURLImagem(evt) {
 	editor.focus();
 }
 
-/* INSERIR DATA */
+// ABRE O MODAL PARA INSERIR DATA NO EDITOR
 function AbrirData() {
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
 
+	// Aqui é feita uma verificação caso o usuário tenha selecionado um texto no formato DD/MM/AAAA. Se tiver selecionado, o Modal não é aberto, mas a data selecionada é automaticamente formatada
 	if (validarData(selectedText)){
 		const dateConverted = DateConverter(selectedText);
 		const data = FormatarData(dateConverted);
@@ -233,8 +308,8 @@ function AbrirData() {
 	}
 }
 
+// FUNÇÃO PARA VALIDAR SE A DATA ESTÁ NO FORMATO DD/MM/AAAA
 function validarData(data) {
-    // Expressão regular para verificar o formato "dd/mm/YYYY"
     const regexData = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
 
     if (regexData.test(data)) {
@@ -246,6 +321,7 @@ function validarData(data) {
     }
 }
 
+// FUNÇÃO PARA CONVERTER DATA DO FORMATO DD/MM/AAAA PARA YYYY-MM-DD (Aceito pelo input-html do tipo DATE)
 function DateConverter(data) {
     const partes = data.split("/");
     
@@ -269,7 +345,7 @@ function DateConverter(data) {
 }
 
 
-
+// FUNÇÃO DO CHECKBOX "DATA FORMATADA" (chkDataFormatada) PARA EXIBIÇÃO DO EXEMPLO NO MODAL
 function UsarDataFormatada() {
     const exemploDataFormatada = document.getElementById("exemploDataFormatada");
     const dataSelecionada = document.getElementById("dataSelecionada").value;
@@ -278,6 +354,7 @@ function UsarDataFormatada() {
 	exemploDataFormatada.textContent = `${dataFormatada}`;
 }
 
+// FORMATA A DATA DO FORMATO YYYY-MM-DD (retorno do input date) PARA O EXTENSO: "DD do mmmmm de AAAA"
 function FormatarData (data) {
 	const chkDataFormatada = document.getElementById("chkDataFormatada");
 	if (chkDataFormatada.checked){
@@ -305,6 +382,7 @@ function FormatarData (data) {
 	}
 }
 
+// ADICIONA A DATA FORMATADA NO EDITOR
 function addData(data) {
 	const editor = document.getElementById("editor");
 	const dataSelecionada = document.getElementById("dataSelecionada");
@@ -326,9 +404,27 @@ function addData(data) {
 	}
 }
 
+// ABRE O MODAL PARA INSERIR A DATA DO GOOGLE
+function AbrirDataGoogle() {
+    $('#DataGoogleModal').modal('show');
+}
 
+// FUNÇÃO PARA FORMATAR A DATA COPIADA DA AGENDA DO GOOGLE
+function FormatarDataGoogle(data) {
+    // Substitua "até" por "das" e "⋅" por "às"
+	if (data.includes('até')){
+		data = data.replace(/⋅/g, ' das ');
+	} else {    
+    	data = data.replace(/⋅/g, ' às ');
+	}
 
+    // Adicione "h" para indicar as horas
+    data = data.replace(/(\d+:\d+)/g, '$1h');
 
+    return data;
+}
+
+// ADICIONA A DATA FORMATADA NO EDITOR
 function addDataGoogle(evt) {
 	if(evt && evt.keyCode != 13)
 	{
@@ -337,68 +433,11 @@ function addDataGoogle(evt) {
 
 	const editor = document.getElementById("editor");
 	const dataGoogle = document.getElementById("dataGoogle").value;
-	const dataFormatada = formatarDataGoogle(dataGoogle);
-	const texto = dataFormatada;
+	const dataFormatada = FormatarDataGoogle(dataGoogle);
+	const texto = dataFormatada.trim();
 	const inicio = editor.selectionStart;
 	const fim = editor.selectionEnd;
 	editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
 	$('#DataGoogleModal').modal('hide');
 	editor.focus();
 }
-
-function AbrirDataGoogle() {
-    $('#DataGoogleModal').modal('show');
-}
-
-
-function CopiarTexto(){
-	const textArea = document.getElementById("editor");
-	textArea.select();
-	document.execCommand("copy");
-}
-
-
-function LimparEditor() {
-	document.getElementById("editor").value = "";
-}
-
-//Spoiler
-function AbrirSpoiler() {
-	$('#spoilerModal').modal('show');
-}
-
-function UsarTituloModelo(){
-	const checkbox = document.getElementById('usarModelo');
-	const divSelecionarModelo = document.getElementById('divSelecionarModelo');
-	const divInserirTitulo = document.getElementById('divInserirTitulo');
-
-	if (checkbox.checked){
-		divSelecionarModelo.classList.remove("d-none");
-		divInserirTitulo.classList.add("d-none");
-	} else {
-		divSelecionarModelo.classList.add("d-none");
-		divInserirTitulo.classList.remove("d-none");
-	}
-}
-
-function insertSpoiler() {
-	const editor = document.getElementById("editor");
-	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
-	if (selectedText.length === 0){
-		alert
-	}
-	const checkbox = document.getElementById("usarModelo");
-	const tituloSpoiler = checkbox.checked ? document.getElementById("modeloTitulo").value : document.getElementById("tituloSpoiler").value;	
-	const inicio = editor.selectionStart;
-	const fim = editor.selectionEnd;
-	const texto = `<div style="margin: 5px 20px 20px;"><div class="smallfont" style="margin-bottom: 2px;"><b>${tituloSpoiler}</b>: <input value="Open" style="margin: 0px; padding: 0px; width: 55px; font-size: 11px;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" type="button"></div><div class="alt2" style="border: 1px inset ; margin: 0px; padding: 6px;"><div style="display: none;">${selectedText}</div></div></div>`;
-
-	
-
-	editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
-	$('#spoilerModal').modal('hide');
-	editor.focus();
-}
-//Fim spoiler
-
-/* FIM EDITOR HTML*/

@@ -46,11 +46,11 @@
             <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Code (Alt+C)" onclick="addTag('code')"><b>code</font></b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
             <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="AbrirSpoiler()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
-            <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="InserirOS()"><img src=icons\link_os.png alt="Link OS"></button> 
-            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="InserirTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>
+            <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="AbrirLinkOS()"><img src=icons\link_os.png alt="Link OS"></button> 
+            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="AbrirLinkTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>
             <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="AbrirImagem()"><img src="icons\imagem2.png" alt="Imagem"></button>
             <button class="btn btn-outline-info border-dark" id="btnAbrirData" accesskey="d" title="Inserir Data (Shift+Alt+D)" onclick="AbrirData()"><img src="icons\calendar.png" alt="Data"/></button>         
-            <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" title="Data da Agenda do Google" onclick="AbrirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" accesskey="g" title="Data da Agenda do Google (Shift+Alt+G)" onclick="AbrirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
         </div>
         <div class="col-md-12 text-left">
             <textarea id="editor" class="form-control" rows="20" placeholder="Digite aqui..."></textarea>
@@ -82,7 +82,7 @@
                 </div>
                   
                 <div class="modal-footer">
-                      <button type="button" class="btn btn-primary" onclick="insertSpoiler()">Inserir</button>
+                      <button type="button" class="btn btn-primary" onclick="InserirSpoiler()">Inserir</button>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group row" id="divInserirNumOS">
-                        <textarea id="numeroOS" class="form-control" rows="1" placeholder="Insira o número da OS" onkeyup="addLinkOS(event)" required></textarea>
+                        <input type="number" id="numeroOS" class="form-control" rows="1" placeholder="Insira o número da OS" onkeyup="addLinkOS(event)" required></textarea>
                     </div>     
                 </div>
                   
@@ -117,7 +117,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group row" id="divInserirNumTarefa">
-                        <textarea id="numeroTarefa" class="form-control" rows="1" placeholder="Insira o número da Tarefa" onkeyup="addLinkTarefa(event)" required></textarea>
+                        <input type="number" id="numeroTarefa" class="form-control" rows="1" placeholder="Insira o número da Tarefa" onkeyup="addLinkTarefa(event)" required></textarea>
                     </div>     
                 </div>
                   
@@ -195,7 +195,7 @@
         <footer><small>icons by <a href="https://icons8.com">Icons8</a></small></footer>
 
         <script>
-            // Atalho para negrito (Alt + B)
+           /* // Atalho para negrito (Alt + B)
             Mousetrap.bind('alt+b', function() {
                 addTag('b');
             });
@@ -237,7 +237,7 @@
 
             // Atalho para Linha Horizontal (Alt + H)
             Mousetrap.bind('alt+h', function() {
-                addListaNumerada();
+                addTag('h');
             });
 
             // Atalho para Pre (Alt + P)
@@ -256,7 +256,12 @@
                 AbrirData();
             });
 
-            editor.focus();
+            editor.focus();*/
+
+             // Atalho para Data do Google Agenda (Shift + Alt + G)
+             Mousetrap.bind('shift+alt+g', function() {
+                AbrirDataGoogle();
+            });
         </script>
 </body>
 </html>
