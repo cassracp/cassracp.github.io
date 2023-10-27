@@ -388,12 +388,12 @@ function addData(data) {
 	const dataSelecionada = document.getElementById("dataSelecionada");
 	const dataFormatada = FormatarData(dataSelecionada.value);
 	
-	if (dataSelecionada.value != ""){
+	if (dataSelecionada.value != "" || dataSelecionada.value != undefined){
 		IncluirEPosicionar(dataFormatada, dataFormatada);
 		$('#DataModal').modal('hide');
 		editor.focus();
 	} else {
-		if (data != "" || data != undefined){	
+		if (data != ""){	
 			IncluirEPosicionar(data, data)
 			$('#DataModal').modal('hide');
 			editor.focus();
