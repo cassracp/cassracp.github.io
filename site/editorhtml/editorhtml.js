@@ -292,7 +292,7 @@ function AbrirData() {
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
 
 	// Aqui é feita uma verificação caso o usuário tenha selecionado um texto no formato DD/MM/AAAA. Se tiver selecionado, o Modal não é aberto, mas a data selecionada é automaticamente formatada
-	if (validarData(selectedText)){
+	if (ValidarData(selectedText)){
 		const dateConverted = DateConverter(selectedText);
 		const data = FormatarData(dateConverted);
 		addData(data);
@@ -309,7 +309,7 @@ function AbrirData() {
 }
 
 // FUNÇÃO PARA VALIDAR SE A DATA ESTÁ NO FORMATO DD/MM/AAAA
-function validarData(data) {
+function ValidarData(data) {
     const regexData = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
 
     if (regexData.test(data)) {
@@ -393,7 +393,7 @@ function addData(data) {
 		$('#DataModal').modal('hide');
 		editor.focus();
 	} else {
-		if (data != ""){	
+		if (data != "" || data === undefined){	
 			IncluirEPosicionar(data, data)
 			$('#DataModal').modal('hide');
 			editor.focus();
