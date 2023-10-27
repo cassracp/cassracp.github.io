@@ -15,13 +15,17 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="editorhtml/editorhtml.js"></script>
     <script src="site/functions.js"></script>
+    <script>
+        const editor = document.getElementById('editor');
+        editor.focus();
+    </script>
     <title>Editor de Texto HTML</title>
 </head>
 <body>
     
-    <div class="container mt-lg-auto">
-        <div class="btn-toolbar">
-            <div class="btn-group mt-auto">
+    <div class="container-fluid align-items-center">
+        <div class="btn-toolbar align-self-center">
+            <div class="btn-group">
                 <button class="btn btn-outline-secondary border-dark" title="Copiar" onclick="CopiarTexto()">Copiar <img src="icons/copiar.png" alt="Copiar"></button>
                 <button class="btn btn-group border-dark-subtle" disabled>          </button> 
                 <button class="btn btn-outline-warning border-dark" title="Limpar" onclick="LimparEditor()" >Limpar <img src="icons/limpar.png" alt="Limpar"></button>
@@ -37,15 +41,15 @@
             <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
             <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
             <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
-            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Pre (Alt+P)" onclick="addPre()"><b><font face="courier" color="black">pre</b></button>
-            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Code (Alt+C)" onclick="addCode()"><b>code</font></b></button>
+            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Pre (Alt+P)" onclick="addTag('pre')"><b><font face="courier" color="black">pre</b></button>
+            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Code (Alt+C)" onclick="addTag('code')"><b>code</font></b></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
-            <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="openModal()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
+            <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="AbrirSpoiler()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
             <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="InserirOS()"><img src=icons\link_os.png alt="Link OS"></button> 
             <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="InserirTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>
-            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="InserirImagem()"><img src="icons\imagem2.png" alt="Imagem"></button>
-            <button class="btn btn-outline-info border-dark" id="btnInserirData" title="Inserir Data" onclick="InserirData()"><img src="icons\calendar.png" alt="Data"/></button>         
-            <button class="btn btn-outline-info border-dark" id="btnInserirDataGoogle" title="Data da Agenda do Google" onclick="InserirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="AbrirImagem()"><img src="icons\imagem2.png" alt="Imagem"></button>
+            <button class="btn btn-outline-info border-dark" id="btnAbrirData" accesskey="d" title="Inserir Data (Shift+Alt+D)" onclick="AbrirData()"><img src="icons\calendar.png" alt="Data"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" title="Data da Agenda do Google" onclick="AbrirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
         </div>
         <div class="col-md-12 text-left">
             <textarea id="editor" class="form-control" rows="20" placeholder="Digite aqui..."></textarea>
@@ -175,7 +179,7 @@
                         <h5 class="modal-title" id="DataGoogleModalLabel">Insira a Data da Agenda do Google</h5>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group row" id="divInserirDataGoogle">
+                        <div class="form-group row" id="divAbrirDataGoogle">
                             <textarea id="dataGoogle" class="form-control" rows="1" placeholder="Insira o texto da data" onkeyup="addDataGoogle(event)" required></textarea>
                         </div>     
                     </div>
@@ -235,10 +239,18 @@
                 addPre();
             });
 
-            // Atalho para Copde (Alt + C)
+            // Atalho para Code (Alt + C)
             Mousetrap.bind('alt+c', function() {
                 addCode();
             });
+
+            // Atalho para Data (Shift + Alt + D)
+            Mousetrap.bind('shift+alt+d', function() {
+                console.log("Presionada a combinação");
+                AbrirData();
+            });
+
+            editor.focus();
         </script>
 </body>
 </html>
