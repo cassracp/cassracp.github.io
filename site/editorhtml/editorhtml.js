@@ -9,6 +9,7 @@ function CopiarTexto(){
 
 function LimparEditor() {
 	document.getElementById("editor").value = "";
+	document.getElementById("editor").focus();
 }
 
 

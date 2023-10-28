@@ -30,11 +30,11 @@
     <div class="container-fluid align-items-center">
         <div class="btn-toolbar align-self-center">
             <div class="btn-group">
-                <button class="btn btn-outline-secondary border-dark" title="Copiar" onclick="CopiarTexto()">Copiar <img src="icons/copiar.png" alt="Copiar"></button>
-                <button class="btn btn-group border-dark-subtle" disabled>          </button> 
-                <button class="btn btn-outline-warning border-dark" title="Limpar" onclick="LimparEditor()" >Limpar <img src="icons/limpar.png" alt="Limpar"></button>
-                <button class="btn btn-group border-dark-subtle" disabled>          </button> 
-                <button class="btn btn-outline-info border-dark" title="Prévia" onclick="ExibirPrevia()" >Prévia <img src="icons/previa.png" height="25px" width="25px" alt="Prévia"></button>
+                <button class="btn btn-outline-secondary border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarTexto()">Copiar <img src="icons/copiar.png" alt="Copiar"></button>
+                <!--<button class="btn btn-group border-dark-subtle" disabled>          </button> -->
+                <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" >Limpar <img src="icons/limpar.png" alt="Limpar"></button>
+                <!--<button class="btn btn-group border-dark-subtle" disabled>          </button> -->
+                <button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" >Prévia <img src="icons/previa.png" height="25px" width="25px" alt="Prévia"></button>
             </div>
         </div>
         <br>
@@ -48,8 +48,8 @@
             <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
             <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
             <button class="btn btn-outline-info border-dark" id="btnLinha" accesskey="h" title="Linha (Alt+H)" onclick="addTag('hr')"><img src="icons/h-line.png" alt="Linha Horizontal"></button>
-            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Pre (Alt+P)" onclick="addTag('pre')"><b><font face="courier" color="black">pre</b></button>
-            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Code (Alt+C)" onclick="addTag('code')"><b>code</font></b></button>
+            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Texto Pré-Formatado (Alt+P)" onclick="addTag('pre')"><img src="icons/pre.png" alt="Texto Pré-Formatado"></button>
+            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Código Fonte (Alt+C)" onclick="addTag('code')"><img src="icons/code.png" alt="Código Fonte"></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
             <button class="btn btn-outline-info border-dark" id="btnSpoiler" accesskey="s" title="Spoiler" onclick="AbrirSpoiler()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
             <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="AbrirLinkOS()"><img src=icons\link_os.png alt="Link OS"></button> 
