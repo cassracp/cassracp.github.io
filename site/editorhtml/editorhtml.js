@@ -290,6 +290,11 @@ function addURLImagem(evt) {
 // ABRE O MODAL PARA INSERIR DATA NO EDITOR
 function AbrirData() {
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+	const data = new Date();
+	const ano = data.getFullYear();
+	const mes = String(data.getMonth() + 1).padStart(2, '0'); 
+	const dia = String(data.getDate()).padStart(2, '0');
+	const dataAtual = `${ano}-${mes}-${dia}`;
 
 	// Aqui é feita uma verificação caso o usuário tenha selecionado um texto no formato DD/MM/AAAA. Se tiver selecionado, o Modal não é aberto, mas a data selecionada é automaticamente formatada
 	if (ValidarData(selectedText)){
@@ -298,12 +303,7 @@ function AbrirData() {
 		addData(data);
 	} else {
 		$('#DataModal').modal('show');
-		const data = new Date();
-		const ano = data.getFullYear();
-		const mes = String(data.getMonth() + 1).padStart(2, '0'); 
-		const dia = String(data.getDate()).padStart(2, '0');
-		const dataAtual = `${ano}-${mes}-${dia}`;
-		document.getElementById("dataSelecionada").value = undefined;
+		document.getElementById("dataSelecionada").value = dataAtual;
 		document.getElementById("exemploDataFormatada").textContent = FormatarData(dataAtual);
 	}
 }
