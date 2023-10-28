@@ -426,7 +426,19 @@ function addData(data) {
 
 // ABRE O MODAL PARA INSERIR A DATA DO GOOGLE
 function AbrirDataGoogle() {
-    $('#DataGoogleModal').modal('show');
+	const editor = document.getElementById("editor");
+	const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+
+	if (selectedText.length > 0)
+	{
+		var texto = FormatarDataGoogle(selectedText);
+		editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+		editor.focus();		
+	} else {
+		$('#DataGoogleModal').modal('show');
+	}   
 }
 
 // FUNÇÃO PARA FORMATAR A DATA COPIADA DA AGENDA DO GOOGLE
@@ -452,12 +464,12 @@ function addDataGoogle(evt) {
 	}
 
 	const editor = document.getElementById("editor");
+	const cursorPosition = editor.selectionStart;
 	const dataGoogle = document.getElementById("dataGoogle").value;
 	const dataFormatada = FormatarDataGoogle(dataGoogle);
 	const texto = dataFormatada.trim();
-	const inicio = editor.selectionStart;
-	const fim = editor.selectionEnd;
-	editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+
+	editor.value = editor.value.substring(0, cursorPosition) + texto + editor.value.substring(cursorPosition);
 	$('#DataGoogleModal').modal('hide');
 	editor.focus();
 }
