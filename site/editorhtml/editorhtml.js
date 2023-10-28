@@ -1,4 +1,4 @@
-/* BOTÕES DE COPIAR E LIMAR */
+/* BOTÕES DE COPIAR, LIMPAR E PRÉVIA */
 
 function CopiarTexto(){
 	const textArea = document.getElementById("editor");
@@ -10,6 +10,25 @@ function CopiarTexto(){
 function LimparEditor() {
 	document.getElementById("editor").value = "";
 }
+
+
+function ExibirPrevia() {
+    const editor = document.getElementById("editor");
+    const formattedText = editor.value; // Obtenha o conteúdo formatado do editor
+
+	if (editor.value === "" || editor.value === undefined){
+		alert("Digite um texto antes.");
+		return
+	}
+
+    // Crie o conteúdo do modal com o texto formatado
+    const modalContent = document.getElementById("modalContent");
+    modalContent.innerHTML = formattedText;
+
+    // Abra o modal
+    $('#previaModal').modal('show');
+}
+
 
 /* FUNÇÕES AUXILIARES*/
 
@@ -279,7 +298,7 @@ function addURLImagem(evt) {
 	}	
 	descImagem.value = descImagem.value === "" ? "Imagem sem descrição" : descImagem.value;
 
-	const texto = `\n<a href ="${urlImagem.value.trim()}" target="_blank"><img src="${urlImagem.value.trim()}" width="150" height="150" alt="${descImagem.value.trim()}"></img></a>`;
+	const texto = `\n<a href ="${urlImagem.value.trim()}" target="_blank"><img src="${urlImagem.value.trim()}" width="200" height="150" alt="${descImagem.value.trim()}"></img></a>`;
 	
 	IncluirEPosicionarSemSelecao(texto, texto);
 
