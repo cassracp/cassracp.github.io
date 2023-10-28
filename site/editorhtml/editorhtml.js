@@ -23,12 +23,55 @@ function ExibirPrevia() {
 	}
 
     // Crie o conteúdo do modal com o texto formatado
-    const modalContent = document.getElementById("modalContent");
-    modalContent.innerHTML = formattedText;
+    const modalPreviaContent = document.getElementById("modalPreviaContent");
+    modalPreviaContent.innerHTML = formattedText;
 
     // Abra o modal
     $('#previaModal').modal('show');
 }
+
+function ExibirFormatarTelefone() {
+    const modalFormatarTelefoneContent = document.getElementById("modalFormatarTelefoneContent");
+    
+    // Crie um elemento iframe para exibir o conteúdo do arquivo HTML
+    const iframe = document.createElement("iframe");
+
+    // Defina o atributo src do iframe para apontar para o seu arquivo HTML
+    iframe.src = "numertel.html";
+
+    // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
+    iframe.width = "770";
+    iframe.height = "500";
+
+    // Limpe qualquer conteúdo existente no modal
+    modalFormatarTelefoneContent.innerHTML = "";
+
+    // Adicione o iframe ao modal
+    modalFormatarTelefoneContent.appendChild(iframe);
+	$('#formatarTelefoneModal').modal('show');
+}
+
+function ExibirTopicoTarefa() {
+    const modalTopicoTarefaContent = document.getElementById("modalTopicoTarefaContent");
+    
+    // Crie um elemento iframe para exibir o conteúdo do arquivo HTML
+    const iframe = document.createElement("iframe");
+
+    // Defina o atributo src do iframe para apontar para o seu arquivo HTML
+    iframe.src = "topicotarefa.html";
+
+    // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
+    iframe.width = "600";
+    iframe.height = "600";
+
+    // Limpe qualquer conteúdo existente no modal
+    modalTopicoTarefaContent.innerHTML = "";
+
+    // Adicione o iframe ao modal
+    modalTopicoTarefaContent.appendChild(iframe);
+	$('#topicoTarefaModal').modal('show');
+}
+
 
 
 /* FUNÇÕES AUXILIARES*/

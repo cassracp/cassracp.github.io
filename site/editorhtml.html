@@ -10,7 +10,7 @@
             resize: auto !important;
         }
 
-        #modalContent {
+        #modalPreviaContent {
              white-space: pre-line;
         }
     </style>
@@ -30,11 +30,14 @@
     <div class="container-fluid align-items-center">
         <div class="btn-toolbar align-self-center">
             <div class="btn-group">
-                <button class="btn btn-outline-secondary border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarTexto()">Copiar <img src="icons/copiar.png" alt="Copiar"></button>
+                <button class="btn btn-light border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarTexto()">Copiar <img src="icons/copiar.png" alt="Copiar"></button>
                 <!--<button class="btn btn-group border-dark-subtle" disabled>          </button> -->
                 <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" >Limpar <img src="icons/limpar.png" alt="Limpar"></button>
                 <!--<button class="btn btn-group border-dark-subtle" disabled>          </button> -->
                 <button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" >Prévia <img src="icons/previa.png" height="25px" width="25px" alt="Prévia"></button>
+                <button class="btn btn-group" disabled>Funções Auxiliares: </button> 
+                <button class="btn btn-outline-primary border-dark" id="btnFormatarTelefone" title="Formatar Telefone" onclick="ExibirFormatarTelefone()" >Formatar Telefone <img src="icons/phone.png" alt="Formatar Telefone"></button>
+                <button class="btn btn-outline-primary border-dark" id="btnTopicoTarefa" title="Tópico Tarefa" onclick="ExibirTopicoTarefa()" >Tópico Tarefa <img src="icons/topico.png" alt="Tópico"></button>
             </div>
         </div>
         <br>
@@ -65,7 +68,7 @@
         <br>
     </div>
 
-        <!-- Modal de Prévia -->
+    <!-- Modal de Prévia -->
     <div class="modal fade" id="previaModal" tabindex="-1" role="dialog" aria-labelledby="previaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" style="white-space: pre-line;">
@@ -74,11 +77,41 @@
                     <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#previaModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="modalContent"></div>
+                    <div id="modalPreviaContent"></div>
                 </div>
             </div>
         </div>
     </div>
+
+            <!-- Modal de Tormatar Telefone -->
+            <div class="modal fade" id="formatarTelefoneModal" tabindex="-1" role="dialog" aria-labelledby="formatarTelefoneModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" style="white-space: pre-line;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="formatarTelefoneModalLabel">Formatar Telefone</h5>
+                            <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#formatarTelefoneModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="modalFormatarTelefoneContent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Modal de tópico tarefa -->
+        <div class="modal fade" id="topicoTarefaModal" tabindex="-1" role="dialog" aria-labelledby="topicoTarefaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" style="white-space: pre-line;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="topicoTarefaModalLabel">Tópico de Tarefa</h5>
+                        <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#topicoTarefaModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalTopicoTarefaContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     <!-- Modal para inserir texto do spoiler -->
