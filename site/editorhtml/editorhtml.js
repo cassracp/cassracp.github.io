@@ -298,7 +298,7 @@ function addURLImagem(evt) {
 	}	
 	descImagem.value = descImagem.value === "" ? "Imagem sem descrição" : descImagem.value;
 
-	const texto = `\n<a href ="${urlImagem.value.trim()}" target="_blank"><img src="${urlImagem.value.trim()}" width="200" height="150" alt="${descImagem.value.trim()}"></img></a>`;
+	const texto = `\n<a href ="${urlImagem.value.trim()}" target="_blank"><img src="${urlImagem.value.trim()}" width="200" height="150" alt="${descImagem.value.trim()}" title="${descImagem.value.trim()}"></img></a><br><small><font color="gray">(${descImagem.value.trim()})</font></small>`;
 	
 	IncluirEPosicionarSemSelecao(texto, texto);
 
