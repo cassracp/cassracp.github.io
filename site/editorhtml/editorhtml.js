@@ -362,11 +362,8 @@ function AbrirData() {
 
 	// Aqui é feita uma verificação caso o usuário tenha selecionado um texto no formato DD/MM/AAAA. Se tiver selecionado, o Modal não é aberto, mas a data selecionada é automaticamente formatada
 	if (ValidarData(selectedText)){
-		console.log("Texto Selecionado = " + selectedText);
 		const dateConverted = DateConverter(selectedText);
-		console.log("Texto Selecionado convertido = " + dateConverted);
 		const data = FormatarData(dateConverted);
-		console.log("Data passada para o addData() = " + data);
 		IncluirEPosicionar(data, data);
 		editor.focus();
 	} else {
