@@ -352,6 +352,7 @@ function addURLImagem(evt) {
 
 // ABRE O MODAL PARA INSERIR DATA NO EDITOR
 function AbrirData() {
+	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
 	const data = new Date();
 	const ano = data.getFullYear();
@@ -361,9 +362,13 @@ function AbrirData() {
 
 	// Aqui é feita uma verificação caso o usuário tenha selecionado um texto no formato DD/MM/AAAA. Se tiver selecionado, o Modal não é aberto, mas a data selecionada é automaticamente formatada
 	if (ValidarData(selectedText)){
+		console.log("Texto Selecionado = " + selectedText);
 		const dateConverted = DateConverter(selectedText);
+		console.log("Texto Selecionado convertido = " + dateConverted);
 		const data = FormatarData(dateConverted);
-		addData(data);
+		console.log("Data passada para o addData() = " + data);
+		IncluirEPosicionar(data, data);
+		editor.focus();
 	} else {
 		$('#DataModal').modal('show');
 		document.getElementById("dataSelecionada").value = dataAtual;
