@@ -34,17 +34,20 @@ function SalvarHTML() {
 	const editor = document.getElementById("editor");
     const editorContent = editor.value;
 
-    // Divide o conteúdo em linhas
-    const linhas = editorContent.split('\n');
-  
-    // Adiciona a tag <br> ao final de cada linha
-    const linhasComBR = linhas.map(linha => linha + '<br>');
-
-    // Junta as linhas de volta em um texto
-    const textoComBR = linhasComBR.join('\n');
+     // Divide o conteúdo em linhas
+	 const linhas = editorContent.split('\n');
+	 console.log(linhas); // Verifica as linhas separadas
+ 
+	 // Adiciona a tag <br> ao final de cada linha
+	 const linhasComBR = linhas.map(linha => linha + '<br>');
+	 console.log(linhasComBR); // Verifica as linhas com a tag <br>
+ 
+	 // Junta as linhas de volta em um texto
+	 const textoComBR = linhasComBR.join('\n');
+	 console.log(textoComBR); // Verifica o texto final com a tag <br>
 
 	// Cria um blob com o conteúdo do editor
-	const blob = new Blob([editorContent], { type: 'text/html' });
+	const blob = new Blob([textoComBR], { type: 'text/html' });
 
 	// Cria um URL temporário para o blob
 	const url = URL.createObjectURL(blob);
