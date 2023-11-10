@@ -31,8 +31,17 @@ function ExibirPrevia() {
 }
 
 function SalvarHTML() {
-	console.log("Clicou no Botão");
-	const editorContent = document.getElementById("editor").value; // Obtém o conteúdo do editor
+	const editor = document.getElementById("editor");
+    const editorContent = editor.value;
+
+    // Divide o conteúdo em linhas
+    const linhas = editorContent.split('\n');
+  
+    // Adiciona a tag <br> ao final de cada linha
+    const linhasComBR = linhas.map(linha => linha + '<br>');
+
+    // Junta as linhas de volta em um texto
+    const textoComBR = linhasComBR.join('\n');
 
 	// Cria um blob com o conteúdo do editor
 	const blob = new Blob([editorContent], { type: 'text/html' });
