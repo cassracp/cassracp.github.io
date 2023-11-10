@@ -34,6 +34,11 @@ function SalvarHTML() {
 	const editor = document.getElementById("editor");
     const editorContent = editor.value;
 
+	if (editor.value === "" || editor.value === undefined){
+		alert("Digite um texto antes.");
+		return
+	}
+
      // Divide o conteúdo em linhas
 	 const linhas = editorContent.split('\n');
 	 console.log(linhas); // Verifica as linhas separadas

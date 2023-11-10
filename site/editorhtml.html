@@ -35,6 +35,7 @@
                 <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" >Limpar <img src="icons/limpar.png" alt="Limpar"></button>
                 <!--<button class="btn btn-group border-dark-subtle" disabled>          </button> -->
                 <button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" >Prévia <img src="icons/previa.png" height="25px" width="25px" alt="Prévia"></button>
+                <button class="btn btn-outline-success border-dark" id="btnSalvar" accesskey="s" title="Salvar (Alt+S)" onclick="SalvarHTML()" >Salvar <img src="icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
                 <button class="btn btn-group" disabled>Ferramentas: </button> 
                 <button class="btn btn-outline-primary border-dark" id="btnFormatarTelefone" title="Formatar Telefone" onclick="ExibirFormatarTelefone()" >Formatar Telefone <img src="icons/phone.png" alt="Formatar Telefone"></button>
                 <button class="btn btn-outline-primary border-dark" id="btnTopicoTarefa" title="Tópico Tarefa" onclick="ExibirTopicoTarefa()" >Tópico Tarefa <img src="icons/topico.png" alt="Tópico"></button>
@@ -78,7 +79,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="modalPreviaContent"></div>
-                    <button id="btnSalvarHTML" class="btn btn-info" title="Salvar Prévia em .html" onclick="SalvarHTML()">Salvar</button>
+                    <button id="btnSalvarHTML" class="btn btn-outline-success" title="Salvar Prévia em .html" onclick="SalvarHTML()">Salvar <img src="icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
                 </div>
             </div>
         </div>
