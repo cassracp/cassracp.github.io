@@ -30,6 +30,32 @@ function ExibirPrevia() {
     $('#previaModal').modal('show');
 }
 
+function SalvarHTML() {
+	console.log("Clicou no Botão");
+	const editorContent = document.getElementById("editor").value; // Obtém o conteúdo do editor
+
+	// Cria um blob com o conteúdo do editor
+	const blob = new Blob([editorContent], { type: 'text/html' });
+
+	// Cria um URL temporário para o blob
+	const url = URL.createObjectURL(blob);
+
+	// Cria um elemento 'a' para o download
+	const link = document.createElement('a');
+	link.href = url;
+	link.download = 'texto_editado.html'; // Nome do arquivo
+
+	// Simula um clique no link para iniciar o download
+	document.body.appendChild(link);
+	link.click();
+
+	// Limpa o link criado
+	document.body.removeChild(link);
+
+	// Limpa o URL temporário
+	URL.revokeObjectURL(url);
+}
+
 function ExibirFormatarTelefone() {
     const modalFormatarTelefoneContent = document.getElementById("modalFormatarTelefoneContent");
     

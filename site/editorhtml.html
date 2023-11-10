@@ -62,7 +62,7 @@
             <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" accesskey="g" title="Data da Agenda do Google (Shift+Alt+G)" onclick="AbrirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
         </div>
         <div class="col-md-12 text-left">
-            <textarea id="editor" class="form-control" rows="20" placeholder="Digite aqui..."></textarea>
+            <textarea id="editor" class="mousetrap form-control" rows="20" placeholder="Digite aqui..."></textarea>
         </div>
         <br><br>        
         <br>
@@ -78,6 +78,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="modalPreviaContent"></div>
+                    <button id="btnSalvarHTML" class="btn btn-info" title="Salvar Prévia em .html" onclick="SalvarHTML()">Salvar</button>
                 </div>
             </div>
         </div>
@@ -234,7 +235,7 @@
 
          <!-- Modal para inserir Data do Calendario do Google -->
          <div class="modal fade" id="DataGoogleModal" tabindex="-1" role="dialog" aria-labelledby="DataGoogleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="DataGoogleModalLabel">Insira a Data da Agenda do Google</h5>
@@ -244,8 +245,7 @@
                         <div class="form-group row" id="divAbrirDataGoogle">
                             <textarea id="dataGoogle" class="form-control" rows="1" placeholder="Cole a Data da Agenda do Google (conforme exemplo)" onkeyup="addDataGoogle(event)" required></textarea>
                             <br>
-                            Exemplo:
-                            <img src="https://lh3.googleusercontent.com/pw/ADCreHfFlsSHnw0zwDo1FaoUnR5DIE6_WUCEUN1Tn3KvZB-ZaYbKotL7hmMVv9Gy40OdSVa1y55VsWSL2E38VAdpmbekExnHeGgUBU_vr5COsXDOQvk-fGt8aZVBToXts5r9Ku6BHwBlLXUGKTKu-6k1p33Y=w445-h124-s-no-gm?authuser=0" width="250" height="150">
+                            <div style="margin: 5px 20px 20px;"><div class="smallfont" style="margin-bottom: 2px;"><b>Exemplo:</b>: <input value="Open" style="margin: 0px; padding: 0px; width: 50px; font-size: 11px;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" type="button"></div><div class="alt2" style="border: 1px inset ; margin: 0px; padding: 6px;"><div style="display: none;">                            <img src="https://lh3.googleusercontent.com/pw/ADCreHfFlsSHnw0zwDo1FaoUnR5DIE6_WUCEUN1Tn3KvZB-ZaYbKotL7hmMVv9Gy40OdSVa1y55VsWSL2E38VAdpmbekExnHeGgUBU_vr5COsXDOQvk-fGt8aZVBToXts5r9Ku6BHwBlLXUGKTKu-6k1p33Y=w445-h124-s-no-gm?authuser=0" width="300" height="150"></div></div></div>
                         </div>     
                     </div>
                       
@@ -259,73 +259,9 @@
         <footer><small>icons by <a href="https://icons8.com">Icons8</a></small></footer>
 
         <script>
-           /* // Atalho para negrito (Alt + B)
-            Mousetrap.bind('alt+b', function() {
-                addTag('b');
-            });
-
-            // Atalho para itálico (Alt + I)
-            Mousetrap.bind('alt+i', function() {
-                addTag('i');
-            });
-
-            // Atalho para Sublinhado (Alt + U)
-            Mousetrap.bind('alt+u', function() {
-                addTag('u');
-            });
-
-            // Atalho para Tachado (Alt + T)
-            Mousetrap.bind('alt+t', function() {
-                addTag('t');
-            });
-
-            // Atalho para Quote (Alt + Q)
-            Mousetrap.bind('alt+q', function() {
-                addTag('q');
-            });
-
-            // Atalho para Lista (Alt + L)
-            Mousetrap.bind('alt+l', function() {
-                addTag('s');
-            });
-
-            // Atalho para Lista (Alt + L)
-            Mousetrap.bind('alt+1', function() {
-                addLista();
-            });
-
-            // Atalho para Lista Numerada (Alt + 1)
-            Mousetrap.bind('alt+l', function() {
-                addListaNumerada();
-            });
-
-            // Atalho para Linha Horizontal (Alt + H)
-            Mousetrap.bind('alt+h', function() {
-                addTag('h');
-            });
-
-            // Atalho para Pre (Alt + P)
-            Mousetrap.bind('alt+p', function() {
-                addPre();
-            });
-
-            // Atalho para Code (Alt + C)
-            Mousetrap.bind('alt+c', function() {
-                addCode();
-            });
-
-            // Atalho para Data (Shift + Alt + D)
-            Mousetrap.bind('shift+alt+d', function() {
-                console.log("Presionada a combinação");
-                AbrirData();
-            });
-
-            editor.focus();*/
-
-             // Atalho para Data do Google Agenda (Shift + Alt + G)
-             Mousetrap.bind('shift+alt+g', function() {
-                AbrirDataGoogle();
-            });
+            /*Mousetrap.bind('ctrl+shift+up', function(e, combo){
+                console.log(combo);
+            });*/
         </script>
 </body>
 </html>
