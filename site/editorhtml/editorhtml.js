@@ -306,6 +306,8 @@ function InserirSpoiler() {
 // ABRE O MODAL PARA LINK DE OS
 function AbrirLinkOS() {
     $('#linkOSModal').modal('show');
+	document.getElementById("numeroOS").value = "";
+
 }
 
 // ADICIONA UM LIK DE OS NO EDITOR
@@ -333,6 +335,7 @@ function addLinkOS(evt) {
 // ABRE O MODAL PARA LINK DE TAREFA
 function AbrirLinkTarefa() {
     $('#linkTarefaModal').modal('show');
+	document.getElementById("numeroTarefa").value = "";
 	$('#numeroTarefa').focus();
 }
 
@@ -526,6 +529,7 @@ function AbrirDataGoogle() {
 		editor.focus();		
 	} else {
 		$('#DataGoogleModal').modal('show');
+		document.getElementById("dataGoogle").value = "";
 	}   
 }
 
