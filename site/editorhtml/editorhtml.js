@@ -561,3 +561,42 @@ function addDataGoogle(evt) {
 	$('#DataGoogleModal').modal('hide');
 	editor.focus();
 }
+
+// ABRE O MODAL PARA INSERIR AUDIO DO ANEXOCHAT
+function AbrirAudio() {
+    const editor = document.getElementById("editor");
+    const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const selectedText = editor.value.substring(inicio, fim);
+
+    if (selectedText.length > 0) {
+        var texto = FormatarAudio(selectedText);
+        editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+        editor.focus();
+    } else {
+        $('#AudioModal').modal('show');
+		document.getElementById("audioWhatsapp").value = "";
+    }
+}
+
+function AdicionarAudio() {
+    const editor = document.getElementById("editor");
+    const cursorPosition = editor.selectionStart;
+    const audioWhatsapp = document.getElementById("audioWhatsapp");
+    const texto = FormatarAudio(audioWhatsapp.value);
+
+    editor.value = editor.value.substring(0, cursorPosition) + texto + editor.value.substring(cursorPosition);
+    $('#AudioModal').modal('hide');
+    editor.focus();
+}
+
+function FormatarAudio(url) {
+    const extensao = extrairExtensao(url);
+    return `<audio controls><source src="${url}" type="audio/${extensao}"></audio>`;
+}
+
+function extrairExtensao(url) {
+    const partes = url.split('.');
+    const extensao = partes[partes.length - 1];
+    return extensao.toLowerCase(); // Garante que a extensão esteja em minúsculas
+}
