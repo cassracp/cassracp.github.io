@@ -8,6 +8,8 @@
  *
  * Date: 2023-08-28T13:37Z
  */
+console.log("Script jquery-3.7.1.js está sendo executado.");
+
 ( function( global, factory ) {
 
 	"use strict";

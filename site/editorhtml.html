@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <script type="text/javascript" src="spectrum/spectrum.js"></script>
+    <script type="text/javascript" src="jquery/jquery-3.7.1.js"></script>
+
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="editorhtml/editorhtml.js"></script>
     <style>
         textarea {
             resize: auto !important;
@@ -14,19 +19,12 @@
              white-space: pre-line;
         }
     </style>
-    <script src="jquery/jquery-3.7.1.js"></script>
-    <script src="mousetrap/mousetrap.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="editorhtml/editorhtml.js"></script>
-    <script src="site/functions.js"></script>
-    <script>
-        const editor = document.getElementById('editor');
-        editor.focus();
-    </script>
-    <title>Editor de Texto HTML</title>
+    <link rel="stylesheet" type="text/css" href="spectrum/spectrum.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <title>Auxiliar DeMaria</title>
 </head>
 <body>
-    <br>  
+    <br>
     <div class="container-fluid align-items-center">
         <div class="btn-toolbar align-self-center">
             <div class="btn-group">
@@ -47,6 +45,17 @@
             <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico (Alt+I)" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
             <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado (Alt+U)" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
             <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado (Alt+T)" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
+            
+            
+            <button class="btn btn-outline-info border-dark" id="btnColor" title="Cor da Fonte"><img src="icons/cor.png" alt="Cor da Fonte"></button>
+           
+               
+
+            <button class="btn btn-outline-info border-dark" id="btnUpperCase" title="Upper Case/Tudo Maiúsculo" onclick="FormatarUpperCase()"><s><img src="icons/upper_case.png" alt="Upper Case"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnLowerCase" title="Lower Case/Tudo Minúsculo" onclick="FormatarLowerCase()"><s><img src="icons/lower_case.png" alt="Lower Case"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnTitleCase" title="Title Case/Primeira Maiúscula" onclick="FormatarTitleCase()"><s><img src="icons/title_case.png" alt="Title Case"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnBig" title="BIG/Aumentar" onclick="addTag('big')"><s><img src="icons/aumentar_fonte.png" alt="BIG"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnSmall" title="SMALL/Diminuir" onclick="addTag('small')"><s><img src="icons/diminuir_fonte.png" alt="small"></s></button>
             <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
             <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
             <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
@@ -278,13 +287,54 @@
                 </div>
             </div>
         </div>
-
-        <footer><small>icons by <a href="https://icons8.com">Icons8</a></small></footer>
-
+        <footer><small>icons by <u><a href="https://icons8.com" target="_blank">Icons8</a></u></small></footer>
+        
+        <div class="exemple">
+            <input type='text' id="custom" style="display: none;"/>
+            <div class="sp-replacer sp-light" id="customColorPicker">
+                <div class="sp-preview">
+                    <div class="sp-preview-inner" style="background-color: rgb(72, 134, 72);"></div>
+                </div>
+                <div class="sp-dd">▼</div>
+            </div>
+            <div class="sp-picker-container sp-light sp-flat sp-clear-enabled sp-palette-buttons-disabled sp-palette-disabled sp-initial-disabled" style="display: none;">
+        
+                <!-- Content of the Spectrum Color Picker, as you provided -->
+            </div>
+        </div>
+        
         <script>
-            /*Mousetrap.bind('ctrl+shift+up', function(e, combo){
-                console.log(combo);
+            /*$(document).ready(function () {
+                // Initialize Spectrum on the custom color picker
+                $("#customColorPicker").spectrum({
+                    showPalette: true,
+                    showPaletteOnly: true,
+                    palette: [
+                        ['#Red', '#Green', '#MediumBlue', '#Yellow', '#Black', '#Gray', '#White'],
+                        // Add more colors if desired
+                    ],
+                    change: function (color) {
+                        // Handle color change if needed
+                        console.log("Selected color:", color.toHexString());
+                    }
+                });
+        
+                // Add click event to the sp-replacer to open the picker container
+                $(document).on('touchstart', '.sp-thumb, .sp-slider, .sp-cancel, .sp-choose', { passive: true }, function (e) {
+                    $("#custom").click(function () {
+                        // Toggle the visibility of the picker container
+                        $(".sp-picker-container").toggle();
+                    });
+                });
+                
             });*/
+
+            $(document).ready(function () {
+                console.log("jQuery está funcionando corretamente.");
+                $("#btnColor").click(function () {
+                    console.log("Clicou no botão da cor");
+                });
+            });
         </script>
 </body>
 </html>

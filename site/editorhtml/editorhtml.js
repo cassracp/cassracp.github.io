@@ -248,9 +248,56 @@ function addListaNumerada() {
 }
 
 
+//UPPER CASE
+function FormatarUpperCase() {
+    const editor = document.getElementById("editor");
+    const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const selectedText = editor.value.substring(inicio, fim);
 
+    if (selectedText.length > 0) {
+        const textoMaiusculo = selectedText.toUpperCase();
+        editor.value = editor.value.substring(0, inicio) + textoMaiusculo + editor.value.substring(fim);
+    }
 
+	editor.focus();
+}
 
+//LOWER CASE
+function FormatarLowerCase() {
+	const editor = document.getElementById("editor");
+    const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const selectedText = editor.value.substring(inicio, fim);
+
+    if (selectedText.length > 0) {
+        const textoMinusculo = selectedText.toLowerCase();
+        editor.value = editor.value.substring(0, inicio) + textoMinusculo + editor.value.substring(fim);
+    }
+
+	editor.focus();
+}
+
+//TITLE CASE
+function FormatarTitleCase() {
+	const editor = document.getElementById("editor");
+    const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const selectedText = editor.value.substring(inicio, fim);
+
+    if (selectedText.length > 0) {
+        const texto = toTitleCase(selectedText);
+        editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+    }
+
+	editor.focus();
+}
+
+function toTitleCase(texto) {
+    return texto.toLowerCase().replace(/(?:^|\s)\w/g, function(match) {
+        return match.toUpperCase();
+    });
+}
 
 /* ESPECIAIS */
 
@@ -604,3 +651,53 @@ function extrairExtensao(url) {
     const extensao = partes[partes.length - 1];
     return extensao.toLowerCase(); // Garante que a extensão esteja em minúsculas
 }
+
+
+/* PALETA DE CORES */
+
+console.log("Script editorhtml.js está sendo executado.");
+
+$(document).ready(function () {
+    // Crie o Spectrum Color Picker no elemento de entrada de cor oculto
+    $("#colorPickerInput").spectrum({
+        showPalette: true,
+        showPaletteOnly: true,
+        palette: [
+            ['#000', '#444', '#666', '#999', '#ccc', '#eee', '#f3f3f3', '#fff'],
+            // Adicione mais cores se desejar
+        ],
+        change: function (color) {
+            aplicarCorSelecionada(color.toHexString());
+        }
+    });
+
+    // Adicione a função para abrir manualmente a paleta de cores quando o botão for clicado
+    $("#btnOpenColorPicker").click(function () {
+        // Abra a paleta de cores associada ao elemento de entrada de cor oculto
+        console.log("Clicou no botão de abrir a paleta de cores");
+        $("#colorPickerInput").spectrum("toggle");
+    });
+});
+
+
+
+function AbrirColorPicker() {
+    console.log("Clicou no botão de abrir a paleta de cores");
+    $("#colorPickerInput").spectrum("toggle");
+}
+
+// Mova a função para fora do escopo
+function aplicarCorSelecionada(cor) {
+    const editor = document.getElementById("editor");
+    const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const selectedText = editor.value.substring(inicio, fim);
+
+    if (selectedText.length > 0) {
+        const textoComCor = `<font color="${cor}">${selectedText}</font>`;
+        editor.value = editor.value.substring(0, inicio) + textoComCor + editor.value.substring(fim);
+    }
+}
+
+
+

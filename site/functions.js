@@ -162,3 +162,11 @@ function FormatarTopicoTarefa() {
 	document.execCommand("copy");
 }
 /* FIM */
+
+function loadTool(toolName) {
+	fetch(toolName)
+		.then(response => response.text())
+		.then(data => {
+			document.querySelector(".content").innerHTML = data;
+		});
+}
