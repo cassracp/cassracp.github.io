@@ -335,8 +335,11 @@
         $(document).ready(function () {
             // Initialize Spectrum on the custom color picker
                 $("#btnColor").spectrum({
+                preferredFormat: "name",
                 showPaletteOnly: true,
                 togglePaletteOnly: true,
+                hideAfterPaletteSelect:true,
+                showInitial: true,
                 togglePaletteMoreText: '+',
                 togglePaletteLessText: '-',
                 palette: [
