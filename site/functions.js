@@ -123,6 +123,7 @@ function LimparCamposTopicoTarefa() {
 
 /* Função para gerar o HTML do tópico na tarefa*/
 function FormatarTopicoTarefa() {
+	console.log("Entrou na função FormatarTopicoTarefa");
     const numeroTarefa = document.getElementById("numeroTarefa").value;
     const tituloTopico = document.getElementById("tituloTopicoSelect").value;
     const osAssociada = document.getElementById("osAssociada").checked;

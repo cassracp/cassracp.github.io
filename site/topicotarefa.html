@@ -73,24 +73,6 @@
             <button onclick="LimparCamposTopicoTarefa()" class="btn btn-secondary">Limpar Campos</button>
 
         </form>
-    </div>
-
-    <script>
-        document.getElementById("tituloTopicoSelect").addEventListener("change", function () {
-            const select = document.getElementById("tituloTopicoSelect");
-            const input = document.getElementById("tituloTopicoInput");
-    
-            if (select.value === "Outros") {
-                input.style.display = "block";
-                input.setAttribute("required", "true");
-            } else {
-                input.style.display = "none";
-                input.removeAttribute("required");
-            }
-            console.log(select.value)
-
-        });
-    </script>
-    
+    </div>    
 </body>
 </html>
