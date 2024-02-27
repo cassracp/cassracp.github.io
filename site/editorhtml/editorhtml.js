@@ -251,6 +251,7 @@ function addListaNumerada() {
 //UPPER CASE
 function FormatarUpperCase() {
     const editor = document.getElementById("editor");
+	const cursorPosition = editor.selectionStart;
     const inicio = editor.selectionStart;
     const fim = editor.selectionEnd;
     const selectedText = editor.value.substring(inicio, fim);
@@ -259,6 +260,7 @@ function FormatarUpperCase() {
         const textoMaiusculo = selectedText.toUpperCase();
         editor.value = editor.value.substring(0, inicio) + textoMaiusculo + editor.value.substring(fim);
     }
+	editor.setSelectionRange(inicio.length, fim.length);
 
 	editor.focus();
 }
