@@ -8,8 +8,14 @@ function CopiarTexto(){
 
 
 function LimparEditor() {
-	document.getElementById("editor").value = "";
-	document.getElementById("editor").focus();
+	var resultado = confirm("Confirma a limpeza do Editor?");
+	if (resultado){
+		document.getElementById("editor").value = "";
+		document.getElementById("editor").focus();
+	} else {
+		document.getElementById("editor").focus();
+	}
+
 }
 
 
