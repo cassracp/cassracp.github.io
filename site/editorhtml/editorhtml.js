@@ -137,17 +137,15 @@ function IncluirEPosicionar(texto, abreTag){
         const fim = editor.selectionEnd;
         editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
 
-		editor.setSelectionRange(cursorPosition + texto.length, cursorPosition + texto.length);
+		const novaPosicaoCursor = inicio + texto.length;
 
-		editor.focus();
+        editor.setSelectionRange(inicio, novaPosicaoCursor);
     } else {
         // Se nenhum texto está selecionado, insira as tags na posição do cursor
         editor.value = editor.value.substring(0, cursorPosition) + texto + editor.value.substring(cursorPosition);
         
         // Atualize a posição do cursor para o final das tags
 	    editor.setSelectionRange(cursorPosition + abreTag.length, cursorPosition + abreTag.length);
-
-		editor.focus();
     }
 
 	editor.focus();
