@@ -128,27 +128,27 @@ function ExibirTopicoTarefa() {
 // INCLUIR UMA TAG E POSICIONAR O CURSOR DE TEXTO
 function IncluirEPosicionar(texto, abreTag){
 	const editor = document.getElementById("editor");
-	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+	const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const textoSelecionado = editor.value.substring(inicio, fim);
 	const cursorPosition = editor.selectionStart;
 
-	if (selectedText) {
+	if (textoSelecionado.length !== 0) {
         // Se há texto selecionado, envolva-o com as tags
-        const inicio = editor.selectionStart;
-        const fim = editor.selectionEnd;
         editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
 
-		const novaPosicaoCursor = inicio + texto.length;
-
-        editor.setSelectionRange(inicio, novaPosicaoCursor);
+        // Mantém a seleção original após a inclusão das tags
+        //editor.setSelectionRange(inicio, inicio + texto.length);
+		editor.setSelectionRange(cursorPosition + abreTag.length, cursorPosition + abreTag.length + textoSelecionado.length);
     } else {
         // Se nenhum texto está selecionado, insira as tags na posição do cursor
-        editor.value = editor.value.substring(0, cursorPosition) + texto + editor.value.substring(cursorPosition);
-        
-        // Atualize a posição do cursor para o final das tags
-	    editor.setSelectionRange(cursorPosition + abreTag.length, cursorPosition + abreTag.length);
+        editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(inicio);
+
+        // Move o cursor para o final das tags
+        editor.setSelectionRange(inicio + abreTag.length, inicio + abreTag.length);
     }
 
-	editor.focus();
+    editor.focus();
 }
 
 // INCLUIR UMA TAG E POSICIONAR O CURSOR SEM A NECESSIDADE DE SELECIONAR O TEXTO (Obs.: Utilizado para as Listas)
@@ -177,16 +177,22 @@ function IniciaLinha(){
 
 // ADICIONA UMA TAG SIMPLES COMO <B>, <I>, <U>, ETC... (Obs.: Exceto para Blockquote e as Listas)
 function addTag(tag) {
-	const editor = document.getElementById("editor");
-	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
-	var abreTag = `<${tag}>`;
-	if (!IniciaLinha() && tag === "hr"){
-		abreTag = "\n"+abreTag
-	}
-	var texto = tag === "hr" ? texto = abreTag : texto = `${abreTag}${selectedText}</${tag}>`;
+    const editor = document.getElementById("editor");
+    const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const textoSelecionado = editor.value.substring(inicio, fim);
+    var abreTag = `<${tag}>`;
+    
+    // Verifica se a tag hr é inserida e se não está no início da linha
+    if (tag === "hr" && !IniciaLinha()) {
+        abreTag = "\n" + abreTag;
+    }
+    
+    var texto = tag === "hr" ? abreTag : `${abreTag}${textoSelecionado}</${tag}>`;
 
-	IncluirEPosicionar(texto, abreTag);
+    IncluirEPosicionar(texto, abreTag)
 }
+
 
 // ADICIONA A TAG DE BLOCKQUOTE NO EDITOR
 function addBlockquote() {
