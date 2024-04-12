@@ -148,7 +148,7 @@ function FormatarTopicoTarefa() {
 		codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}${titlePart}</b> - Ver ${osLink}</BIG>`;
 	} else {
 		if (tituloTopico === "DATA DA IMPLANTAÇÃO/ATIVAÇÃO") {
-			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}: ${formattedDate}</b></BIG>`;
+			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}:</b> ${formattedDate}</BIG>`;
 		} else if (tituloTopico === "GARANTIA") {
 			const dataGarantia = new Date(today);
 			dataGarantia.setDate(dataGarantia.getDate() + 90);
@@ -156,7 +156,7 @@ function FormatarTopicoTarefa() {
 			const mmGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
 			const yyyyGarantia = dataGarantia.getFullYear();
 			const formattedGarantia = ddGarantia + '/' + mmGarantia + '/' + yyyyGarantia;
-			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}: ${formattedGarantia}</b></BIG>`;
+			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b> - Até ${formattedGarantia}</BIG>`;
 		} else {
 			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b></BIG>`;
 		}
