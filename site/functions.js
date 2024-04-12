@@ -143,12 +143,20 @@ function FormatarTopicoTarefa() {
 
 	if (osAssociada) {
 		const osLink = `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><u>OS ${numeroOS}</u></a>`;
-		const titlePart = tituloTopico === "DATA DA IMPLANTAÇÃO" ? `: ${formattedDate}` : "";
+		const titlePart = tituloTopico === "DATA DA IMPLANTAÇÃO/ATIVAÇÃO" ? `: ${formattedDate}` : "";
 	
 		codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}${titlePart}</b> - Ver ${osLink}</BIG>`;
 	} else {
-		if (tituloTopico === "DATA DA IMPLANTAÇÃO") {
+		if (tituloTopico === "DATA DA IMPLANTAÇÃO/ATIVAÇÃO") {
 			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}: ${formattedDate}</b></BIG>`;
+		} else if (tituloTopico === "GARANTIA") {
+			const dataGarantia = new Date(today);
+			dataGarantia.setDate(dataGarantia.getDate() + 90);
+			const ddGarantia = String(dataGarantia.getDate()).padStart(2, '0');
+			const mmGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
+			const yyyyGarantia = dataGarantia.getFullYear();
+			const formattedGarantia = ddGarantia + '/' + mmGarantia + '/' + yyyyGarantia;
+			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}: ${formattedGarantia}</b></BIG>`;
 		} else {
 			codigoHTML = `<BIG><b>${numeroTarefa}) ${tituloTopico}</b></BIG>`;
 		}
