@@ -86,7 +86,7 @@ function ExibirFormatarTelefone() {
     const iframe = document.createElement("iframe");
 
     // Defina o atributo src do iframe para apontar para o seu arquivo HTML
-    iframe.src = "numertel.html";
+    iframe.src = "site/numertel.html";
 
     // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
     iframe.width = "770";
@@ -107,7 +107,7 @@ function ExibirTopicoTarefa() {
     const iframe = document.createElement("iframe");
 
     // Defina o atributo src do iframe para apontar para o seu arquivo HTML
-    iframe.src = "topicotarefa.html";
+    iframe.src = "site/topicotarefa.html";
 
     // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
     iframe.width = "600";
