@@ -382,55 +382,41 @@
 
         let timeoutId; // Variável para armazenar o ID do temporizador
 
+        // Evento antes de descarregar a página
         window.addEventListener('beforeunload', function() {
-            const texto = document.getElementById('editor').value;
-            document.cookie = `textoSalvo=${encodeURIComponent(texto)}; path=/`;
+            salvarTextoComoLocalStorage(); // Salvar texto antes de descarregar a página
         });
 
+        // Evento de carregamento da página
+        window.addEventListener('DOMContentLoaded', function() {
+            carregarTextoDoLocalStorage(); // Carregar texto ao carregar a página
+        });
 
-             window.addEventListener('DOMContentLoaded', function() {
+        // Função para salvar o texto do editor no armazenamento local
+        function salvarTextoComoLocalStorage() {
+            const texto = document.getElementById("editor").value;
+            localStorage.setItem('textoSalvo', texto);
+        }
+
+        // Função para carregar o texto do armazenamento local
+        function carregarTextoDoLocalStorage() {
             const textoSalvo = localStorage.getItem('textoSalvo');
             if (textoSalvo) {
-                document.getElementById('editor').value = textoSalvo;
+                document.getElementById("editor").value = textoSalvo;
             }
-             });
+        }
 
-            // Função para salvar o texto do editor como cookie
-            function salvarTextoComoCookie() {
-                const texto = document.getElementById("editor").value;
-                const dataDeExpiracao = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // Expira em 7 dias
-                document.cookie = `textoSalvo=${encodeURIComponent(texto)}; expires=${dataDeExpiracao.toUTCString()}; path=/`;
+        // Função para iniciar o temporizador após digitar um caractere
+        function iniciarTemporizador() {
+            clearTimeout(timeoutId); // Limpa o temporizador existente, se houver
+            timeoutId = setTimeout(salvarTextoComoLocalStorage, 3000); // Inicia um novo temporizador de 3 segundos
+        }
 
-                console.log("Texto salvo como cookie:", texto);
-            }
+        // Evento de teclado para monitorar a digitação
+        document.getElementById("editor").addEventListener("input", function() {
+            iniciarTemporizador(); // Chama a função para iniciar o temporizador ao digitar
+        });
 
-            /// Função para iniciar o temporizador após digitar um caractere
-            function iniciarTemporizador() {
-                clearTimeout(timeoutId); // Limpa o temporizador existente, se houver
-                timeoutId = setTimeout(salvarTextoComoCookie, 3000); // Inicia um novo temporizador de 3 segundos
-            }
-
-            // Evento de teclado para monitorar a digitação
-            document.getElementById("editor").addEventListener("input", function() {
-                iniciarTemporizador(); // Chama a função para iniciar o temporizador ao digitar
-            });
-
-
-            // Função para carregar o texto do cookie para o editor
-            function carregarTextoDoCookie() {
-                const cookies = document.cookie.split(';');
-                for (let cookie of cookies) {
-                    const [name, value] = cookie.trim().split('=');
-                    if (name === 'textoSalvo') {
-                        const textoSalvo = decodeURIComponent(value);
-                        document.getElementById("editor").value = textoSalvo;
-                        break;
-                    }
-                }
-            }
-
-            // Chame a função para carregar o texto do cookie ao carregar a página
-            carregarTextoDoCookie();
     </script>
 </body>
 </html>
