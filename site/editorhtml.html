@@ -335,6 +335,18 @@
                     console.log("Clicou no botão da cor");
                 });
             });
+
+            window.addEventListener('beforeunload', function() {
+            const texto = document.getElementById('editor').value;
+            localStorage.setItem('textoSalvo', texto);
+             });
+
+             window.addEventListener('DOMContentLoaded', function() {
+            const textoSalvo = localStorage.getItem('textoSalvo');
+            if (textoSalvo) {
+                document.getElementById('editor').value = textoSalvo;
+            }
+             });
         </script>
 </body>
 </html>
