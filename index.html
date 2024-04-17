@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
 
-    <script type="text/javascript" src="jquery/jquery-3.7.1.js"></script>
-    <script type="text/javascript" src="spectrum/spectrum.js"></script>
+    <script type="text/javascript" src="site/jquery/jquery-3.7.1.js"></script>
+    <script type="text/javascript" src="site/spectrum/spectrum.js"></script>
     <!--<script type="text/javascript" src="spectrum/tinycolor.js"></script>-->
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="editorhtml/editorhtml.js"></script>
+    <script type="text/javascript" src="site/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="site/editorhtml/editorhtml.js"></script>
 
     <style>
         textarea {
@@ -20,15 +20,15 @@
              white-space: pre-line;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="spectrum/spectrum.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="site/spectrum/spectrum.css">
+    <link rel="stylesheet" type="text/css" href="site/css/bootstrap.min.css">
 
     <title> Auxiliar DeMaria</title>
     <!-- Adicione os ícones para diferentes tamanhos -->
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon_base32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon_base16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="site/site/icons/icon_base32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="site/site/icons/icon_base16.png">
     <!-- Adicione o ícone para o aplicativo da web -->
-    <link rel="apple-touch-icon" sizes="96x96" href="icons/icon_base96.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="site/site/icons/icon_base96.png">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -37,7 +37,7 @@
             <!-- Menu Lateral -->
             <nav class="navbar navbar-brand bg-info">
                 <a class="navbar-brand" href="javascript:location.reload();">
-                    <img src="icons/icon_base96.png" alt="Auxiliar DeMaria">
+                    <img src="site/icons/icon_base96.png" alt="Auxiliar DeMaria">
                     <b><font color="white" size="5">Auxiliar DeMaria</font></b>
                 </a>
             </nav>
@@ -55,48 +55,48 @@
     <div class="container-fluid align-items-center">
         <div class="btn-toolbar align-self-center">
             <div class="btn-group">
-                <button class="btn btn-outline-secondary border-dark" id="btnNovo" accesskey="K" title="Novo (Alt+K)" onclick="window.open('https://cassracp.github.io/site/index.html', '_blank')"><img src="icons/novo.png" alt="Copiar"></button>
-                <button class="btn btn-light border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarTexto()"><img src="icons/copiar.png" alt="Copiar"></button>
-                <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" ><img src="icons/limpar.png" alt="Limpar"></button>
-                <button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" ><img src="icons/previa.png" height="25px" width="25px" alt="Prévia"></button>
-                <button class="btn btn-outline-success border-dark" id="btnSalvar" accesskey="s" title="Salvar (Shift+Alt+S)" onclick="SalvarHTML()" ><img src="icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
+                <button class="btn btn-outline-secondary border-dark" id="btnNovo" accesskey="K" title="Novo (Alt+K)" onclick="window.open('https://cassracp.github.io/site/index.html', '_blank')"><img src="site/icons/novo.png" alt="Copiar"></button>
+                <button class="btn btn-light border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarTexto()"><img src="site/icons/copiar.png" alt="Copiar"></button>
+                <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" ><img src="site/icons/limpar.png" alt="Limpar"></button>
+                <button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" ><img src="site/icons/previa.png" height="25px" width="25px" alt="Prévia"></button>
+                <button class="btn btn-outline-success border-dark" id="btnSalvar" accesskey="s" title="Salvar (Shift+Alt+S)" onclick="SalvarHTML()" ><img src="site/icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
                 <button class="btn btn-group" disabled>Ferramentas: </button> 
-                <button class="btn btn-outline-primary border-dark" id="btnFormatarTelefone" title="Formatar Telefone" onclick="ExibirFormatarTelefone()" >Formatar Telefone <img src="icons/phone.png" alt="Formatar Telefone"></button>
-                <button class="btn btn-outline-primary border-dark" id="btnTopicoTarefa" title="Tópico Tarefa" onclick="ExibirTopicoTarefa()" >Tópico Tarefa <img src="icons/topico.png" alt="Tópico"></button>
+                <button class="btn btn-outline-primary border-dark" id="btnFormatarTelefone" title="Formatar Telefone" onclick="ExibirFormatarTelefone()" >Formatar Telefone <img src="site/icons/phone.png" alt="Formatar Telefone"></button>
+                <button class="btn btn-outline-primary border-dark" id="btnTopicoTarefa" title="Tópico Tarefa" onclick="ExibirTopicoTarefa()" >Tópico Tarefa <img src="site/icons/topico.png" alt="Tópico"></button>
             </div>
         </div>
         <br>
         <div class="btn-group mt-lg-auto">
             <button class="btn btn-group" disabled>Simples: </button> 
-            <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito (Alt+B)" onclick="addTag('b')"><b><img src="icons/negrito.png" alt="Negrito"></b></button>
-            <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico (Alt+I)" onclick="addTag('i')"><i><img src="icons/italico.png" alt="Itálico"></i></button>
-            <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado (Alt+U)" onclick="addTag('u')"><u><img src="icons/sublinhado.png" alt="Sublinhado"></u></button>
-            <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado (Alt+T)" onclick="addTag('s')"><s><img src="icons/tachado.png" alt="Tachado"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito (Alt+B)" onclick="addTag('b')"><b><img src="site/icons/negrito.png" alt="Negrito"></b></button>
+            <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico (Alt+I)" onclick="addTag('i')"><i><img src="site/icons/italico.png" alt="Itálico"></i></button>
+            <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado (Alt+U)" onclick="addTag('u')"><u><img src="site/icons/sublinhado.png" alt="Sublinhado"></u></button>
+            <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado (Alt+T)" onclick="addTag('s')"><s><img src="site/icons/tachado.png" alt="Tachado"></s></button>
             
             
-            <button class="btn btn-outline-info border-dark" id="btnColor" title="Cor da Fonte"><img src="icons/color.png" alt="Cor da Fonte"></button>
+            <button class="btn btn-outline-info border-dark" id="btnColor" title="Cor da Fonte"><img src="site/icons/color.png" alt="Cor da Fonte"></button>
             
                 
 
-            <button class="btn btn-outline-info border-dark" id="btnUpperCase" title="Upper Case/Tudo Maiúsculo" onclick="FormatarUpperCase()"><s><img src="icons/upper_case.png" alt="Upper Case"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnLowerCase" title="Lower Case/Tudo Minúsculo" onclick="FormatarLowerCase()"><s><img src="icons/lower_case.png" alt="Lower Case"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnTitleCase" title="Title Case/Primeira Maiúscula" onclick="FormatarTitleCase()"><s><img src="icons/title_case.png" alt="Title Case"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnBig" title="BIG/Aumentar" onclick="addTag('big')"><s><img src="icons/aumentar_fonte.png" alt="BIG"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnSmall" title="SMALL/Diminuir" onclick="addTag('small')"><s><img src="icons/diminuir_fonte.png" alt="small"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="icons/quote.png" alt="Quote"></button>
-            <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="icons/lista.png" alt="Lista"></button>
-            <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="icons/numerada.png" alt="Lista Numerada"></button>
-            <button class="btn btn-outline-info border-dark" id="btnLinha" accesskey="h" title="Linha (Alt+H)" onclick="addTag('hr')"><img src="icons/h-line.png" alt="Linha Horizontal"></button>
-            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Texto Pré-Formatado (Alt+P)" onclick="addTag('pre')"><img src="icons/pre.png" alt="Texto Pré-Formatado"></button>
-            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Código Fonte (Alt+C)" onclick="addTag('code')"><img src="icons/code.png" alt="Código Fonte"></button>
+            <button class="btn btn-outline-info border-dark" id="btnUpperCase" title="Upper Case/Tudo Maiúsculo" onclick="FormatarUpperCase()"><s><img src="site/icons/upper_case.png" alt="Upper Case"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnLowerCase" title="Lower Case/Tudo Minúsculo" onclick="FormatarLowerCase()"><s><img src="site/icons/lower_case.png" alt="Lower Case"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnTitleCase" title="Title Case/Primeira Maiúscula" onclick="FormatarTitleCase()"><s><img src="site/icons/title_case.png" alt="Title Case"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnBig" title="BIG/Aumentar" onclick="addTag('big')"><s><img src="site/icons/aumentar_fonte.png" alt="BIG"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnSmall" title="SMALL/Diminuir" onclick="addTag('small')"><s><img src="site/icons/diminuir_fonte.png" alt="small"></s></button>
+            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="site/icons/quote.png" alt="Quote"></button>
+            <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="site/icons/lista.png" alt="Lista"></button>
+            <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="site/icons/numerada.png" alt="Lista Numerada"></button>
+            <button class="btn btn-outline-info border-dark" id="btnLinha" accesskey="h" title="Linha (Alt+H)" onclick="addTag('hr')"><img src="site/icons/h-line.png" alt="Linha Horizontal"></button>
+            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Texto Pré-Formatado (Alt+P)" onclick="addTag('pre')"><img src="site/icons/pre.png" alt="Texto Pré-Formatado"></button>
+            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Código Fonte (Alt+C)" onclick="addTag('code')"><img src="site/icons/code.png" alt="Código Fonte"></button>
             <button class="btn btn-group" disabled>Especiais: </button> 
-            <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="AbrirSpoiler()"><img src="icons\spoiler.png" alt="Spoiler"/></button>
-            <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="AbrirLinkOS()"><img src=icons\link_os.png alt="Link OS"></button> 
-            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="AbrirLinkTarefa()"><img src=icons\link_tarefa.png alt="Link Tarefa"></button>
-            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="AbrirImagem()"><img src="icons\imagem2.png" alt="Imagem"></button>
-            <button class="btn btn-outline-info border-dark" id="btnAbrirData" accesskey="d" title="Inserir Data (Shift+Alt+D)" onclick="AbrirData()"><img src="icons\calendar.png" alt="Data"/></button>         
-            <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" accesskey="g" title="Data da Agenda do Google (Shift+Alt+G)" onclick="AbrirDataGoogle()"><img src="icons\gcalendar.png" alt="Agenda do Google"/></button>         
-            <button class="btn btn-outline-info border-dark" id="btnAudioWhatsapp" accesskey="w" title="Audio do WhatsApp/AnexoChat (Alt+W)" onclick="AbrirAudio()"><img src="icons\audio.png" alt="Audio do WhatsApp"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="AbrirSpoiler()"><img src="site\icons\spoiler.png" alt="Spoiler"/></button>
+            <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="AbrirLinkOS()"><img src=site\icons\link_os.png alt="Link OS"></button> 
+            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="AbrirLinkTarefa()"><img src=site\icons\link_tarefa.png alt="Link Tarefa"></button>
+            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="AbrirImagem()"><img src="site\icons\imagem2.png" alt="Imagem"></button>
+            <button class="btn btn-outline-info border-dark" id="btnAbrirData" accesskey="d" title="Inserir Data (Shift+Alt+D)" onclick="AbrirData()"><img src="site\icons\calendar.png" alt="Data"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" accesskey="g" title="Data da Agenda do Google (Shift+Alt+G)" onclick="AbrirDataGoogle()"><img src="site\icons\gcalendar.png" alt="Agenda do Google"/></button>         
+            <button class="btn btn-outline-info border-dark" id="btnAudioWhatsapp" accesskey="w" title="Audio do WhatsApp/AnexoChat (Alt+W)" onclick="AbrirAudio()"><img src="site\icons\audio.png" alt="Audio do WhatsApp"/></button>         
         </div>
         <div class="col-md-auto text-left">
             <textarea id="editor" class="mousetrap form-control" rows="40" placeholder="Digite aqui..."></textarea>
@@ -111,11 +111,11 @@
             <div class="modal-content" style="white-space: pre-line;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="previaModalLabel">Prévia do Texto Formatado</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#previaModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#previaModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div id="modalPreviaContent"></div>
-                    <button id="btnSalvarHTML" class="btn btn-outline-success" title="Salvar Prévia em .html" onclick="SalvarHTML()">Salvar <img src="icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
+                    <button id="btnSalvarHTML" class="btn btn-outline-success" title="Salvar Prévia em .html" onclick="SalvarHTML()">Salvar <img src="site/icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
                 </div>
             </div>
         </div>
@@ -127,7 +127,7 @@
             <div class="modal-content" style="white-space: pre-line;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="formatarTelefoneModalLabel">Formatar Telefone</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#formatarTelefoneModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#formatarTelefoneModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div id="modalFormatarTelefoneContent"></div>
@@ -142,7 +142,7 @@
             <div class="modal-content" style="white-space: pre-line;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="topicoTarefaModalLabel">Tópico de Tarefa</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#topicoTarefaModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#topicoTarefaModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div id="modalTopicoTarefaContent"></div>
@@ -158,7 +158,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="spoilerModalLabel">Insira o Título do Spoiler</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#spoilerModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#spoilerModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <input type="checkbox" class="form-check-input" id="usarModelo" onchange="UsarTituloModelo()" checked> Usar modelo pré-definido
@@ -188,7 +188,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="linkOSModalLabel">Insira o Número da OS</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#linkOSModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#linkOSModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group row" id="divInserirNumOS">
@@ -209,7 +209,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="linkTarefaModalLabel">Insira o Número da Tarefa</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#linkTarefaModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#linkTarefaModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group row" id="divInserirNumTarefa">
@@ -230,7 +230,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ImagemModalLabel">Insira a data do Calendario</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#ImagemModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#ImagemModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group row" id="divInserirURLImagem">
@@ -256,7 +256,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="DataModalLabel">Insira a Data</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#DataModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#DataModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <input type="date" id="dataSelecionada" onchange="UsarDataFormatada(document.getElementById('dataSelecionada').value)"><br>
@@ -276,7 +276,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="DataGoogleModalLabel">Insira a Data da Agenda do Google</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#DataGoogleModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#DataGoogleModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group row" id="divAbrirDataGoogle">
@@ -299,7 +299,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="AudioModalLabel">Insira a URL do Audio do AnexoChat</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#AudioModal').modal('hide');"><img src="icons/close.png" alt="Fechar"></button>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#AudioModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group row" id="divAbrirAudio">
