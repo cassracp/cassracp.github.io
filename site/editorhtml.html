@@ -353,6 +353,8 @@
                 const texto = document.getElementById("editor").value;
                 const dataDeExpiracao = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // Expira em 7 dias
                 document.cookie = `textoSalvo=${encodeURIComponent(texto)}; expires=${dataDeExpiracao.toUTCString()}; path=/`;
+
+                console.log("Texto salvo como cookie:", texto);
             }
 
             // Chamar salvarTextoComoCookie() a cada 5 segundos
