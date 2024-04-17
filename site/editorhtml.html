@@ -347,6 +347,30 @@
                 document.getElementById('editor').value = textoSalvo;
             }
              });
+
+            // Função para salvar o texto do editor como cookie
+            function salvarTextoComoCookie() {
+                const texto = document.getElementById("editor").value;
+                const dataDeExpiracao = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // Expira em 7 dias
+                document.cookie = `textoSalvo=${encodeURIComponent(texto)}; expires=${dataDeExpiracao.toUTCString()}; path=/`;
+            }
+
+            // Função para carregar o texto do cookie para o editor
+            function carregarTextoDoCookie() {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'textoSalvo') {
+                        const textoSalvo = decodeURIComponent(value);
+                        document.getElementById("editor").value = textoSalvo;
+                        break;
+                    }
+                }
+            }
+
+            // Chame a função para carregar o texto do cookie ao carregar a página
+            carregarTextoDoCookie();
+
         </script>
 </body>
 </html>
