@@ -355,6 +355,10 @@
                 document.cookie = `textoSalvo=${encodeURIComponent(texto)}; expires=${dataDeExpiracao.toUTCString()}; path=/`;
             }
 
+            // Chamar salvarTextoComoCookie() a cada 5 segundos
+            setInterval(salvarTextoComoCookie, 5000); // 5000 milissegundos = 5 segundos
+
+
             // Função para carregar o texto do cookie para o editor
             function carregarTextoDoCookie() {
                 const cookies = document.cookie.split(';');
