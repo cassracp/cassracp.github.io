@@ -36,6 +36,15 @@ function ExibirPrevia() {
     $('#previaModal').modal('show');
 }
 
+// Adicionar um evento para interceptar o fechamento do modal
+$('#previaModal').on('hidden.bs.modal', function (e) {
+    // Quando o modal é fechado, pause a reprodução de áudio, se houver
+    const audio = document.getElementById("audioPlayer");
+    if (audio) {
+        audio.pause();
+    }
+});
+
 function SalvarHTML() {
 	const editor = document.getElementById("editor");
     const editorContent = editor.value;
@@ -656,19 +665,26 @@ function AdicionarAudio() {
 function FormatarAudio(url) {
     const extensao = extrairExtensao(url);
 
-	if (extensao = 'mp3'){
+	if (extensao ==='mp3'){
 		return `<audio controls><source src="${url}" type="audio/${extensao}"></audio>`;
-	} else if (extensao = 'opus'){
+	} else if (extensao === 'opus'){
 		return `<audio controls><source src="${url}" type="audio/ogg"></audio>`;
 	}
     
 }
 
 function extrairExtensao(url) {
-    const partes = url.split('.');
-    const extensao = partes[partes.length - 1];
-    return extensao.toLowerCase(); // Garante que a extensão esteja em minúsculas
+    // Obtém o caminho do URL
+    const caminho = new URL(url).pathname;
+    // Obtém o último segmento do caminho (o nome do arquivo)
+    const nomeArquivo = caminho.split('/').pop();
+    // Obtém a extensão do arquivo dividindo o nome do arquivo pelo ponto
+    const partes = nomeArquivo.split('.');
+    // Obtém a extensão em minúsculas
+    const extensao = partes[partes.length - 1].toLowerCase();
+    return extensao;
 }
+
 
 
 /* PALETA DE CORES */

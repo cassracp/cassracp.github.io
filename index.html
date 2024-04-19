@@ -418,6 +418,15 @@
             iniciarTemporizador(); // Chama a função para iniciar o temporizador ao digitar
         });
 
+        // Adicionar um evento para interceptar o fechamento do modal
+        $('#previaModal').on('hidden.bs.modal', function (e) {
+            // Quando o modal é fechado, pause a reprodução de áudio, se houver
+            const audio = document.getElementById("audioPlayer");
+            if (audio) {
+                audio.pause();
+            }
+        });
+
     </script>
 </body>
 </html>
