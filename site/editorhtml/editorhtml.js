@@ -655,7 +655,13 @@ function AdicionarAudio() {
 
 function FormatarAudio(url) {
     const extensao = extrairExtensao(url);
-    return `<audio controls><source src="${url}" type="audio/${extensao}"></audio>`;
+
+	if (extensao = 'mp3'){
+		return `<audio controls><source src="${url}" type="audio/${extensao}"></audio>`;
+	} else if (extensao = 'opus'){
+		return `<audio controls><source src="${url}" type="audio/ogg"></audio>`;
+	}
+    
 }
 
 function extrairExtensao(url) {
