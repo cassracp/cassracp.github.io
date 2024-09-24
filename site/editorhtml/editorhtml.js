@@ -215,7 +215,7 @@ function addBlockquote() {
 }
 
 // ADICIONA A TAG DE BLOCKQUOTE, ITALICO + RESPOSTA EM NEGRITO NO EDITOR
-function addBlockquote() {
+function addResposta() {
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
 	const abreTag = `<blockquote><font face="calibri" size="2"><i>`;
