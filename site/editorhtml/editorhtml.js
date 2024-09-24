@@ -214,6 +214,17 @@ function addBlockquote() {
 	IncluirEPosicionar(texto, abreTag)
 }
 
+// ADICIONA A TAG DE BLOCKQUOTE, ITALICO + RESPOSTA EM NEGRITO NO EDITOR
+function addBlockquote() {
+	const editor = document.getElementById("editor");
+	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+	const abreTag = `<blockquote><font face="calibri" size="2"><i>`;
+	const fechaTag = `</i></font></blockquote><b>Resposta: </b>`;
+	const texto = abreTag + selectedText + fechaTag;
+
+	IncluirEPosicionar(texto, abreTag)
+}
+
 
 // ADICIONA A TAG DE LISTA NO EDITOR
 function addLista() {
