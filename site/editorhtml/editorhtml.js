@@ -214,7 +214,7 @@ function addBlockquote() {
 	IncluirEPosicionar(texto, abreTag)
 }
 
-// ADICIONA A TAG DE BLOCKQUOTE, ITALICO + RESPOSTA EM NEGRITO NO EDITOR
+// ADICIONA A TAG DE BLOCKQUOTE, ITALICO + RESPOSTA EM NEGRITO NO EDITOR ***
 function addResposta() {
 	const editor = document.getElementById("editor");
 	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
