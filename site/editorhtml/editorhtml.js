@@ -153,7 +153,32 @@ function IncluirEPosicionar(texto, abreTag){
         // Se nenhum texto está selecionado, insira as tags na posição do cursor
         editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(inicio);
 
-        // Move o cursor para o final das tags
+        // Move o cursor para o meio das tags
+        editor.setSelectionRange(inicio + abreTag.length, inicio + abreTag.length);
+    }
+
+    editor.focus();
+}
+
+// INCLUIR UMA TAG E POSICIONAR O CURSOR DE TEXTO PARA O FINAL
+function IncluirEPosicionarNoFinal(texto, abreTag){
+	const editor = document.getElementById("editor");
+	const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const textoSelecionado = editor.value.substring(inicio, fim);
+	const cursorPosition = editor.selectionStart;
+
+	if (textoSelecionado.length !== 0) {
+        // Se há texto selecionado, envolva-o com as tags
+        editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
+
+        // Posiciona o cursor no final das tags
+		editor.setSelectionRange(inicio + texto.length, inicio + texto.length);
+    } else {
+        // Se nenhum texto está selecionado, insira as tags na posição do cursor
+        editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(inicio);
+
+        // Move o cursor para o meio das tags
         editor.setSelectionRange(inicio + abreTag.length, inicio + abreTag.length);
     }
 
@@ -222,7 +247,7 @@ function addResposta() {
 	const fechaTag = `</i></font></blockquote><b>Resposta: </b>`;
 	const texto = abreTag + selectedText + fechaTag;
 
-	IncluirEPosicionar(texto, abreTag)
+	IncluirEPosicionarNoFinal(texto, abreTag)
 }
 
 
