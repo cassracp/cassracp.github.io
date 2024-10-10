@@ -407,6 +407,43 @@ function InserirSpoiler() {
 	editor.focus();
 }
 
+// ABRE O MODAL PARA LINK URL
+function AbrirLinkURL() {
+    $('#linkURLModal').modal('show');
+	document.getElementById("linkURL").value = "";
+
+}
+
+// ADICIONA UM LINK URL NO EDITOR
+function addLinkURL(evt) {
+	if(evt && evt.keyCode != 13)
+	{
+		return;
+	}
+
+	const editor = document.getElementById("editor");
+	const cursorPosition = editor.selectionStart;
+	const linkURL = document.getElementById("linkURL").value;
+	const linkMask = document.getElementById("linkURLMask").value;
+	var texto = null;
+
+	if (linkMask === "" || linkMask === undefined){
+		texto = `<a href="${linkURL}" target="_blank"><b><u>${linkURL}</u></b></a>`
+	}
+	else {
+		texto = `<a href="${linkURL}" target="_blank"><b><u>${linkMask}</u></b></a>`
+	}
+
+	if (linkURL === "" || linkURL === undefined){
+		alert("Insira uma URL.");
+		return;
+	}
+
+	editor.value = editor.value.substring(0, cursorPosition) + texto + editor.value.substring(cursorPosition);
+	$('#linkURLModal').modal('hide');
+	editor.focus();
+}
+
 // ABRE O MODAL PARA LINK DE OS
 function AbrirLinkOS() {
     $('#linkOSModal').modal('show');
@@ -414,7 +451,7 @@ function AbrirLinkOS() {
 
 }
 
-// ADICIONA UM LIK DE OS NO EDITOR
+// ADICIONA UM LINK DE OS NO EDITOR
 function addLinkOS(evt) {
 	if(evt && evt.keyCode != 13)
 	{
