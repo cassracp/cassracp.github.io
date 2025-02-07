@@ -736,29 +736,36 @@ function AdicionarAudio() {
 }
 
 function FormatarAudio(url) {
-    const extensao = extrairExtensao(url);
+    const extensao = extrairExtensao(url).toLowerCase(); // normaliza para minúsculas
 
-	if (extensao ==='mp3'){
-		return `<audio controls><source src="${url}" type="audio/${extensao}"></audio>`;
-	} else if (extensao === 'opus'){
-		return `<audio controls><source src="${url}" type="audio/ogg"></audio>`;
-	}
-    
+    const tipoMIME = {
+        mp3: 'audio/mpeg',   // MP3 usa 'audio/mpeg' oficialmente
+        ogg: 'audio/ogg',    // Para .ogg e .oga
+        opus: 'audio/ogg',   // Opus geralmente é encapsulado em Ogg
+        oga: 'audio/ogg',    // Ogg Audio
+        wav: 'audio/wav',
+        aac: 'audio/aac',
+        m4a: 'audio/mp4'
+    };
+
+    if (tipoMIME[extensao]) {
+        return `<audio controls><source src="${url}" type="${tipoMIME[extensao]}"></audio>`;
+    }
+
+    return ""; // ou algum fallback para formatos não suportados
 }
 
+// Função auxiliar para extrair extensão mesmo com URLs codificadas
 function extrairExtensao(url) {
-    // Obtém o caminho do URL
-    const caminho = new URL(url).pathname;
-    // Obtém o último segmento do caminho (o nome do arquivo)
-    const nomeArquivo = caminho.split('/').pop();
-    // Obtém a extensão do arquivo dividindo o nome do arquivo pelo ponto
-    const partes = nomeArquivo.split('.');
-    // Obtém a extensão em minúsculas
-    const extensao = partes[partes.length - 1].toLowerCase();
-    return extensao;
+    try {
+        const caminho = new URL(url).pathname; // remove query params e hash
+        const nomeArquivo = caminho.split('/').pop(); // pega o último segmento
+        const extensao = nomeArquivo.split('.').pop().split(/[?#]/)[0]; // remove parâmetros após a extensão
+        return extensao.toLowerCase();
+    } catch {
+        return url.split('.').pop().split(/[?#]/)[0].toLowerCase();
+    }
 }
-
-
 
 /* PALETA DE CORES */
 
