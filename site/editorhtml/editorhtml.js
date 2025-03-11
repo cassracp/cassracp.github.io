@@ -250,6 +250,17 @@ function addResposta() {
 	IncluirEPosicionarNoFinal(texto, abreTag)
 }
 
+// ADICIONA A TAG DE PARAGRAFO COM 20px À ESQUERDA ***
+function addParagrafo() {
+	const editor = document.getElementById("editor");
+	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+	const abreTag = `<p style="margin-left: 20px;">`;
+	const fechaTag = `</p>`;
+	const texto = abreTag + selectedText + fechaTag;
+
+	IncluirEPosicionarNoFinal(texto, abreTag)
+}
+
 
 // ADICIONA A TAG DE LISTA NO EDITOR
 function addLista() {
