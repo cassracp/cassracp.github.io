@@ -150,7 +150,7 @@
                 </div>
             </div>
             <br>
-            <button onclick="FormatarTopicoOS()" class="btn btn-info text-white">Formatar</button>
+            <button onclick="FormatarTopicoOS()" id="btnFormatarTopicoOS" class="btn btn-info text-white">Formatar</button>
             <br><br>
             <div class="form-group row">
                 <div class="col-lg">
@@ -185,6 +185,13 @@
                 select.style.display = "block"; // Mostra o select de novo
             }
         });
+
+
+        document.getElementById("btnFormatarTopicoOS").addEventListener("click", function(event) {
+            event.preventDefault(); // Impede o recarregamento da página
+            FormatarTopicoOS();  // Chama sua função de formatação
+        });
+
     </script>
 </body>
 </html>

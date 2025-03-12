@@ -67,8 +67,9 @@ function FormatarNumeroDeTelefone(evt) {
 	
 	// Copia o resultado para a área de transferência
 	const textArea = document.getElementById("numeroFormatado");
-	textArea.select();
-	document.execCommand("copy");
+	textArea.focus();
+    textArea.select();
+    copiarParaClipboard(numeroFormatado);
 
 	//alert("Número de telefone formatado copiado para área de transferência.");
 }
@@ -231,8 +232,9 @@ function FormatarTopicoTarefa() {
 	const textArea = document.getElementById("codigoHTML");
 
     textArea.value = codigoHTML;
-	textArea.select();
-	document.execCommand("copy");
+	textArea.focus();
+    textArea.select();
+    copiarParaClipboard(codigoHTML);
 }
 /* FIM */
 
@@ -323,8 +325,9 @@ function FormatarTopicoOS() {
     // Atualiza o campo de texto e copia para a área de transferência
     const textArea = document.getElementById("topicoFormatado");
     textArea.value = txtFormatado;
+	textArea.focus();
     textArea.select();
-    document.execCommand("copy");
+    copiarParaClipboard(txtFormatado);
 
     console.log("Texto formatado copiado:", txtFormatado);
 }
@@ -336,4 +339,15 @@ function loadTool(toolName) {
 		.then(data => {
 			document.querySelector(".content").innerHTML = data;
 		});
+}
+
+function copiarParaClipboard(texto) {
+    // Usando a nova API Clipboard
+    navigator.clipboard.writeText(texto)
+        .then(function() {
+            console.log("Texto copiado para a área de transferência!");
+        })
+        .catch(function(err) {
+            console.error("Erro ao copiar o texto: ", err);
+        });
 }
