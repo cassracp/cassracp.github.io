@@ -140,7 +140,7 @@ function ExibirTopicoOS() {
     iframe.src = "/site/topicoos.html";
 
     // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
-    iframe.width = "800";
+    iframe.width = "1200";
     iframe.height = "1200";
 
     // Limpe qualquer conteúdo existente no modal
