@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
-    
+
     <link rel="manifest" href="/manifest.json">
 
     <script type="text/javascript" src="site/jquery/jquery-3.7.1.js"></script>
@@ -164,7 +164,7 @@
 
     <!-- Modal de tópico OS -->
     <div class="modal fade" id="topicoOSModal" tabindex="-1" role="dialog" aria-labelledby="topicoOSModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document" style="max-width: 1225px;">
             <div class="modal-content" style="white-space: pre-line;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="topicoOSModalLabel">Tópico de OS</h5>
@@ -248,13 +248,14 @@
                         <input type="number" id="numeroOS" class="form-control" rows="1" placeholder="Insira o número da OS" onkeyup="addLinkOS(event)" required></textarea>
                     </div>     
                 </div>
-                    
+
                 <div class="modal-footer">
                         <button type="button" class="btn btn-primary" onclick="addLinkOS()">Inserir</button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Modal para inserir Número da Tarefa -->
     <div class="modal fade" id="linkTarefaModal" tabindex="-1" role="dialog" aria-labelledby="linkTarefaModalLabel" aria-hidden="true">
