@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tópicos OS</title>
+    <style>
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .checkbox-group .form-check {
+            flex: 1 0 25%; /* 3 por linha */
+            margin-bottom: 10px;
+        }
+    </style>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+	<script src="js/bootstrap.min.js"></script>
+	<script src="functions.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form action="#">
+            <div class="form-group row">
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <b>Assunto do Tópico:</b>
+                    <select id="assuntoTopicoSelect" class="form-control">
+                        <option value="CN">CN - Cliente Novo</option>
+                        <option value="NM">NM - Novo Módulo</option>
+                        <option value="TT">TT - TROCA DE TITULARIDADE</option>
+                        <option value="OUTRO">Outro (especifique)</option>
+                    </select>
+                    <input type="text" id="assuntoTopicoInput" class="form-control" style="display: none;" placeholder="Digite a abreviatura do assunto (ex.: CN)">
+                </div>
+            </div>
+            <hr>
+            <div class="form-group row">                           
+                <div class="col-sm-10">
+                    <b>Título do Tópico:</b>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="chkInstal" value="Instalação">
+                        <label class="form-check-label" for="chkInstal">Instalação</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="chkConfig" value="Configuração">
+                        <label class="form-check-label" for="chkConfig">Configuração</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="chkTrn" value="Treinamento">
+                        <label class="form-check-label" for="chkTrn">Treinamento</label>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <b>Módulos Contratados:</b>
+            <div class="form-group row">                 
+                <div class="checkbox-group col-sm-12" style="display: flex; flex-wrap: wrap;"> <!-- Adicionando flex-wrap para permitir a quebra de linha -->
+                    <!-- Primeira linha de checkboxes -->
+                    <div class="form-check" style="flex: 1 0 25%;"> <!-- Cada item ocupará 25% da largura -->
+                        <input type="checkbox" class="form-check-input" id="chkNascimento" value="N">
+                        <label class="form-check-label" for="chkNascimento">Nascimento</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkComunica" value="A">
+                        <label class="form-check-label" for="chkComunica">Comunicações</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkFinanceiro" value="U">
+                        <label class="form-check-label" for="chkFinanceiro">Financeiro</label>
+                    </div>
+
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkBkp" value="K">
+                        <label class="form-check-label" for="chkBkp">Backup em Nuvem</label>
+                    </div>
+                    <!-- Segunda linha de checkboxes -->
+                    <div class="form-check" style="flex: 1 0 25%;"> <!-- 25% para o segundo item -->
+                        <input type="checkbox" class="form-check-input" id="chkCasamento" value="C">
+                        <label class="form-check-label" for="chkCasamento">Casamento</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkAverba" value="V">
+                        <label class="form-check-label" for="chkAverba">Averbações</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkINotas" value="pr">
+                        <label class="form-check-label" for="chkINotas">i-Notas</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkPol" value="X">
+                        <label class="form-check-label" for="chkPol">POL - Proclamas Oline</label>
+                    </div>
+                    <!-- Terceira linha de checkboxes -->
+                    <div class="form-check" style="flex: 1 0 25%;"> <!-- 25% para o terceiro item -->
+                        <input type="checkbox" class="form-check-input" id="chkObito" value="O">
+                        <label class="form-check-label" for="chkObito">Óbito</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkSelagem" value="S">
+                        <label class="form-check-label" for="chkSelagem">Selagem</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkEscrituras" value="R">
+                        <label class="form-check-label" for="chkEscrituras">Escrituras Plus</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkUI" value="I">
+                        <label class="form-check-label" for="chkUI">UI - Unidade Interligada</label>
+                    </div>
+                    <!-- Quarta linha de checkboxes -->
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkLivroE" value="E">
+                        <label class="form-check-label" for="chkLivroE">Livro E</label>
+                    </div>                    
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkFirmas" value="F">
+                        <label class="form-check-label" for="chkFirmas">Firmas</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <input type="checkbox" class="form-check-input" id="chkProc" value="P">
+                        <label class="form-check-label" for="chkProc">Procurações Plus</label>
+                    </div>
+                    <div class="form-check" style="flex: 1 0 25%;"> 
+                        <!--<input type="checkbox" class="form-check-input" id="chkPol" value="X">
+                        <label class="form-check-label" for="chkPol">POL - Proclamas Oline</label> -->
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group row">                           
+                <div class="col-sm-10">
+                    <b>Sistema:</b>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="chkWindows" value="W" checked="true">
+                        <label class="form-check-label" for="chkWindows">DOC-Windows</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="chkWeb" value="w">
+                        <label class="form-check-label" for="chkWeb">DOC-Web</label>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group" id="divNumeroTarefa">
+                <label for="numeroTarefa" class="col-sm-0 col-form-label"><b>Nº Tarefa:</b></label>
+                <div class="col-sm-3">
+                    <input type="number" id="numeroTarefa" class="form-control" required>
+                </div>
+            </div>
+            <br>
+            <button onclick="FormatarTopicoOS()" class="btn btn-info text-white">Formatar</button>
+            <br><br>
+            <div class="form-group row">
+                <div class="col-lg">
+                    <b>Tópico Formatado:</b>
+                    <textarea id="topicoFormatado" class="form-control" rows="5" readonly></textarea>
+                </div>
+            </div>
+            <br>
+            <button onclick="LimparCamposTopicoOS()" class="btn btn-secondary">Limpar Campos</button>
+        </form>
+    </div> 
+    
+    <script>
+        document.getElementById("assuntoTopicoSelect").addEventListener("change", function() {
+            const select = this; // O próprio select
+            const input = document.getElementById("assuntoTopicoInput"); // O input
+
+            if (select.value === "OUTRO") {
+                select.style.display = "none";  // Esconde o select
+                input.style.display = "block"; // Mostra o input
+                input.focus(); // Já coloca o cursor no input para digitação
+            }
+        });
+
+        // Caso queira reverter ao selecionar novamente no input:
+        document.getElementById("assuntoTopicoInput").addEventListener("blur", function() {
+            const input = this;
+            const select = document.getElementById("assuntoTopicoSelect");
+
+            if (input.value.trim() === "") { // Se o campo estiver vazio ao perder o foco
+                input.style.display = "none"; // Esconde o input
+                select.style.display = "block"; // Mostra o select de novo
+            }
+        });
+    </script>
+</body>
+</html>

@@ -121,6 +121,70 @@ function LimparCamposTopicoTarefa() {
 }
 /*fim*/
 
+/* Limpar campos da topicoos.html */
+function LimparCamposTopicoOS() {
+    const chkInstal = document.getElementById("chkInstal");
+    const chkConfig = document.getElementById("chkConfig");
+    const chkTrn = document.getElementById("chkTrn");
+	const chkNascimento = document.getElementById("chkNascimento");
+	const chkCasamento = document.getElementById("chkCasamento");
+	const chkObito = document.getElementById("chkObito");
+	const chkLivroE = document.getElementById("chkLivroE");
+	const chkComunica = document.getElementById("chkComunica");
+	const chkAverba = document.getElementById("chkAverba");
+	const chkSelagem = document.getElementById("chkSelagem");
+	const chkFirmas = document.getElementById("chkFirmas");
+	const chkFinanceiro = document.getElementById("chkFinanceiro");
+	const chkProc = document.getElementById("chkProc");
+	const chkEscrituras = document.getElementById("chkEscrituras");
+	const chkBkp = document.getElementById("chkBkp");
+	const chkINotas = document.getElementById("chkINotas");
+	const chkUI = document.getElementById("chkUI");
+	const chkPol = document.getElementById("chkPol");
+	const chkWindows = document.getElementById("chkWindows");
+	const chkWeb = document.getElementById("chkWeb");
+
+    // Limpa o campo Nº Tarefa
+    document.getElementById("numeroTarefa").value = "";
+
+    // Limpa o campo Código HTML
+    document.getElementById("topicoFormatado").value = "";
+
+    // Desmarca os checkboxes
+    chkInstal.checked = false;
+    chkConfig.checked = false;
+    chkTrn.checked = false;
+	chkNascimento.checked = false;
+	chkCasamento.checked = false;
+	chkObito.checked = false;
+	chkLivroE.checked = false;
+	chkComunica.checked = false;
+	chkAverba.checked = false;
+	chkSelagem.checked = false;
+	chkFirmas.checked = false;
+	chkFinanceiro.checked = false;
+	chkINotas.checked = false;
+	chkEscrituras.checked = false;
+	chkProc.checked = false;
+	chkBkp.checked = false;
+	chkPol.checked = false;
+	chkUI.checked = false;
+	chkWindows.checked = true;
+	chkWeb.checked = false;
+
+    // Reseta o select para a primeira opção (CN - Cliente Novo)
+    const assuntoSelect = document.getElementById("assuntoTopicoSelect");
+    assuntoSelect.value = "CN";
+    assuntoSelect.selectedIndex = 0; // Garante que a primeira opção seja selecionada
+
+    // Se o campo de input estiver visível, também limpa ele
+    const assuntoInput = document.getElementById("assuntoTopicoInput");
+    assuntoInput.value = "";
+    assuntoInput.style.display = "none"; // Oculta o campo de texto caso esteja visível
+}
+/* Fim */
+
+
 /* Função para gerar o HTML do tópico na tarefa*/
 function FormatarTopicoTarefa() {
 	console.log("Entrou na função FormatarTopicoTarefa");
@@ -169,6 +233,100 @@ function FormatarTopicoTarefa() {
     textArea.value = codigoHTML;
 	textArea.select();
 	document.execCommand("copy");
+}
+/* FIM */
+
+
+/* Função para gerar o HTML do tópico na OS */
+function FormatarTopicoOS() {
+    console.log("Entrou na função FormatarTopicoOS");
+
+    // Captura os elementos
+    const numeroTarefa = document.getElementById("numeroTarefa").value.trim();
+    const selectAssunto = document.getElementById("assuntoTopicoSelect");
+    const inputAssunto = document.getElementById("assuntoTopicoInput");
+    const chkInstal = document.getElementById("chkInstal");
+    const chkConfig = document.getElementById("chkConfig");
+    const chkTrn = document.getElementById("chkTrn");
+	const chkNascimento = document.getElementById("chkNascimento");
+	const chkCasamento = document.getElementById("chkCasamento");
+	const chkObito = document.getElementById("chkObito");
+	const chkLivroE = document.getElementById("chkLivroE");
+	const chkComunica = document.getElementById("chkComunica");
+	const chkAverba = document.getElementById("chkAverba");
+	const chkSelagem = document.getElementById("chkSelagem");
+	const chkFirmas = document.getElementById("chkFirmas");
+	const chkFinanceiro = document.getElementById("chkFinanceiro");
+	const chkProc = document.getElementById("chkProc");
+	const chkEscrituras = document.getElementById("chkEscrituras");
+	const chkBkp = document.getElementById("chkBkp");
+	const chkINotas = document.getElementById("chkINotas");
+	const chkUI = document.getElementById("chkUI");
+	const chkPol = document.getElementById("chkPol");
+	const chkWindows = document.getElementById("chkWindows");
+	const chkWeb = document.getElementById("chkWeb");
+
+
+    // Verifica se o assunto foi selecionado ou digitado
+    let assuntoTopico = selectAssunto.value === "OUTRO" ? inputAssunto.value.trim() : selectAssunto.value;
+
+    // Se não houver número de tarefa e nenhum checkbox marcado, sai da função
+    if (numeroTarefa === "") return;
+
+	// Verifica se pelo menos um checkbox está marcado
+    if (!chkInstal.checked && !chkConfig.checked && !chkTrn.checked) {
+        alert("Você deve selecionar pelo menos uma opção (Instalação, Configuração, Treinamento).");
+        return;
+    }
+
+    let txtFormatado = `${assuntoTopico}: `;
+
+    // Montando a string respeitando a ordem fixa
+    let topicosSelecionados = [];
+
+    if (chkInstal.checked) topicosSelecionados.push(chkInstal.value);
+    if (chkConfig.checked) topicosSelecionados.push(chkConfig.value);
+    if (chkTrn.checked) topicosSelecionados.push(chkTrn.value);
+
+    // Se houver tópicos selecionados, adiciona-os à formatação
+    if (topicosSelecionados.length > 0) {
+        txtFormatado += topicosSelecionados.join("/");
+    } 	
+
+	let modulosSelecionados = [];
+	
+	if (chkNascimento.checked) modulosSelecionados.push(chkNascimento.value);
+	if (chkCasamento.checked) modulosSelecionados.push(chkCasamento.value);
+	if (chkObito.checked) modulosSelecionados.push(chkObito.value);
+	if (chkLivroE.checked) modulosSelecionados.push(chkLivroE.value);
+	if (chkComunica.checked) modulosSelecionados.push(chkComunica.value);
+	if (chkAverba.checked) modulosSelecionados.push(chkAverba.value);
+	if (chkSelagem.checked) modulosSelecionados.push(chkSelagem.value);
+	if (chkFirmas.checked) modulosSelecionados.push(chkFirmas.value);
+	if(chkFinanceiro.checked) modulosSelecionados.push(chkFinanceiro.value);
+	if(chkINotas.checked) modulosSelecionados.push(chkINotas.value);
+	if(chkEscrituras.checked) modulosSelecionados.push(chkEscrituras.value);
+	if(chkProc.checked) modulosSelecionados.push(chkProc.value);
+	if(chkBkp.checked) modulosSelecionados.push(chkBkp.value);
+	if(chkPol.checked) modulosSelecionados.push(chkPol.value);
+	if(chkUI.checked) modulosSelecionados.push(chkUI.value);
+	if(chkWindows.checked) modulosSelecionados.push(chkWindows.value);
+	if(chkWeb.checked) modulosSelecionados.push(chkWeb.value);
+
+	if (modulosSelecionados.length > 0){
+		txtFormatado += ` [${modulosSelecionados.join("")}]`
+	}
+
+
+	txtFormatado += ` - Tarefa: ${numeroTarefa}`
+
+    // Atualiza o campo de texto e copia para a área de transferência
+    const textArea = document.getElementById("topicoFormatado");
+    textArea.value = txtFormatado;
+    textArea.select();
+    document.execCommand("copy");
+
+    console.log("Texto formatado copiado:", txtFormatado);
 }
 /* FIM */
 

@@ -68,6 +68,7 @@
                 <button class="btn btn-group" disabled>Ferramentas: </button> 
                 <button class="btn btn-outline-primary border-dark" id="btnFormatarTelefone" title="Formatar Telefone" onclick="ExibirFormatarTelefone()" >Formatar Telefone <img src="site/icons/phone.png" alt="Formatar Telefone"></button>
                 <button class="btn btn-outline-primary border-dark" id="btnTopicoTarefa" title="Tópico Tarefa" onclick="ExibirTopicoTarefa()" >Tópico Tarefa <img src="site/icons/topico.png" alt="Tópico"></button>
+                <button class="btn btn-outline-primary border-dark" id="btnTopicoOS" title="Tópico OS" onclick="ExibirTopicoOS()" >Tópico OS <img src="site/icons/topicoos.png" alt="OS"></button>
             </div>
         </div>
         <br>
@@ -159,6 +160,20 @@
         </div>
     </div>
 
+    <!-- Modal de tópico OS -->
+    <div class="modal fade" id="topicoOSModal" tabindex="-1" role="dialog" aria-labelledby="topicoOSModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="white-space: pre-line;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="topicoOSModalLabel">Tópico de OS</h5>
+                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#topicoOSModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalTopicoOSContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal para inserir texto do spoiler -->
     <div class="modal fade" id="spoilerModal" tabindex="-1" role="dialog" aria-labelledby="spoilerModalLabel" aria-hidden="true">
