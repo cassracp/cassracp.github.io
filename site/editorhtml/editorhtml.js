@@ -130,7 +130,26 @@ function ExibirTopicoTarefa() {
 	$('#topicoTarefaModal').modal('show');
 }
 
+function ExibirTopicoOS() {
+    const modalTopicoOSContent = document.getElementById("modalTopicoOSContent");
+    
+    // Crie um elemento iframe para exibir o conteúdo do arquivo HTML
+    const iframe = document.createElement("iframe");
 
+    // Defina o atributo src do iframe para apontar para o seu arquivo HTML
+    iframe.src = "/site/topicoos.html";
+
+    // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
+    iframe.width = "1200";
+    iframe.height = "1200";
+
+    // Limpe qualquer conteúdo existente no modal
+    modalTopicoOSContent.innerHTML = "";
+
+    // Adicione o iframe ao modal
+    modalTopicoOSContent.appendChild(iframe);
+	$('#topicoOSModal').modal('show');
+}
 
 /* FUNÇÕES AUXILIARES*/
 
