@@ -130,7 +130,7 @@ function ExibirTopicoTarefa() {
 	$('#topicoTarefaModal').modal('show');
 }
 
-function ExibirTopicoOS() { //teste
+function ExibirTopicoOS() {
     const modalTopicoOSContent = document.getElementById("modalTopicoOSContent");
     
     // Crie um elemento iframe para exibir o conteúdo do arquivo HTML
@@ -140,8 +140,8 @@ function ExibirTopicoOS() { //teste
     iframe.src = "/site/topicoos.html";
 
     // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
-    iframe.width = "600";
-    iframe.height = "600";
+    iframe.width = "800";
+    iframe.height = "1200";
 
     // Limpe qualquer conteúdo existente no modal
     modalTopicoOSContent.innerHTML = "";
