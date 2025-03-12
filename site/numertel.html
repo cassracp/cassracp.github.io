@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="container" id="numertelContent">
-        <label for="codigoSelect">Opções de código de discagem para celular:</label>
+        <label for="codigoSelect"><b>Opções de código de discagem para celular:</b></label>
         <br>
         <!--<select id="codigoSelect" class="">
             <option value="50">Código 50 (Padrão)</option>
@@ -59,13 +59,13 @@
             </div>
         </div>        
         
-        <br><br><br>
-        <label for="numTel">Insira o número de telefone:</label>
+        <br><hr>
+        <label for="numTel"><b>Insira o número de telefone:</b></label>
         <input type="text" id="numTel" class="form-control" onkeyup="FormatarNumeroDeTelefone(event);"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
         <br>
         <button onclick="FormatarNumeroDeTelefone()" class="btn btn-info text-white">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
         <br><br>
-        <label for="numeroFormatado">Número Formatado:</label> <!-- Adicione a classe "label" para estilos de rótulo -->
+        <label for="numeroFormatado"><b>Número Formatado:</b></label> <!-- Adicione a classe "label" para estilos de rótulo -->
         <br><input type="text" id="numeroFormatado" readonly class="form-control"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
         <br>
         <button onclick="LimparCamposNumerTel()" class="btn btn-secondary">Limpar Campos</button>

@@ -69,7 +69,7 @@ function FormatarNumeroDeTelefone(evt) {
 	const textArea = document.getElementById("numeroFormatado");
 	textArea.focus();
     textArea.select();
-    copiarParaClipboard(numeroFormatado);
+    CopiarParaClipboard(numeroFormatado);
 
 	//alert("Número de telefone formatado copiado para área de transferência.");
 }
@@ -234,7 +234,7 @@ function FormatarTopicoTarefa() {
     textArea.value = codigoHTML;
 	textArea.focus();
     textArea.select();
-    copiarParaClipboard(codigoHTML);
+    CopiarParaClipboard(codigoHTML);
 }
 /* FIM */
 
@@ -327,7 +327,7 @@ function FormatarTopicoOS() {
     textArea.value = txtFormatado;
 	textArea.focus();
     textArea.select();
-    copiarParaClipboard(txtFormatado);
+    CopiarParaClipboard(txtFormatado);
 
     console.log("Texto formatado copiado:", txtFormatado);
 }
@@ -341,7 +341,7 @@ function loadTool(toolName) {
 		});
 }
 
-function copiarParaClipboard(texto) {
+function CopiarParaClipboard(texto) {
     // Usando a nova API Clipboard
     navigator.clipboard.writeText(texto)
         .then(function() {
