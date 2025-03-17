@@ -150,9 +150,9 @@ tinymce.init({
                         var data = dialog.getData();
                         var nOS = data.nOS;                        
                         if (!SomenteNumeros(nOS)) { 
-                            alert("Digite apenas números!");
+                            alerta("Erro", "Digite apenas números!");
                         } else if (!nOS) {
-                            alert('Número da OS não informado!');
+                            alerta("Erro", 'Número da OS não informado!');
                         } else {
                             var linkOS = InserirLinkOS(nOS);
                             editor.insertContent(linkOS);
@@ -197,9 +197,9 @@ tinymce.init({
                         var data = dialog.getData();
                         var nOS = data.nOS;
                         if (!SomenteNumeros(nOS)) { 
-                            alert("Digite apenas números!");
+                            alerta("Erro", "Digite apenas números!");
                         } else if (!nOS) {
-                            alert('Número da OS não informado!');
+                            alerta("Erro", 'Número da OS não informado!');
                         } else {
                             var linkOS = InserirLinkOS(nOS);
                             editor.insertContent(linkOS);
@@ -245,9 +245,9 @@ tinymce.init({
                         var data = dialog.getData();
                         var nTarefa = data.nTarefa;
                         if (!SomenteNumeros(nTarefa)) { 
-                            alert("Digite apenas números!");
+                            alerta("Erro", "Digite apenas números!");
                         } else if (!nTarefa) {
-                            alert('Número da Tarefa não informado!');
+                            alerta("Erro", 'Número da Tarefa não informado!');
                         } else {
                             var linkTarefa = InserirLinkTarefa(nTarefa);
                             editor.insertContent(linkTarefa);
@@ -292,9 +292,9 @@ tinymce.init({
                         var data = dialog.getData();
                         var nTarefa = data.nTarefa;
                         if (!SomenteNumeros(nTarefa)) {
-                            alert("Digite apenas números!");
+                            alerta("Erro", "Digite apenas números!");
                         } else if (!nTarefa) {
-                            alert('Número da Tarefa não informado!');
+                            alerta("Erro", 'Número da Tarefa não informado!');
                         } else {
                             var linkTarefa = InserirLinkTarefa(nTarefa);
                             editor.insertContent(linkTarefa);
@@ -342,7 +342,7 @@ tinymce.init({
                             var audioHtml = FormatarAudio(url);
                             editor.insertContent(audioHtml);
                         } else {
-                            alert('URL do Audio não informada!');
+                            alerta("Erro", 'URL do Audio não informada!');
                         }
                         dialog.close();
                     }
@@ -395,9 +395,11 @@ tinymce.init({
             icon: 'novodocumento',
             tooltip: 'Novo documento',
             onAction: function () {
-                if (confirm('Tem certeza de que deseja criar um novo documento?\nTodo o conteúdo não salvo será perdido.')) {
-                    editor.setContent('');
-                }
+                confirmacao("Limpar Editor?",
+                    "Tem certeza de que deseja criar um novo documento?\nTodo o conteúdo não salvo será perdido.",
+                    function () {
+                        editor.setContent('');
+                });
             }
         });
         editor.ui.registry.addMenuItem('novodocumento', {
@@ -405,9 +407,11 @@ tinymce.init({
             icon: 'novodocumento',
             shortcut: 'Alt+N',
             onAction: function () {
-                if (confirm('Tem certeza de que deseja criar um novo documento?\nTodo o conteúdo não salvo será perdido.')) {
-                    editor.setContent('');
-                }
+                confirmacao("Limpar Editor?",
+                    "Tem certeza de que deseja criar um novo documento?\nTodo o conteúdo não salvo será perdido.",
+                    function () {
+                        editor.setContent('');
+                });
             }
         });
 
@@ -863,13 +867,13 @@ function copiarHTML(editor) {
     var content = editor.getContent();
 
     if (content === '' || content === null) {
-        alert('Nenhum conteúdo HTML para copiar!');
+        alerta("Erro", 'Nenhum conteúdo HTML para copiar!');
         return;
     }
 
     navigator.clipboard.writeText(content).then(function() {
     }, function(err) {
-        alert('Erro ao copiar HTML: ', err);
+        alerta("Erro", 'Erro ao copiar HTML: ', err);
     });
 }
 
@@ -934,3 +938,32 @@ function FormatarLowerCase(editor) {
 function SomenteNumeros(texto) {
     return /^\d+$/.test(texto);
 }
+
+function confirmacao(titulo, mensagem, callbackConfirm, callbackCancel) {
+    Swal.fire({
+        title: titulo,
+        text: mensagem,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "OK",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (callbackConfirm) callbackConfirm();
+        } else {
+            if (callbackCancel) callbackCancel();
+        }
+    });
+}
+
+function alerta(titulo, mensagem) {
+    Swal.fire({
+        title: titulo,
+        text: mensagem,
+        icon: "error",
+        showCancelButton: false,
+        confirmButtonText: "OK",
+    });
+}
+
+
