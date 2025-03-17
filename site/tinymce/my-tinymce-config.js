@@ -9,8 +9,8 @@ tinymce.init({
         'code', 'insertdatetime'
     ],
     menu: {
-        insert: { title: 'Inserir', items: 'image link media insertaudio emoticons charmap | insertCalendarDate insertdatetime' },
         file: { title: 'Arquivo', items: 'newdocument restoredraft | preview | print | savehtml | copyhtml' }, // Certifique-se de que todos os itens estão listados aqui
+        insert: { title: 'Inserir', items: 'image link media insertaudio emoticons charmap | insertCalendarDate insertdatetime' },
         format: { 
             title: 'Formatar', 
             items: 'bold italic underline strikethrough superscript subscript codeformat blockformats align lineheight forecolor backcolor removeformat blockquote uppercase lowercase' 
@@ -20,7 +20,7 @@ tinymce.init({
             items: 'spellchecker charmap emoticons layer | formatarTelefone topicoTarefa topicoOS' 
         },
     },
-    toolbar: 'undo redo | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough uppercase lowercase blockquote removeformat align lineheight numlist bullist indent outdent link image insertAudio | formatarTelefone topicoTarefa topicoOS | code',
+    toolbar: 'undo redo | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough uppercase lowercase blockquote removeformat align lineheight numlist bullist indent outdent link image insertAudio | formatarTelefone topicoTarefa topicoOS | code copyhtml',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'Author name',
     mergetags_list: [
@@ -138,6 +138,15 @@ tinymce.init({
             shortcut: 'Ctrl+S',
             onAction: function () {
                 salvarComoHTML(editor);
+            }
+        });
+
+
+        editor.ui.registry.addButton('copyhtml', {
+            icon: 'copy',
+            tooltip: 'Copiar HTML',
+            onAction: function () {
+                copiarHTML(editor);
             }
         });
         editor.ui.registry.addMenuItem('copyhtml', {
