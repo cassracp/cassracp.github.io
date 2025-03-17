@@ -16,11 +16,11 @@
             <div class="form-group row">
                 <div class="col-sm-2">
                     <b>Nº:</b>
-                    <input type="number" id="numeroTarefa" class="form-control" required>
+                    <input type="number" id="numeroTarefa" class="form-control" required title="Número da Tarefa" placeholder="Número da Tarefa">
                 </div>
                 <div class="col-sm-9">
                     <b>Título Tópico:</b>
-                    <select id="tituloTopicoSelect" class="form-control">
+                    <select id="tituloTopicoSelect" class="form-control" title="Título Tópico">
                         <option value="ACOMPANHAMENTO IMP" id="ACOMP">ACOMPANHAMENTO IMP</option>
                         <option value="ANÁLISE" id="ANALISE">ANÁLISE</option>
                         <option value="ACERTO COMERCIAL" id="CML">ACERTO COMERCIAL</option>
@@ -62,12 +62,13 @@
                     <input type="number" id="numeroOS" class="form-control" required>
                 </div>
             </div>
+            <br> <!-- Adicionado espaçamento -->
             <button onclick="FormatarTopicoTarefa()" class="btn btn-info text-white">Formatar</button>
             <br><br>
             <div class="form-group row">
                 <div class="col-lg">
                     <b>Código HTML:</b>
-                    <textarea id="codigoHTML" class="form-control" rows="5" readonly></textarea>
+                    <textarea id="codigoHTML" class="form-control" rows="5" readonly title="Código HTML" placeholder="Código HTML"></textarea>
                 </div>
             </div>
             <br>

@@ -3,40 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Auxiliar DeMaria</title>
     <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
 
     <link rel="manifest" href="/manifest.json">
 
     <script type="text/javascript" src="site/jquery/jquery-3.7.1.js"></script>
     <script type="text/javascript" src="site/spectrum/spectrum.js"></script>
-    <!--<script type="text/javascript" src="spectrum/tinycolor.js"></script>-->
+    <script type="text/javascript" src="spectrum/tinycolor.js"></script>
     <script type="text/javascript" src="site/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="site/editorhtml/editorhtml.js"></script>
-
-    <style>
-        textarea {
-            resize: auto !important;
-        }
-
-        #modalPreviaContent {
-             white-space: pre-line;
-        }
-
-        /* Estilos CSS para o rodapé */
-        .footer-container {
-            text-align: center; /* Alinha o texto ao centro */
-        }
-    </style>
+    <script type="application/javascript" src= "node_modules/tinymce/tinymce.min.js"></script>
+    <script type="application/javascript" src= "my_tinymce_app/public/javascripts/my-tinymce-config.js"></script>
     <link rel="stylesheet" type="text/css" href="site/spectrum/spectrum.css">
     <link rel="stylesheet" type="text/css" href="site/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://kit.fontawesome.com/da97544b74.js" crossorigin="anonymous"></script>
 
-    <title> Auxiliar DeMaria</title>
+    
     <!-- Adicione os ícones para diferentes tamanhos -->
     <link rel="icon" type="image/png" sizes="32x32" href="site/icons/icon_base32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="site/icons/icon_base16.png">
     <!-- Adicione o ícone para o aplicativo da web -->
     <link rel="apple-touch-icon" sizes="96x96" href="site/icons/icon_base96.png">
-    <link rel="manifest" href="manifest.json">
+
+    <style>
+        .spoiler-container {
+            margin: 5px 0;
+        }
+        .spoiler-button {
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            padding: 5px;
+            cursor: pointer;
+        }
+        .spoiler-content {
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
@@ -47,41 +54,40 @@
                     <img src="site/icons/icon_base96.png" alt="Auxiliar DeMaria">
                     <b><font color="white" size="5">Auxiliar DeMaria</font></b>
                 </a>
-            </nav>
-            
+            </nav>         
             
             <br>
             <main class="col-md-auto col-lg-auto">
 				<div class="content">
-					                 
+                    <!-- Remover o painel HTML aqui -->
 				</div>
             </main>
         </div>
     </div>
 
-    <div class="container-fluid align-items-center">
+    <div class="container-fluid align-items-center" style="display: none;">  
         <div class="btn-toolbar align-self-center">
             <div class="btn-group">
-                <button class="btn btn-outline-secondary border-dark" id="btnNovo" accesskey="K" title="Novo (Alt+K)" onclick="window.open('https://cassracp.github.io/', '_blank')"><img src="site/icons/novo.png" alt="Copiar"></button>
-                <button class="btn btn-light border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarTexto()"><img src="site/icons/copiar.png" alt="Copiar"></button>
-                <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" ><img src="site/icons/limpar.png" alt="Limpar"></button>
-                <button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" ><img src="site/icons/previa.png" height="25px" width="25px" alt="Prévia"></button>
-                <button class="btn btn-outline-success border-dark" id="btnSalvar" accesskey="s" title="Salvar (Shift+Alt+S)" onclick="SalvarHTML()" ><img src="site/icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
+                <!--<button class="btn btn-outline-secondary border-dark" id="btnNovo" accesskey="K" title="Novo (Alt+K)" onclick="window.open('https://cassracp.github.io/', '_blank')"><i class="fas fa-copy"></i></button>-->
+                <button class="btn btn-light border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarHTML()" style="display: none;"><img src="site/icons/copiar.png" alt="Copiar"></button>
+                <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" style="display: none;" ><img src="site/icons/limpar.png" alt="Limpar"></button>
+                <!--<button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" disabled="true"><img src="site/icons/previa.png" height="25px" width="25px" alt="Prévia"></button>-->
+                <button class="btn btn-outline-success border-dark" id="btnSalvar" accesskey="s" title="Salvar (Shift+Alt+S)" onclick="SalvarHTML()" style="display: none;" ><img src="site/icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
                 <button class="btn btn-group" disabled>Ferramentas: </button> 
                 <button class="btn btn-outline-primary border-dark" id="btnFormatarTelefone" title="Formatar Telefone" onclick="ExibirFormatarTelefone()" >Formatar Telefone <img src="site/icons/phone.png" alt="Formatar Telefone"></button>
                 <button class="btn btn-outline-primary border-dark" id="btnTopicoTarefa" title="Tópico Tarefa" onclick="ExibirTopicoTarefa()" >Tópico Tarefa <img src="site/icons/topico.png" alt="Tópico"></button>
                 <button class="btn btn-outline-primary border-dark" id="btnTopicoOS" title="Tópico OS" onclick="ExibirTopicoOS()" >Tópico OS <img src="site/icons/topicoos.png" alt="OS"></button>
+                <button class="btn btn-outline-info border-dark" id="btnCopiarCodigo" title="Copiar Código HTML" onclick="CopiarCodigoHTML()" style="display: none;"><img src="site/icons/copiar.png" alt="Copiar Código HTML"></button>
             </div>
         </div>
         <br>
-        <div class="btn-group mt-lg-auto">
+        <div class="btn-group mt-lg-auto" style="display: none;">
             <button class="btn btn-group" disabled>Formatar: </button> 
             <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito (Alt+B)" onclick="addTag('b')"><b><img src="site/icons/negrito.png" alt="Negrito"></b></button>
             <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico (Alt+I)" onclick="addTag('i')"><i><img src="site/icons/italico.png" alt="Itálico"></i></button>
             <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado (Alt+U)" onclick="addTag('u')"><u><img src="site/icons/sublinhado.png" alt="Sublinhado"></u></button>
             <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado (Alt+T)" onclick="addTag('s')"><s><img src="site/icons/tachado.png" alt="Tachado"></s></button>
-            
-            
+            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="site/icons/quote.png" alt="Quote"></button>
             <button class="btn btn-outline-info border-dark" id="btnColor" title="Cor da Fonte"><img src="site/icons/color.png" alt="Cor da Fonte"></button>
             
                 
@@ -109,13 +115,14 @@
             <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" accesskey="g" title="Data da Agenda do Google (Shift+Alt+G)" onclick="AbrirDataGoogle()"><img src="site\icons\gcalendar.png" alt="Agenda do Google"/></button>         
             <button class="btn btn-outline-info border-dark" id="btnAudioWhatsapp" accesskey="w" title="Audio do WhatsApp/AnexoChat (Alt+W)" onclick="AbrirAudio()"><img src="site\icons\audio.png" alt="Audio do WhatsApp"/></button>         
         </div>
+    </div>
+    
+    <div class="container-fluid align-items-center">
         <div class="col-md-auto text-left">
             <textarea id="editor" class="mousetrap form-control" rows="25" placeholder="Digite aqui..."></textarea>
         </div>
-        <br><br>        
-        <br>
     </div>
-    
+
     <!-- Modal de Prévia -->
     <div class="modal fade" id="previaModal" tabindex="-1" role="dialog" aria-labelledby="previaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -371,10 +378,9 @@
     </div>
 
     <div class="footer-container">
-        <footer>
+        <footer style="text-align: center;">
             <font size="1">
-                Ferramenta desenvolvida por Cássio Rodolfo Alves de Carvalho Pinto (cassio@demaria.com.br). Sem fins lucrativos e para uso interno dos colaboradores da DeMaria Software®. DeMaria Software® é uma marca registrada e tem todos os seus direitos reservados.<br>
-                Icones por <u><a href="https://icons8.com" target="_blank">Icons8</a></u>. Direitos Reservados.
+                Ferramenta desenvolvida por Cássio Rodolfo Alves de Carvalho Pinto (cassio@demaria.com.br). Sem fins lucrativos e para uso interno dos colaboradores da DeMaria Software®. DeMaria Software® é uma marca registrada e tem todos os seus direitos reservados.
             </font>
         </footer>
     </div>
@@ -445,7 +451,8 @@
 
         // Função para salvar o texto do editor no armazenamento local
         function salvarTextoComoLocalStorage() {
-            const texto = document.getElementById("editor").value;
+            const editor = tinymce.get('editor');
+            const texto = editor.getContent();
             localStorage.setItem('textoSalvo', texto);
         }
 
@@ -453,7 +460,8 @@
         function carregarTextoDoLocalStorage() {
             const textoSalvo = localStorage.getItem('textoSalvo');
             if (textoSalvo) {
-                document.getElementById("editor").value = textoSalvo;
+                const editor = tinymce.get('editor');
+                editor.setContent(textoSalvo);
             }
         }
 
@@ -464,8 +472,13 @@
         }
 
         // Evento de teclado para monitorar a digitação
-        document.getElementById("editor").addEventListener("input", function() {
-            iniciarTemporizador(); // Chama a função para iniciar o temporizador ao digitar
+        tinymce.init({
+            selector: '#editor',
+            setup: function (editor) {
+                editor.on('input', function () {
+                    iniciarTemporizador(); // Chama a função para iniciar o temporizador ao digitar
+                });
+            }
         });
 
         // Adicionar um evento para interceptar o fechamento do modal
@@ -477,6 +490,41 @@
             }
         });
 
+        function CopiarHTML() {
+            const editor = tinymce.get('editor');
+            const htmlContent = editor.getContent();
+            CopiarParaClipboard(htmlContent);
+            //alert('Conteúdo copiado para a área de transferência!');
+        }
+
+        function CopiarParaClipboard(texto) {
+            // Usando a nova API Clipboard
+            navigator.clipboard.writeText(texto)
+                .then(function() {
+                    console.log("Texto copiado para a área de transferência!");
+                })
+                .catch(function(err) {
+                    console.error("Erro ao copiar o texto: ", err);
+                });
+        }
+
+        function CopiarCodigoHTML() {
+            const editor = tinymce.get('editor');
+            const htmlContent = editor.getContent();
+            CopiarParaClipboard(htmlContent);
+            alert('Código HTML copiado para a área de transferência!');
+        }
+
+        function ExibirTopicoTarefa() {
+            tinymce.activeEditor.windowManager.openUrl({
+                title: 'Tópico Tarefa',
+                url: '/site/topicotarefa.html',
+                width: 600,
+                height: 600
+            });
+        }
+
     </script>
+    <script src="script.js"></script>
 </body>
 </html>

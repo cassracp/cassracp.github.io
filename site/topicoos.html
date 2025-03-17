@@ -8,6 +8,8 @@
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
+            max-height: 200px; /* Altura máxima antes de mostrar a scrollbar */
+            overflow-y: auto; /* Adiciona scrollbar vertical se necessário */
         }
         .checkbox-group .form-check {
             flex: 1 0 25%; /* 3 por linha */
@@ -26,7 +28,7 @@
             <div class="form-group row">
                 <div class="col-sm-9">
                     <b>Assunto do Tópico:</b>
-                    <select id="assuntoTopicoSelect" class="form-control">
+                    <select id="assuntoTopicoSelect" class="form-control" title="Assunto do Tópico">
                         <option value="CN">CN - Cliente Novo</option>
                         <option value="NM">NM - Novo Módulo</option>
                         <option value="TT">TT - TROCA DE TITULARIDADE</option>
@@ -155,7 +157,7 @@
             <div class="form-group row">
                 <div class="col-lg">
                     <b>Tópico Formatado:</b>
-                    <textarea id="topicoFormatado" class="form-control" rows="5" readonly></textarea>
+                    <textarea id="topicoFormatado" class="form-control" rows="5" readonly title="Tópico Formatado"></textarea>
                 </div>
             </div>
             <br>

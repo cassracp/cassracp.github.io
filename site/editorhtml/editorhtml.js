@@ -1,21 +1,22 @@
 /* BOTÕES DE COPIAR, LIMPAR E PRÉVIA */
 
 function CopiarTexto(){
-	const textArea = document.getElementById("editor");
-	textArea.select();
-	document.execCommand("copy");
+    const htmlContent = tinymce.get('editor').getContent();
+    navigator.clipboard.writeText(htmlContent).then(() => {
+        alert('HTML copiado para a área de transferência!');
+    }).catch(err => {
+        console.error('Erro ao copiar o HTML: ', err);
+    });
 }
 
-
 function LimparEditor() {
-	var resultado = confirm("Confirma a limpeza do Editor?");
-	if (resultado){
-		document.getElementById("editor").value = "";
-		document.getElementById("editor").focus();
-	} else {
-		document.getElementById("editor").focus();
-	}
-
+    var resultado = confirm("Confirma a limpeza do Editor?");
+    if (resultado){
+        tinymce.get('editor').setContent('');
+        tinymce.get('editor').focus();
+    } else {
+        tinymce.get('editor').focus();
+    }
 }
 
 
@@ -89,66 +90,31 @@ function SalvarHTML() {
 }
 
 function ExibirFormatarTelefone() {
-    const modalFormatarTelefoneContent = document.getElementById("modalFormatarTelefoneContent");
-    
-    // Crie um elemento iframe para exibir o conteúdo do arquivo HTML
-    const iframe = document.createElement("iframe");
-
-    // Defina o atributo src do iframe para apontar para o seu arquivo HTML
-    iframe.src = "/site/numertel.html";
-
-    // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
-    iframe.width = "770";
-    iframe.height = "500";
-
-    // Limpe qualquer conteúdo existente no modal
-    modalFormatarTelefoneContent.innerHTML = "";
-
-    // Adicione o iframe ao modal
-    modalFormatarTelefoneContent.appendChild(iframe);
-	$('#formatarTelefoneModal').modal('show');
+    tinymce.activeEditor.windowManager.openUrl({
+        title: 'Formatar Telefone',
+        url: '/site/numertel.html',
+        width: 800,
+        height: 450
+    });
 }
 
 function ExibirTopicoTarefa() {
-    const modalTopicoTarefaContent = document.getElementById("modalTopicoTarefaContent");
-    
-    // Crie um elemento iframe para exibir o conteúdo do arquivo HTML
-    const iframe = document.createElement("iframe");
-
-    // Defina o atributo src do iframe para apontar para o seu arquivo HTML
-    iframe.src = "/site/topicotarefa.html";
-
-    // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
-    iframe.width = "600";
-    iframe.height = "600";
-
-    // Limpe qualquer conteúdo existente no modal
-    modalTopicoTarefaContent.innerHTML = "";
-
-    // Adicione o iframe ao modal
-    modalTopicoTarefaContent.appendChild(iframe);
-	$('#topicoTarefaModal').modal('show');
+    tinymce.activeEditor.windowManager.openUrl({
+        title: 'Tópico Tarefa',
+        url: '/site/topicotarefa.html',
+        width: 1200,
+        height: 200 // Ajuste a altura para 800
+    });
 }
 
 function ExibirTopicoOS() {
-    const modalTopicoOSContent = document.getElementById("modalTopicoOSContent");
-    
-    // Crie um elemento iframe para exibir o conteúdo do arquivo HTML
-    const iframe = document.createElement("iframe");
-
-    // Defina o atributo src do iframe para apontar para o seu arquivo HTML
-    iframe.src = "/site/topicoos.html";
-
-    // Defina a largura e altura desejadas para o iframe (ajuste conforme necessário)
-    iframe.width = "1200";
-    iframe.height = "1200";
-
-    // Limpe qualquer conteúdo existente no modal
-    modalTopicoOSContent.innerHTML = "";
-
-    // Adicione o iframe ao modal
-    modalTopicoOSContent.appendChild(iframe);
-	$('#topicoOSModal').modal('show');
+	tinymce.activeEditor.windowManager.openUrl({
+		title: 'Tópico OS',
+		url: 'site/topicoos.html',
+		width: 1200,
+		height: 800,
+		scrollbars: true,
+	});
 }
 
 /* FUNÇÕES AUXILIARES*/
@@ -418,23 +384,20 @@ function UsarTituloModelo(){
 
 // INSERE O SPOILER NO EDITOR
 function InserirSpoiler() {
-	const editor = document.getElementById("editor");
-	const cursorPosition = editor.selectionStart;
-	const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
-	const checkbox = document.getElementById("usarModelo");
-	const tituloSpoiler = checkbox.checked ? document.getElementById("modeloTitulo").value : document.getElementById("tituloSpoiler").value;	
-	const inicio = editor.selectionStart;
-	const fim = editor.selectionEnd;
-	const abreTag = `<div style="margin: 5px 20px 20px;"><div class="smallfont" style="margin-bottom: 2px;"><b>${tituloSpoiler}</b>: <input value="Open" style="margin: 0px; padding: 0px; width: 55px; font-size: 11px;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" type="button"></div><div class="alt2" style="border: 1px inset ; margin: 0px; padding: 6px;"><div style="display: none;">`;
-	const texto = `${abreTag}${selectedText}</div></div></div>`;
+    const editor = document.getElementById("editor");
+    const cursorPosition = editor.selectionStart;
+    const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd);
+    const checkbox = document.getElementById("usarModelo");
+    const tituloSpoiler = checkbox.checked ? document.getElementById("modeloTitulo").value : document.getElementById("tituloSpoiler").value;    
+    const inicio = editor.selectionStart;
+    const fim = editor.selectionEnd;
+    const spoilerHtml = `<div class="spoiler-container"><button class="spoiler-button" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none';">${tituloSpoiler}</button><div class="spoiler-content" style="display: none;">${selectedText}</div></div>`;
 
-	
+    editor.value = editor.value.substring(0, inicio) + spoilerHtml + editor.value.substring(fim);
+    $('#spoilerModal').modal('hide');
 
-	editor.value = editor.value.substring(0, inicio) + texto + editor.value.substring(fim);
-	$('#spoilerModal').modal('hide');
-
-	editor.setSelectionRange(cursorPosition + abreTag.length, cursorPosition + abreTag.length + selectedText.length);
-	editor.focus();
+    editor.setSelectionRange(cursorPosition + spoilerHtml.length, cursorPosition + spoilerHtml.length + selectedText.length);
+    editor.focus();
 }
 
 // ABRE O MODAL PARA LINK URL
