@@ -9,7 +9,7 @@ tinymce.init({
         'code', 'insertdatetime'
     ],
     menu: {
-        file: { title: 'Arquivo', items: 'newdocument restoredraft | preview | print | savehtml | copyhtml' }, // Certifique-se de que todos os itens estão listados aqui
+        file: { title: 'Arquivo', items: 'novodocumento copyhtml savehtml | print' }, // Certifique-se de que todos os itens estão listados aqui
         insert: { title: 'Inserir', items: 'image link media insertaudio emoticons charmap | insertCalendarDate insertdatetime' },
         format: { 
             title: 'Formatar', 
@@ -20,7 +20,7 @@ tinymce.init({
             items: 'spellchecker charmap emoticons layer | formatarTelefone topicoTarefa topicoOS' 
         },
     },
-    toolbar: 'undo redo | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough uppercase lowercase blockquote removeformat align lineheight numlist bullist indent outdent link image insertAudio | formatarTelefone topicoTarefa topicoOS | code copyhtml',
+    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough uppercase lowercase blockquote removeformat align lineheight numlist bullist indent outdent link image insertAudio | formatarTelefone topicoTarefa topicoOS | code',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'Author name',
     mergetags_list: [
@@ -37,10 +37,11 @@ tinymce.init({
 
         editor.ui.registry.addIcon('calendar-days', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"  class="size-6"><path d="M12 11.993a.75.75 0 0 0-.75.75v.006c0 .414.336.75.75.75h.006a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75H12ZM12 16.494a.75.75 0 0 0-.75.75v.005c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H12ZM8.999 17.244a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.006ZM7.499 16.494a.75.75 0 0 0-.75.75v.005c0 .414.336.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H7.5ZM13.499 14.997a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.005a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.005ZM14.25 16.494a.75.75 0 0 0-.75.75v.006c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75h-.005ZM15.75 14.995a.75.75 0 0 1 .75-.75h.005a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75H16.5a.75.75 0 0 1-.75-.75v-.006ZM13.498 12.743a.75.75 0 0 1 .75-.75h2.25a.75.75 0 1 1 0 1.5h-2.25a.75.75 0 0 1-.75-.75ZM6.748 14.993a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z" /><path fill-rule="evenodd" d="M18 2.993a.75.75 0 0 0-1.5 0v1.5h-9V2.994a.75.75 0 1 0-1.5 0v1.497h-.752a3 3 0 0 0-3 3v11.252a3 3 0 0 0 3 3h13.5a3 3 0 0 0 3-3V7.492a3 3 0 0 0-3-3H18V2.993ZM3.748 18.743v-7.5a1.5 1.5 0 0 1 1.5-1.5h13.5a1.5 1.5 0 0 1 1.5 1.5v7.5a1.5 1.5 0 0 1-1.5 1.5h-13.5a1.5 1.5 0 0 1-1.5-1.5Z" clip-rule="evenodd" /></svg>');
 
-        editor.ui.registry.addIcon('quote', '<i class="fa-solid fa-quote-right" style="width: 20px; height: 20px;"></i>'); // quote
-        editor.ui.registry.addIcon('fone', '<i class="fa-solid fa-phone"> style="width: 20px; height: 20px;"></i>'); // fone
-        editor.ui.registry.addIcon('topicotarefa', '<i class="fa-solid fa-message"> style="width: 20px; height: 20px;</i>') // topicotarefa
-        editor.ui.registry.addIcon('topicoos', '<i class="fa-solid fa-headset"> style="width: 20px; height: 20px;</i></i>') // topicoos
+        editor.ui.registry.addIcon('quote', '<i class="fa-solid fa-quote-right fa-lg"></i>'); // quote
+        editor.ui.registry.addIcon('fone', '<i class="fa-solid fa-phone fa-lg"></i>'); // fone
+        editor.ui.registry.addIcon('topicotarefa', '<i class="fa-solid fa-message fa-lg"></i>') // topicotarefa
+        editor.ui.registry.addIcon('topicoos', '<i class="fa-solid fa-headset fa-lg"></i></i>') // topicoos
+        editor.ui.registry.addIcon('novodocumento', '<i class="fa-regular fa-file fa-lg"></i>'); // novodocumento
 
         editor.ui.registry.addButton('insertAudio', {
             icon: 'custom-audio', // Usa o ícone SVG personalizado
@@ -122,18 +123,36 @@ tinymce.init({
                 });
             }
         });
-        editor.ui.registry.addMenuItem('newdocument', {
-            text: 'Novo documento',
-            icon: 'newdocument',
-            shortcut: 'Alt+N',
+
+        editor.ui.registry.addButton('novodocumento', {
+            icon: 'novodocumento',
+            tooltip: 'Novo documento',
             onAction: function () {
-                if (confirm('Tem certeza de que deseja criar um novo documento? Todo o conteúdo não salvo será perdido.')) {
+                if (confirm('Tem certeza de que deseja criar um novo documento?\nTodo o conteúdo não salvo será perdido.')) {
                     editor.setContent('');
                 }
             }
         });
+        editor.ui.registry.addMenuItem('novodocumento', {
+            text: 'Novo documento',
+            icon: 'novodocumento',
+            shortcut: 'Alt+N',
+            onAction: function () {
+                if (confirm('Tem certeza de que deseja criar um novo documento?\nTodo o conteúdo não salvo será perdido.')) {
+                    editor.setContent('');
+                }
+            }
+        });
+
+        editor.ui.registry.addButton('savehtml', {
+            icon: 'save',
+            tooltip: 'Salvar HTML',
+            onAction: function () {
+                salvarComoHTML(editor);
+            }
+        });
         editor.ui.registry.addMenuItem('savehtml', {
-            text: 'Salvar como HTML',
+            text: 'Salvar HTML',
             icon: 'save',
             shortcut: 'Ctrl+S',
             onAction: function () {
@@ -512,7 +531,7 @@ tinymce.init({
             }
         });
         
-        editor.addShortcut('ctrl+s', 'Salvar como HTML', function () {
+        editor.addShortcut('ctrl+s', 'Salvar HTML', function () {
             salvarComoHTML(editor);
         });
         editor.addShortcut('ctrl+shift+c', 'Copiar HTML', function () {
