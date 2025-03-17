@@ -601,6 +601,36 @@ tinymce.init({
                 editor.setContent('');
             }
         });
+
+        // Função para salvar o texto do editor no armazenamento local
+        function salvarTextoComoLocalStorage() {
+            const texto = editor.getContent();
+            localStorage.setItem('textoSalvo', texto);
+        }
+
+        // Função para carregar o texto do armazenamento local
+        function carregarTextoDoLocalStorage() {
+            const textoSalvo = localStorage.getItem('textoSalvo');
+            if (textoSalvo) {
+                editor.setContent(textoSalvo);
+            }
+        }
+
+        // Função para iniciar o temporizador após digitar um caractere
+        function iniciarTemporizador() {
+            clearTimeout(timeoutId); // Limpa o temporizador existente, se houver
+            timeoutId = setTimeout(salvarTextoComoLocalStorage, 3000); // Inicia um novo temporizador de 3 segundos
+        }
+
+        // Evento de inicialização do editor
+        editor.on('init', function () {
+            carregarTextoDoLocalStorage(); // Carregar texto ao carregar o editor
+        });
+
+        // Evento de teclado para monitorar a digitação
+        editor.on('input', function () {
+            iniciarTemporizador(); // Chama a função para iniciar o temporizador ao digitar
+        });
     }
 });
 
