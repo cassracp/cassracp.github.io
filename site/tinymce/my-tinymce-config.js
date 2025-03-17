@@ -4,11 +4,11 @@ tinymce.init({
     language: 'pt_BR',
     plugins: [
         // Core editing features
-        'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+        'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'autolink', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
         // Other features
         'code', 'codesample', 'insertdatetime','help',
         // Non-standard features
-        'contextmenu', 'visualchars',
+        'visualchars', 'accordion', 'fullscreen', 'preview'
     ],
     codesample_languages: [
         {text: 'SQL', value: 'sqlcode'},
@@ -20,7 +20,7 @@ tinymce.init({
     ],
     menu: {
         file: { title: 'Arquivo', items: 'novodocumento copyhtml savehtml | print' }, // Certifique-se de que todos os itens estão listados aqui
-        insert: { title: 'Inserir', items: 'image link linkOS linkTarefa media inseriraudio emoticons charmap | insertCalendarDate insertdatetime | codesample' },
+        insert: { title: 'Inserir', items: 'hr | image link linkOS linkTarefa media inseriraudio emoticons charmap | insertCalendarDate insertdatetime | codesample' },
         format: { 
             title: 'Formatar', 
             items: 'bold italic underline strikethrough upperCaselowerCase superscript subscript codeformat blockformats align lineheight forecolor backcolor removeformat blockquote ' 
@@ -30,46 +30,28 @@ tinymce.init({
             items: 'spellchecker charmap emoticons layer | formatarTelefone topicoTarefa topicoOS' 
         },
     },
-    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough upperCaselowerCase  blockquote removeformat align lineheight numlist bullist indent outdent link linkOS linkTarefa image inseriraudio codesample | formatarTelefone topicoTarefa topicoOS | code | mybutton',
+    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough upperCaselowerCase blockquote removeformat align lineheight numlist bullist indent outdent hr accordion link linkOS linkTarefa image inseriraudio codesample | formatarTelefone topicoTarefa topicoOS | code | mybutton',
     insertdatetime_timeformat: '%H:%M:%Sh',
-    insertdatetime_formats: ['%d/%m/%Y às %H:%Mh', '%d-%m-%Y às %H:%Mh', '%H:%Mh (Brasília, GMT -03:00)'],
-    contextmenu: 'bold italic underline forecolor',
+    insertdatetime_formats: ['%d/%m/%Y', '%d-%m-%Y', '%d/%m/%Y às %H:%Mh', '%d-%m-%Y às %H:%Mh', '%H:%Mh (Brasília, GMT -03:00)'],
+    browser_spellcheck: true, // Habilita o corretor do navegador
+    contextmenu: "bold italic underline forecolor | lists configurepermanentpen | link openlink unlink | insertdatetime | image editimage | table",
     link_default_target: '_blank',
     lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
     content_style: "body { line-height: 1.4; }",
     forced_root_block: null,
     setup: function (editor) {
-        editor.on('init', function () {
-            Prism.highlightAll(); // Reaplica o realce ao carregar o editor
+        editor.on('contextmenu', function (event) {
+            if (event.ctrlKey) {
+                // Se o usuário segurar CTRL, exibe o menu do navegador
+                return;
+            }
+            // Caso contrário, permite o menu do TinyMCE
+            event.preventDefault();
+            editor.execCommand('mceContextMenu', false);
         });
 
         editor.on('init', function () {
-            // Desabilita o menu de contexto padrão do navegador
-            editor.getContainer().oncontextmenu = function () { return false; };
-          });    
-          
-          let toggleState = false;
-
-        editor.ui.registry.addMenuButton('upperCaselowerCase', {
-            icon: 'upperlowercase',
-            tooltip: 'Transformar Maisculas/Minusculas',
-            fetch: (callback) => {
-                const items = [
-                    {
-                        type: 'menuitem',
-                        text: 'Tudo Maiúsculo',
-                        icon: 'uppercase',
-                        onAction: () => FormatarUpperCase(editor)
-                    },
-                    {
-                        type: 'menuitem',
-                        text: 'Tudo Minúsculo',
-                        icon: 'lowercase',
-                        onAction: () => FormatarLowerCase(editor)
-                    }
-                ];
-                callback(items);
-            }
+            Prism.highlightAll(); // Reaplica o realce ao carregar o editor
         });
 
         editor.ui.registry.addNestedMenuItem('upperCaselowerCase', {
@@ -605,22 +587,6 @@ tinymce.init({
                         dialog.close();
                     }
                 });
-            }
-        });
-        
-        editor.ui.registry.addContextMenu('link', {
-            update: function (element) {
-                return !element.closest('a') ? '' : 'link linkOS linkTarefa';
-            }
-        });
-        editor.ui.registry.addContextMenu('image', {
-            update: function (element) {
-                return !element.closest('img') ? '' : 'image inseriraudio';
-            }
-        });
-        editor.ui.registry.addContextMenu('media', {
-            update: function (element) {
-                return !element.closest('video, audio') ? '' : 'media inseriraudio';
             }
         });
         
