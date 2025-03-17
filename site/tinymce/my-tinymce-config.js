@@ -21,12 +21,7 @@ tinymce.init({
         },
     },
     toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough uppercase lowercase blockquote removeformat align lineheight numlist bullist indent outdent link image insertAudio | formatarTelefone topicoTarefa topicoOS | code',
-    tinycomments_mode: 'embedded',
-    tinycomments_author: 'Author name',
-    mergetags_list: [
-        { value: 'First.Name', title: 'First Name' },
-        { value: 'Email', title: 'Email' },
-    ],
+    link_default_target: '_blank',
     lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
     content_style: "body { line-height: 1.4; }",
     setup: function (editor) {
