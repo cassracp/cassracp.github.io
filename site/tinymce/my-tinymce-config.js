@@ -6,13 +6,21 @@ tinymce.init({
         // Core editing features
         'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
         // Other features
-        'code', 'insertdatetime','help',
+        'code', 'codesample', 'insertdatetime','help',
         // Non-standard features
         'contextmenu', 'visualchars',
     ],
+    codesample_languages: [
+        {text: 'SQL', value: 'sqlcode'},
+        {text: 'HTML/XML', value: 'markup'},
+        {text: 'JavaScript', value: 'javascript'},
+        {text: 'Python', value: 'python'},
+        {text: 'Java', value: 'java'},
+        {text: 'C#', value: 'csharp'}
+    ],
     menu: {
         file: { title: 'Arquivo', items: 'novodocumento copyhtml savehtml | print' }, // Certifique-se de que todos os itens estão listados aqui
-        insert: { title: 'Inserir', items: 'image link linkOS linkTarefa media inseriraudio emoticons charmap | insertCalendarDate insertdatetime' },
+        insert: { title: 'Inserir', items: 'image link linkOS linkTarefa media inseriraudio emoticons charmap | insertCalendarDate insertdatetime | codesample' },
         format: { 
             title: 'Formatar', 
             items: 'bold italic underline strikethrough upperCaselowerCase superscript subscript codeformat blockformats align lineheight forecolor backcolor removeformat blockquote ' 
@@ -22,14 +30,19 @@ tinymce.init({
             items: 'spellchecker charmap emoticons layer | formatarTelefone topicoTarefa topicoOS' 
         },
     },
-    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough upperCaselowerCase  blockquote removeformat align lineheight numlist bullist indent outdent link linkOS linkTarefa image inseriraudio | formatarTelefone topicoTarefa topicoOS | code | mybutton',
+    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough upperCaselowerCase  blockquote removeformat align lineheight numlist bullist indent outdent link linkOS linkTarefa image inseriraudio codesample | formatarTelefone topicoTarefa topicoOS | code | mybutton',
     insertdatetime_timeformat: '%H:%M:%Sh',
     insertdatetime_formats: ['%d/%m/%Y às %H:%Mh', '%d-%m-%Y às %H:%Mh', '%H:%Mh (Brasília, GMT -03:00)'],
     contextmenu: 'bold italic underline forecolor',
     link_default_target: '_blank',
     lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
     content_style: "body { line-height: 1.4; }",
+    forced_root_block: null,
     setup: function (editor) {
+        editor.on('init', function () {
+            Prism.highlightAll(); // Reaplica o realce ao carregar o editor
+        });
+
         editor.on('init', function () {
             // Desabilita o menu de contexto padrão do navegador
             editor.getContainer().oncontextmenu = function () { return false; };
