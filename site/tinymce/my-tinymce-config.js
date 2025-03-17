@@ -966,4 +966,6 @@ function alerta(titulo, mensagem) {
     });
 }
 
-
+function sweetAlert(options) {
+    Swal.fire(options);
+}
