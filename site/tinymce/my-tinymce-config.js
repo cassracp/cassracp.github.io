@@ -119,94 +119,15 @@ tinymce.init({
             icon: 'linkos',
             tooltip: 'Inserir Link OS',
             onAction: function () {
-                editor.windowManager.open({
-                    title: 'Inserir Link OS',
-                    body: {
-                        type: 'panel',
-                        items: [
-                            {
-                                type: 'input',
-                                name: 'nOS',
-                                label: 'Nº da OS:',
-                                inputType: 'number',
-                                placeholder: 'Digite apenas números',
-                                ariaLabel: 'Número da OS'
-                            }
-                        ],
-                    },
-                    buttons: [
-                        {
-                            text: 'Cancelar',
-                            type: 'cancel'
-                        },
-                        {
-                            text: 'Salvar',
-                            type: 'submit',
-                            primary: true,
-                            focus: true
-                        }
-                    ],
-                    onSubmit: function (dialog) {
-                        var data = dialog.getData();
-                        var nOS = data.nOS;                        
-                        if (!SomenteNumeros(nOS)) { 
-                            alerta("Erro", "Digite apenas números!");
-                        } else if (!nOS) {
-                            alerta("Erro", 'Número da OS não informado!');
-                        } else {
-                            var linkOS = InserirLinkOS(nOS);
-                            editor.insertContent(linkOS);
-                            dialog.close();
-                        }
-                    }
-                });
+                openLinkOSDialog(editor);
             }
-        });        
+        });
+        
         editor.ui.registry.addMenuItem('linkOS', {
             text: 'Link de OS...',
             icon: 'linkos',
             onAction: function () {
-                editor.windowManager.open({
-                    title: 'Inserir Link OS',
-                    body: {
-                        type: 'panel',
-                        items: [
-                            {
-                                type: 'input',
-                                name: 'nOS',
-                                label: 'Nº da OS:',
-                                inputType: 'number',
-                                placeholder: 'Digite apenas números',
-                                ariaLabel: 'Número da OS'
-                            }
-                        ],
-                    },
-                    buttons: [
-                        {
-                            text: 'Cancelar',
-                            type: 'cancel'
-                        },
-                        {
-                            text: 'Salvar',
-                            type: 'submit',
-                            primary: true,
-                            focus: true
-                        }
-                    ],
-                    onSubmit: function (dialog) {
-                        var data = dialog.getData();
-                        var nOS = data.nOS;
-                        if (!SomenteNumeros(nOS)) { 
-                            alerta("Erro", "Digite apenas números!");
-                        } else if (!nOS) {
-                            alerta("Erro", 'Número da OS não informado!');
-                        } else {
-                            var linkOS = InserirLinkOS(nOS);
-                            editor.insertContent(linkOS);
-                            dialog.close();
-                        }
-                    }
-                });
+                openLinkOSDialog(editor);
             }
         });
 
@@ -214,94 +135,14 @@ tinymce.init({
             icon: 'linktarefa',
             tooltip: 'Inserir Link Tarefa',
             onAction: function () {
-                editor.windowManager.open({
-                    title: 'Inserir Link Tarefa',
-                    body: {
-                        type: 'panel',
-                        items: [
-                            {
-                                type: 'input',
-                                name: 'nTarefa',
-                                label: 'Nº da Tarefa:',
-                                inputType: 'number',
-                                placeholder: 'Digite apenas números',
-                                ariaLabel: 'Número da Tarefa'
-                            }
-                        ],
-                    },
-                    buttons: [
-                        {
-                            text: 'Cancelar',
-                            type: 'cancel'
-                        },
-                        {
-                            text: 'Salvar',
-                            type: 'submit',
-                            primary: true,
-                            focus: true
-                        }
-                    ],
-                    onSubmit: function (dialog) {
-                        var data = dialog.getData();
-                        var nTarefa = data.nTarefa;
-                        if (!SomenteNumeros(nTarefa)) { 
-                            alerta("Erro", "Digite apenas números!");
-                        } else if (!nTarefa) {
-                            alerta("Erro", 'Número da Tarefa não informado!');
-                        } else {
-                            var linkTarefa = InserirLinkTarefa(nTarefa);
-                            editor.insertContent(linkTarefa);
-                            dialog.close();
-                        }
-                    }
-                });
+                openLinkTarefaDialog(editor);
             }
         });
         editor.ui.registry.addMenuItem('linkTarefa', {
             text: 'Link de Tarefa...',
             icon: 'linktarefa',
             onAction: function () {
-                editor.windowManager.open({
-                    title: 'Inserir Link Tarefa',
-                    body: {
-                        type: 'panel',
-                        items: [
-                            {
-                                type: 'input',
-                                name: 'nTarefa',
-                                label: 'Nº da Tarefa:',
-                                inputType: 'number',
-                                placeholder: 'Digite apenas números',
-                                ariaLabel: 'Número da Tarefa'
-                            }
-                        ],
-                    },
-                    buttons: [
-                        {
-                            text: 'Cancelar',
-                            type: 'cancel'
-                        },
-                        {
-                            text: 'Salvar',
-                            type: 'submit',
-                            primary: true,
-                            focus: true
-                        }
-                    ],
-                    onSubmit: function (dialog) {
-                        var data = dialog.getData();
-                        var nTarefa = data.nTarefa;
-                        if (!SomenteNumeros(nTarefa)) {
-                            alerta("Erro", "Digite apenas números!");
-                        } else if (!nTarefa) {
-                            alerta("Erro", 'Número da Tarefa não informado!');
-                        } else {
-                            var linkTarefa = InserirLinkTarefa(nTarefa);
-                            editor.insertContent(linkTarefa);
-                            dialog.close();
-                        }
-                    }
-                });
+                openLinkTarefaDialog(editor);
             }
         });
         //#endregion
@@ -311,42 +152,7 @@ tinymce.init({
             icon: 'custom-audio', // Usa o ícone SVG personalizado
             tooltip: 'Inserir Audio',
             onAction: function () {
-                editor.windowManager.open({
-                    title: 'Inserir Audio',
-                    body: {
-                        type: 'panel',
-                        items: [
-                            {
-                                type: 'input',
-                                name: 'audioUrl',
-                                label: 'URL do Audio'
-                            }
-                        ]
-                    },
-                    buttons: [
-                        {
-                            text: 'Cancelar',
-                            type: 'cancel'
-                        },
-                        {
-                            text: 'Salvar',
-                            type: 'submit',
-                            primary: true,
-                            focus: true
-                        }
-                    ],
-                    onSubmit: function (dialog) {
-                        var data = dialog.getData();
-                        var url = data.audioUrl;
-                        if (url) {
-                            var audioHtml = FormatarAudio(url);
-                            editor.insertContent(audioHtml);
-                        } else {
-                            alerta("Erro", 'URL do Audio não informada!');
-                        }
-                        dialog.close();
-                    }
-                });
+                openInsertAudioDialog(editor);
             }
         });
         editor.ui.registry.addMenuItem('inseriraudio', {
@@ -963,9 +769,202 @@ function alerta(titulo, mensagem) {
         icon: "error",
         showCancelButton: false,
         confirmButtonText: "OK",
+        customClass: {
+            popup: 'custom-swall-popup'
+        }
     });
 }
 
+// Adiciona um estilo personalizado para o SweetAlert
+const style = document.createElement('style');
+style.innerHTML = `
+    .custom-swal-popup {
+        z-index: 99999 !important;
+    }
+`;
+document.head.appendChild(style);
+
 function sweetAlert(options) {
     Swal.fire(options);
+}
+
+// Função para abrir o painel de "Inserir Link OS"
+function openLinkOSDialog(editor) {
+    editor.windowManager.open({
+        title: 'Inserir Link OS',
+        body: {
+            type: 'panel',
+            items: [
+                {
+                    type: 'input',
+                    name: 'nOS',
+                    label: 'Nº da OS:',
+                    inputType: 'number',
+                    placeholder: 'Digite apenas números',
+                    ariaLabel: 'Número da OS'
+                }
+            ]
+        },
+        buttons: [
+            {
+                text: 'Cancelar',
+                type: 'cancel'
+            },
+            {
+                text: 'Salvar',
+                type: 'submit',
+                primary: true,
+                focus: true
+            }
+        ],
+        onSubmit: function (dialog) {
+            var data = dialog.getData();
+            var nOS = data.nOS;
+
+            // Validação: se não for somente números ou estiver vazio, fecha o painel e exibe o alerta
+            if (!nOS) {
+                dialog.close(); // Fecha o painel
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Número da OS não informado!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Reabre o painel após o usuário confirmar o alerta
+                    openLinkOSDialog(editor);
+                });
+            } else if (!SomenteNumeros(nOS)) {
+                dialog.close();
+                Swal.fire({
+                    title: 'Erro',
+                    text: "Digite apenas números!",
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    openLinkOSDialog(editor);
+                });
+            } else {
+                // Se a validação passar, insere o conteúdo e fecha o painel
+                var linkOS = InserirLinkOS(nOS);
+                editor.insertContent(linkOS);
+                dialog.close();
+            }
+        }
+    });
+}
+
+function openLinkTarefaDialog(editor) {
+    editor.windowManager.open({
+        title: 'Inserir Link Tarefa',
+        body: {
+            type: 'panel',
+            items: [
+                {
+                    type: 'input',
+                    name: 'nTarefa',
+                    label: 'Nº da Tarefa:',
+                    inputType: 'number',
+                    placeholder: 'Digite apenas números',
+                    ariaLabel: 'Número da Tarefa'
+                }
+            ],
+        },
+        buttons: [
+            {
+                text: 'Cancelar',
+                type: 'cancel'
+            },
+            {
+                text: 'Salvar',
+                type: 'submit',
+                primary: true,
+                focus: true
+            }
+        ],
+        onSubmit: function (dialog) {
+            var data = dialog.getData();
+            var nTarefa = data.nTarefa;
+
+            // Validação: se não for somente números ou estiver vazio, fecha o painel e exibe o alerta
+            if (!nTarefa) {
+                dialog.close(); // Fecha o painel
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Número da Tarefa não informado!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Reabre o painel após o usuário confirmar o alerta
+                    openLinkTarefaDialog(editor);
+                });
+            } else if (!SomenteNumeros(nTarefa)) {
+                dialog.close();
+                Swal.fire({
+                    title: 'Erro',
+                    text: "Digite apenas números!",
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    openLinkTarefaDialog(editor);
+                });
+            } else {
+                // Se a validação passar, insere o conteúdo e fecha o painel
+                var linkOS = InserirLinkTarefa(nTarefa);
+                editor.insertContent(linkOS);
+                dialog.close();
+            }
+        }
+    });
+}
+
+function openInsertAudioDialog(editor){
+    editor.windowManager.open({
+        title: 'Inserir Audio',
+        body: {
+            type: 'panel',
+            items: [
+                {
+                    type: 'input',
+                    name: 'audioUrl',
+                    label: 'URL do Audio',
+                    placeholder: 'Insira a URL do audio',
+                    ariaLabel: 'URL do Audio'
+                }
+            ]
+        },
+        buttons: [
+            {
+                text: 'Cancelar',
+                type: 'cancel'
+            },
+            {
+                text: 'Salvar',
+                type: 'submit',
+                primary: true,
+                focus: true
+            }
+        ],
+        onSubmit: function (dialog) {
+            var data = dialog.getData();
+            var url = data.audioUrl;
+            // Validação: se não for somente números ou estiver vazio, fecha o painel e exibe o alerta
+            if (!url) {
+                dialog.close(); // Fecha o painel
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'URL do Audio não informado!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Reabre o painel após o usuário confirmar o alerta
+                    openInsertAudioDialog(editor);
+                });
+            } else {
+                // Se a validação passar, insere o conteúdo e fecha o painel
+                var audioHtml = FormatarAudio(url);
+                editor.insertContent(audioHtml);
+                dialog.close();
+            }
+        }
+    });
 }
