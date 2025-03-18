@@ -6,7 +6,7 @@ tinymce.init({
         // Core editing features
         'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'autolink', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
         // Other features
-        'code', 'codesample', 'insertdatetime','help',
+        'code', 'codesample', 'insertdatetime','help', 'quickbars',
         // Non-standard features
         'visualchars', 'accordion', 'fullscreen', 'preview'
     ],
@@ -37,7 +37,10 @@ tinymce.init({
     contextmenu: "bold italic underline forecolor | lists configurepermanentpen | link openlink unlink | insertdatetime | image editimage | table",
     link_default_target: '_blank',
     lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
-    content_style: "body { line-height: 1.4; }",
+    content_style: "body { line-height: 1.4; font-size: 10pt }",
+    quickbars_insert_toolbar: false,
+    quickbars_selection_toolbar: 'blocks | bold italic underline forecolor backcolor upperCaselowerCase removeformat quicklink blockquote indent outdent',
+    quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
     forced_root_block: null,
     setup: function (editor) {
         editor.on('contextmenu', function (event) {
