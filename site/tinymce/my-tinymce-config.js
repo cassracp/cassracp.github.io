@@ -108,9 +108,9 @@ tinymce.init({
         
                             // Criação do HTML
                             if (!descrImagem) {
-                                html = `<a href="${imgUrl}" target="_blank"><img src="${imgUrl}" style="max-width: 100%; height: auto;" /></a>`;
+                                html = `<a href="${imgUrl}" target="_blank" rel="noopener"><img src="${imgUrl}" style="max-width: 100%; height: auto;" /></a>`;
                             } else {
-                                html = `<a href="${imgUrl}" target="_blank"><img src="${imgUrl}" style="max-width: 100%; height: auto;" alt="${descrImagem}" title="${descrImagem}"></a><br><small><font color="gray">(${descrImagem})</font></small>`;
+                                html = `<a href="${imgUrl}" target="_blank" rel="noopener"><img src="${imgUrl}" style="max-width: 100%; height: auto;" alt="${descrImagem}" title="${descrImagem}"></a><br><small><font color="gray">(${descrImagem})</font></small>`;
                             }
         
                             // Inserir no corpo do editor
