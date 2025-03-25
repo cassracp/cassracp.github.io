@@ -20,7 +20,7 @@ tinymce.init({
     ],
     menu: {
         file: { title: 'Arquivo', items: 'novodocumento copyhtml savehtml | print' }, // Certifique-se de que todos os itens estão listados aqui
-        insert: { title: 'Inserir', items: 'hr | image link linkOS linkTarefa media inseriraudio emoticons charmap | insertCalendarDate insertdatetime | codesample' },
+        insert: { title: 'Inserir', items: 'hr | image imagemComLink link linkOS linkTarefa media inseriraudio emoticons charmap | insertCalendarDate insertdatetime | codesample' },
         format: { 
             title: 'Formatar', 
             items: 'bold italic underline strikethrough upperCaselowerCase superscript subscript codeformat blockformats align lineheight forecolor backcolor removeformat blockquote ' 
@@ -30,7 +30,7 @@ tinymce.init({
             items: 'spellchecker charmap emoticons layer | formatarTelefone topicoTarefa topicoOS' 
         },
     },
-    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough upperCaselowerCase blockquote removeformat align lineheight numlist bullist indent outdent hr accordion link linkOS linkTarefa image inseriraudio codesample | formatarTelefone topicoTarefa topicoOS | code | mybutton',
+    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough upperCaselowerCase blockquote removeformat align lineheight numlist bullist indent outdent hr accordion link linkOS linkTarefa imagemComLink inseriraudio codesample | formatarTelefone topicoTarefa topicoOS | code | mybutton',
     insertdatetime_timeformat: '%H:%M:%Sh',
     insertdatetime_formats: ['%d/%m/%Y', '%d-%m-%Y', '%d/%m/%Y às %H:%Mh', '%d-%m-%Y às %H:%Mh', '%H:%Mh (Brasília, GMT -03:00)'],
     browser_spellcheck: true, // Habilita o corretor do navegador
@@ -56,6 +56,77 @@ tinymce.init({
         editor.on('init', function () {
             Prism.highlightAll(); // Reaplica o realce ao carregar o editor
         });
+
+        editor.ui.registry.addButton('imagemComLink', {
+            icon: 'image',
+            tooltip: 'Inserir imagem com link',
+            onAction: function () {
+                function abrirPainelImagemComLink(imgUrl = '', descrImagem = '') {
+                    editor.windowManager.open({
+                        title: 'Inserir Imagem com Link',
+                        body: {
+                            type: 'panel',
+                            items: [
+                                {
+                                    type: 'input',
+                                    name: 'imgUrl',
+                                    label: 'URL da Imagem',
+                                    placeholder: 'https://exemplo.com/imagem.jpg',
+                                    value: imgUrl
+                                },
+                                {
+                                    type: 'input',
+                                    name: 'descr',
+                                    label: 'Descrição da Imagem',
+                                    placeholder: 'Imagem de exemplo',
+                                    value: descrImagem
+                                }
+                            ],
+                        },
+                        buttons: [
+                            { text: 'Cancelar', type: 'cancel' },
+                            { text: 'Inserir', type: 'submit', primary: true }
+                        ],
+                        onSubmit: function (dialog) {
+                            var data = dialog.getData();
+                            var imgUrl = data.imgUrl.trim();
+                            var descrImagem = data.descr.trim();
+                            var html;
+        
+                            // Validação básica
+                            if (!imgUrl) {
+                                dialog.close();
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro',
+                                    text: 'Preencha a URL da Imagem!',
+                                }).then(() => {
+                                    abrirPainelImagemComLink(imgUrl, descrImagem); // Reabre com os valores preenchidos
+                                });
+                                return;
+                            }
+        
+                            // Criação do HTML
+                            if (!descrImagem) {
+                                html = `<a href="${imgUrl}" target="_blank"><img src="${imgUrl}" style="max-width: 100%; height: auto;" /></a>`;
+                            } else {
+                                html = `<a href="${imgUrl}" target="_blank"><img src="${imgUrl}" style="max-width: 100%; height: auto;" alt="${descrImagem}" title="${descrImagem}"></a><br><small><font color="gray">(${descrImagem})</font></small>`;
+                            }
+        
+                            // Inserir no corpo do editor
+                            editor.insertContent(html);
+        
+                            // Fechar o painel
+                            dialog.close();
+                        }
+                    });
+                }
+        
+                // Abrir painel inicialmente
+                abrirPainelImagemComLink();
+            }
+        });
+        
 
         editor.ui.registry.addNestedMenuItem('upperCaselowerCase', {
             text: 'Transformar Maisculas/Minusculas',
