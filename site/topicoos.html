@@ -30,26 +30,38 @@
                     <b>Assunto do Tópico:</b>
                     <select id="assuntoTopicoSelect" class="form-control" title="Assunto do Tópico">
                         <option value="CN">CN - Cliente Novo</option>
+                        <option value="MIG">MIG - Migração</option>
                         <option value="NM">NM - Novo Módulo</option>
-                        <option value="TT">TT - TROCA DE TITULARIDADE</option>
+                        <option value="TT">TT - Troca de Titularidade</option>
                         <option value="OUTRO">Outro (especifique)</option>
                     </select>
                     <input type="text" id="assuntoTopicoInput" class="form-control" style="display: none;" placeholder="Digite a abreviatura do assunto (ex.: CN)">
                 </div>
             </div>
             <hr>
-            <div class="form-group row">                           
-                <div class="col-sm-10">
-                    <b>Título do Tópico:</b>
-                    <div class="form-check">
+            <b>Título do Tópico:</b>
+            <div class="form-group row">                 
+                <div class="checkbox-group col-sm-12" style="display: flex; flex-wrap: wrap;"> 
+                    <!-- Primeira linha de checkboxes -->                   
+                    <div class="form-check" style="flex: 1 0 25%;">
                         <input type="checkbox" class="form-check-input" id="chkInstal" value="Instalação">
                         <label class="form-check-label" for="chkInstal">Instalação</label>
                     </div>
-                    <div class="form-check">
+                    <div class="form-check" style="flex: 1 0 70%;">
+                        <input type="checkbox" class="form-check-input" id="chkDesenv" value="Desenvolvimento">
+                        <label class="form-check-label" for="chkDesenv">Desenvolvimento</label>
+                    </div>
+                    <!-- Segunda linha de checkboxes --> 
+                    <div class="form-check" style="flex: 1 0 25%;">
                         <input type="checkbox" class="form-check-input" id="chkConfig" value="Configuração">
                         <label class="form-check-label" for="chkConfig">Configuração</label>
+                    </div>                    
+                    <div class="form-check" style="flex: 1 0 70%;">
+                        <input type="checkbox" class="form-check-input" id="chkValid" value="Validação">
+                        <label class="form-check-label" for="chkValid">Validação</label>
                     </div>
-                    <div class="form-check">
+                    <!-- Terceira linha de checkboxes --> 
+                    <div class="form-check" style="flex: 1 0 100%;">
                         <input type="checkbox" class="form-check-input" id="chkTrn" value="Treinamento">
                         <label class="form-check-label" for="chkTrn">Treinamento</label>
                     </div>

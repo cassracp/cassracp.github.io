@@ -250,6 +250,8 @@ function FormatarTopicoOS() {
     const chkInstal = document.getElementById("chkInstal");
     const chkConfig = document.getElementById("chkConfig");
     const chkTrn = document.getElementById("chkTrn");
+	const chkDesenv = document.getElementById("chkDesenv");
+	const chkValid = document.getElementById("chkValid");
 	const chkNascimento = document.getElementById("chkNascimento");
 	const chkCasamento = document.getElementById("chkCasamento");
 	const chkObito = document.getElementById("chkObito");
@@ -276,8 +278,8 @@ function FormatarTopicoOS() {
     if (numeroTarefa === "") return;
 
 	// Verifica se pelo menos um checkbox está marcado
-    if (!chkInstal.checked && !chkConfig.checked && !chkTrn.checked) {
-        alert("Você deve selecionar pelo menos uma opção (Instalação, Configuração, Treinamento).");
+    if (!chkInstal.checked && !chkConfig.checked && !chkTrn.checked && !chkDesenv.checked && !chkValid.checked) {
+        alert("Você deve selecionar pelo menos uma opção (Instalação, Configuração, Treinamento, Desenvolvimento, Validação).");
         return;
     }
 
@@ -289,6 +291,8 @@ function FormatarTopicoOS() {
     if (chkInstal.checked) topicosSelecionados.push(chkInstal.value);
     if (chkConfig.checked) topicosSelecionados.push(chkConfig.value);
     if (chkTrn.checked) topicosSelecionados.push(chkTrn.value);
+	if (chkDesenv.checked) topicosSelecionados.push(chkDesenv.value);
+	if (chkValid.checked) topicosSelecionados.push(chkValid.value);
 
     // Se houver tópicos selecionados, adiciona-os à formatação
     if (topicosSelecionados.length > 0) {
