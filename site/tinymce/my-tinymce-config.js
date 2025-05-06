@@ -42,14 +42,11 @@ tinymce.init({
     'Georgia=georgia,palatino;' +
     'Helvetica=helvetica;' +
     'Impact=impact,chicago;' +
-    'Symbol=symbol;' +
     'Tahoma=tahoma,arial,helvetica,sans-serif;' +
     'Terminal=terminal,monaco;' +
     'Times New Roman=times new roman,times;' +
     'Trebuchet MS=trebuchet ms,geneva;' +
-    'Verdana=verdana,geneva;' +
-    'Webdings=webdings;' +
-    'Wingdings=wingdings,zapf dingbats;',
+    'Verdana=verdana,geneva;',
     font_size_formats: '6pt 8pt 10pt 12pt 14pt 16pt 18pt 24pt 26pt 32pt 48pt',
     insertdatetime_timeformat: '%H:%M:%Sh',
     insertdatetime_formats: ['%d/%m/%Y', '%d-%m-%Y', '%d/%m/%Y às %H:%Mh', '%d-%m-%Y às %H:%Mh', '%H:%Mh (Brasília, GMT -03:00)'],
