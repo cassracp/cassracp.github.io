@@ -59,7 +59,7 @@ tinymce.init({
     lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
     content_style: "body { line-height: 1.4; font-size: 10pt; }",
     quickbars_insert_toolbar: false,
-    quickbars_selection_toolbar: 'bold italic underline fontfamily fontsize fontsizeselect forecolor backcolor upperCaselowerCase removeformat quicklink blockquote indent outdent',
+    quickbars_selection_toolbar: 'bold italic underline removeformat fontfamily fontsize fontsizeselect forecolor backcolor upperCaselowerCase quicklink blockquote indent outdent',
     quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
     forced_root_block: null,
     setup: function (editor) {
