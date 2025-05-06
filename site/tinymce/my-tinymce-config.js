@@ -30,16 +30,36 @@ tinymce.init({
             items: 'spellchecker charmap emoticons layer | formatarTelefone topicoTarefa topicoOS' 
         },
     },
-    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize forecolor backcolor bold italic underline strikethrough upperCaselowerCase blockquote removeformat align lineheight numlist bullist indent outdent hr accordion link linkOS linkTarefa imagemComLink inseriraudio codesample | formatarTelefone topicoTarefa topicoOS | code | mybutton',
+    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize fontsizeselect forecolor backcolor bold italic underline strikethrough upperCaselowerCase blockquote removeformat align lineheight numlist bullist indent outdent hr accordion link linkOS linkTarefa imagemComLink inseriraudio codesample | formatarTelefone topicoTarefa topicoOS | code | mybutton',
+    font_family_formats: 
+    'Andale Mono=andale mono,times;' +
+    'Arial=arial,helvetica,sans-serif;' +
+    'Arial Black=arial black,avant garde;' +
+    'Book Antiqua=book antiqua,palatino;' +
+    'Comic Sans MS=comic sans ms,sans-serif;' +
+    'Consolas=Consolas,monospace;' +
+    'Courier New=courier new,courier;' +
+    'Georgia=georgia,palatino;' +
+    'Helvetica=helvetica;' +
+    'Impact=impact,chicago;' +
+    'Symbol=symbol;' +
+    'Tahoma=tahoma,arial,helvetica,sans-serif;' +
+    'Terminal=terminal,monaco;' +
+    'Times New Roman=times new roman,times;' +
+    'Trebuchet MS=trebuchet ms,geneva;' +
+    'Verdana=verdana,geneva;' +
+    'Webdings=webdings;' +
+    'Wingdings=wingdings,zapf dingbats;',
+    font_size_formats: '6pt 8pt 10pt 12pt 14pt 16pt 18pt 24pt 26pt 32pt 48pt',
     insertdatetime_timeformat: '%H:%M:%Sh',
     insertdatetime_formats: ['%d/%m/%Y', '%d-%m-%Y', '%d/%m/%Y às %H:%Mh', '%d-%m-%Y às %H:%Mh', '%H:%Mh (Brasília, GMT -03:00)'],
     browser_spellcheck: true, // Habilita o corretor do navegador
     contextmenu: "bold italic underline forecolor | lists configurepermanentpen | link openlink unlink | insertdatetime | imagemComLink editimage | table",
     link_default_target: '_blank',
     lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
-    content_style: "body { line-height: 1.4; font-size: 10pt }",
+    content_style: "body { line-height: 1.4; font-size: 10pt; }",
     quickbars_insert_toolbar: false,
-    quickbars_selection_toolbar: 'bold italic underline forecolor backcolor upperCaselowerCase removeformat quicklink blockquote indent outdent',
+    quickbars_selection_toolbar: 'bold italic underline fontfamily fontsize fontsizeselect forecolor backcolor upperCaselowerCase removeformat quicklink blockquote indent outdent',
     quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
     forced_root_block: null,
     setup: function (editor) {
