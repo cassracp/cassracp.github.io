@@ -267,6 +267,7 @@ function FormatarTopicoOS() {
 	const chkINotas = document.getElementById("chkINotas");
 	const chkUI = document.getElementById("chkUI");
 	const chkPol = document.getElementById("chkPol");
+	const chkAol = document.getElementById("chkAol");
 	const chkWindows = document.getElementById("chkWindows");
 	const chkWeb = document.getElementById("chkWeb");
 
@@ -315,9 +316,10 @@ function FormatarTopicoOS() {
 	if(chkProc.checked) modulosSelecionados.push(chkProc.value);
 	if(chkBkp.checked) modulosSelecionados.push(chkBkp.value);
 	if(chkPol.checked) modulosSelecionados.push(chkPol.value);
-	if(chkUI.checked) modulosSelecionados.push(chkUI.value);
+	if(chkUI.checked) modulosSelecionados.push(chkUI.value);	
 	if(chkWindows.checked) modulosSelecionados.push(chkWindows.value);
 	if(chkWeb.checked) modulosSelecionados.push(chkWeb.value);
+	if(chkAol.checked) modulosSelecionados.push(chkAol.value);
 
 	if (modulosSelecionados.length > 0){
 		txtFormatado += ` [${modulosSelecionados.join("")}]`
@@ -332,8 +334,6 @@ function FormatarTopicoOS() {
 	textArea.focus();
     textArea.select();
     CopiarParaClipboard(txtFormatado);
-
-    console.log("Texto formatado copiado:", txtFormatado);
 }
 /* FIM */
 
