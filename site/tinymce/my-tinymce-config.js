@@ -73,70 +73,74 @@ tinymce.init({
         editor.ui.registry.addIcon('topicotarefa', '<i class="fa-solid fa-message fa-lg"></i>');
         editor.ui.registry.addIcon('topicoos', '<i class="fa-solid fa-headset fa-lg"></i>');
 
+        // 1. Função para abrir o modal e lidar com a geração de texto usando Gemini AI.
+        const openGeminiModal = function () {
+            editor.windowManager.open({
+                title: 'Gerar Texto com Gemini AI',
+                body: {
+                    type: 'panel',
+                    items: [
+                        {
+                            type: 'textarea',
+                            name: 'prompt',
+                            label: 'Descreva o que você quer gerar:',
+                            placeholder: 'Ex: Escreva um email para o cliente X confirmando a instalação...'
+                        }
+                    ]
+                },
+                buttons: [
+                    { text: 'Cancelar', type: 'cancel' },
+                    { text: 'Gerar', type: 'submit', primary: true }
+                ],
+                onSubmit: async function (dialog) {
+                    const data = dialog.getData();
+                    const prompt = data.prompt.trim();
 
-        // Botão para Gerar Texto com Gemini
+                    if (!prompt) {
+                        Swal.fire({ icon: 'error', title: 'Erro', text: 'Por favor, insira uma descrição.'});
+                        return;
+                    }
+                    
+                    dialog.close();
+                    
+                    Swal.fire({
+                        title: 'Gerando texto...',
+                        text: 'Aguarde enquanto a IA processa sua solicitação.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    try {
+                        const generatedText = await gerarTextoComGemini(prompt);
+                        editor.insertContent(generatedText.replace(/\n/g, '<br>'));
+                        Swal.close();
+                        
+                    } catch (error) {
+                        console.error("Erro ao chamar a API Gemini:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Não foi possível gerar o texto. Tente novamente mais tarde.'
+                        });
+                    }
+                }
+            });
+        };
+
+        // 2. O botão da barra de ferramentas chama a MESMA função, garantindo consistência.
         editor.ui.registry.addButton('gerarTextoGemini', {
             icon: 'sparkles',
             tooltip: 'Gerar texto com IA',
-            onAction: function () {
-                editor.windowManager.open({
-                    title: 'Gerar Texto com Gemini AI',
-                    body: {
-                        type: 'panel',
-                        items: [
-                            {
-                                type: 'textarea',
-                                name: 'prompt',
-                                label: 'Descreva o que você quer gerar:',
-                                placeholder: 'Ex: Escreva um email para o cliente X confirmando a instalação...'
-                            }
-                        ]
-                    },
-                    buttons: [
-                        { text: 'Cancelar', type: 'cancel' },
-                        { text: 'Gerar', type: 'submit', primary: true }
-                    ],
-                    onSubmit: async function (dialog) {
-                        const data = dialog.getData();
-                        const prompt = data.prompt.trim();
-
-                        if (!prompt) {
-                            Swal.fire({ icon: 'error', title: 'Erro', text: 'Por favor, insira uma descrição.'});
-                            return;
-                        }
-                        
-                        dialog.close();
-                        
-                        Swal.fire({
-                            title: 'Gerando texto...',
-                            text: 'Aguarde enquanto a IA processa sua solicitação.',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-
-                        try {
-                            const generatedText = await gerarTextoComGemini(prompt);
-                            editor.insertContent(generatedText.replace(/\n/g, '<br>'));
-                            Swal.close();
-                            
-                        } catch (error) {
-                            console.error("Erro ao chamar a API Gemini:", error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Não foi possível gerar o texto. Tente novamente mais tarde.'
-                            });
-                        }
-                    }
-                });
-            }
+            onAction: openGeminiModal
         });
+        
+        // 3. O item de menu também chama a MESMA função.
         editor.ui.registry.addMenuItem('gerarTextoGemini', {
             text: 'Gerar Texto com IA',
             icon: 'sparkles',
-            onAction: () => editor.ui.registry.getAll().buttons.gerarTextoGemini.onAction()
+            onAction: openGeminiModal
         });
 
         editor.ui.registry.addButton('imagemComLink', {
