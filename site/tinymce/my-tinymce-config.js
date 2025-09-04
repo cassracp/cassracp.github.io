@@ -20,7 +20,7 @@ tinymce.init({
         insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
         format: { 
             title: 'Formatar', 
-            items: 'bold italic underline strikethrough superscript subscript codeformat | upperCaselowerCase | blockformats align lineheight forecolor backcolor removeformat blockquote' 
+            items: 'bold italic underline strikethrough superscript subscript codeformat | upperCaselowerCaseMenu | melhorarTextoIAMenu | blockformats align lineheight forecolor backcolor removeformat blockquote' 
         },
         tools: { 
             title: 'Ferramentas', 
@@ -29,7 +29,7 @@ tinymce.init({
         table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
         help: { title: 'Ajuda', items: 'help' }
     },
-    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough | blockquote responderMensagem removeformat | align lineheight numlist bullist indent outdent hr | linkOS linkTarefa link imagemComLink inseriraudio insertCalendarDate codesample | formatarTelefone topicoTarefa topicoOS | gerarTextoGemini code fullscreen preview',
+    toolbar: 'undo redo | novodocumento copyhtml savehtml | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote  removeformat align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa link imagemComLink inseriraudio insertCalendarDate codesample | formatarTelefone topicoTarefa topicoOS | gerarTextoGemini code fullscreen preview',
     font_family_formats: 
     'Andale Mono=andale mono,times;' +
     'Arial=arial,helvetica,sans-serif;' +
@@ -55,7 +55,7 @@ tinymce.init({
     lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
     content_style: "body { line-height: 1.4; font-size: 10pt; } blockquote { font-family: 'Courier New', Courier, monospace; font-size: 8pt; }",
     quickbars_insert_toolbar: false,
-    quickbars_selection_toolbar: 'bold italic underline upperCaselowerCase removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent',
+    quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent',
     quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
     forced_root_block: '',
     setup: function (editor) {
@@ -242,6 +242,63 @@ tinymce.init({
             });
         };
 
+         const melhorarTextoComIA = async (action, editor) => {
+            const selectedText = editor.selection.getContent({ format: 'text' });
+
+            if (!selectedText || selectedText.trim().length === 0) {
+                Swal.fire({ icon: 'info', title: 'Nenhum texto selecionado', text: 'Por favor, selecione o texto que deseja modificar.'});
+                return;
+            }
+
+            let promptAction;
+            let titleAction;
+            switch (action) {
+                case 'melhorar':
+                    promptAction = 'Reescreva o texto a seguir para melhorar a clareza e o estilo';
+                    titleAction = 'Melhorando escrita...';
+                    break;
+                case 'corrigir':
+                    promptAction = 'Corrija a gramática e a ortografia do texto a seguir';
+                    titleAction = 'Corrigindo texto...';
+                    break;
+                case 'encurtar':
+                    promptAction = 'Torne o texto a seguir mais conciso, mantendo o significado original';
+                    titleAction = 'Encurtando texto...';
+                    break;
+                case 'expandir':
+                    promptAction = 'Expanda o texto a seguir, adicionando mais detalhes e elaboração';
+                    titleAction = 'Expandindo texto...';
+                    break;
+                default:
+                    return;
+            }
+
+            const prompt = `${promptAction}: "${selectedText}"`;
+            const bookmark = editor.selection.getBookmark();
+
+            Swal.fire({
+                title: titleAction,
+                text: 'Aguarde enquanto a IA processa sua solicitação.',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            try {
+                // Assume que `gerarTextoComGemini` é uma função global que você já possui
+                const generatedText = await gerarTextoComGemini(prompt); 
+                editor.selection.moveToBookmark(bookmark);
+                editor.insertContent(generatedText.replace(/\n/g, '<br>'));
+                Swal.close();
+            } catch (error) {
+                console.error("Erro ao chamar a API Gemini:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Não foi possível processar o texto. Tente novamente mais tarde.'
+                });
+            }
+        };
+
         const abrirPainelImagemComLink = function(imgUrl = '', descrImagem = '') {
                     editor.windowManager.open({
                         title: 'Inserir Imagem com Link',
@@ -325,6 +382,7 @@ tinymce.init({
 // ===================================================================================
 
         editor.ui.registry.addIcon('sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.25L13.06 5.69L16.5 6.75L13.06 7.81L12 11.25L10.94 7.81L7.5 6.75L10.94 5.69L12 2.25ZM6 9L7.06 12.44L10.5 13.5L7.06 14.56L6 18L4.94 14.56L1.5 13.5L4.94 12.44L6 9ZM18 12L16.94 15.44L13.5 16.5L16.94 17.56L18 21L19.06 17.56L22.5 16.5L19.06 15.44L18 12Z" fill="currentColor"/></svg>');
+        editor.ui.registry.addIcon('edit-sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M18 19l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /><path d="M14 13l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /></svg>');
         editor.ui.registry.addIcon('fone', '<i class="fa-solid fa-phone fa-lg"></i>');
         editor.ui.registry.addIcon('topicotarefa', '<i class="fa-solid fa-message fa-lg"></i>');
         editor.ui.registry.addIcon('topicoos', '<i class="fa-solid fa-headset fa-lg"></i>');
@@ -383,13 +441,15 @@ tinymce.init({
         editor.ui.registry.addButton('linkTarefa', { icon: 'linktarefa', tooltip: 'Inserir Link Tarefa', onAction: () => openLinkTarefaDialog(editor) });
         editor.ui.registry.addMenuItem('linkTarefa', { text: 'Link de Tarefa...', icon: 'linktarefa', onAction: () => openLinkTarefaDialog(editor) });
         
-        /*editor.ui.registry.addNestedMenuItem('upperCaselowerCase', { text: 'Maiúsculas/Minúsculas', icon: 'upperlowercase', getSubmenuItems: () => [
+        // Menu e botão suspenso para Maiúsculas/Minúsculas
+        editor.ui.registry.addNestedMenuItem('upperCaselowerCaseMenu', {
+            text: 'Maiúsculas/Minúsculas',
+            icon: 'upperlowercase',
+            getSubmenuItems: () => [
                 { type: 'menuitem', text: 'Tudo Maiúsculo', icon: 'uppercase', onAction: () => FormatarUpperCase(editor) },
                 { type: 'menuitem', text: 'Tudo Minúsculo', icon: 'lowercase', onAction: () => FormatarLowerCase(editor) }
             ]
-        });*/
-
-        // ** Renomeado de 'addNestedMenuItem' para 'addToggleButton' para aparecer na toolbar e menus **
+        });
         editor.ui.registry.addMenuButton('upperCaselowerCase', {
             icon: 'upperlowercase',
             tooltip: 'Maiúsculas/Minúsculas',
@@ -397,6 +457,44 @@ tinymce.init({
                 var items = [
                     { type: 'menuitem', text: 'Tudo Maiúsculo', icon: 'uppercase', onAction: () => FormatarUpperCase(editor) },
                     { type: 'menuitem', text: 'Tudo Minúsculo', icon: 'lowercase', onAction: () => FormatarLowerCase(editor) }
+                ];
+                callback(items);
+            }
+        });
+
+        // Botão de formatação monoespaçada personalizada
+        editor.ui.registry.addButton('togglecodeformat', {
+            icon: 'sourcecode',
+            tooltip: 'Monoespaçado',
+            onAction: () => editor.execCommand('mceToggleFormat', false, 'code'),
+            onSetup: function (api) {
+                const unbind = editor.formatter.formatChanged('code', (state) => {
+                    api.setActive(state);
+                });
+                return unbind;
+            }
+        });
+
+        editor.ui.registry.addNestedMenuItem('melhorarTextoIAMenu', {
+            text: 'Editar com IA',
+            icon: 'edit-sparkles',
+            getSubmenuItems: () => [
+                { type: 'menuitem', text: 'Melhorar Escrita', onAction: () => melhorarTextoComIA('melhorar', editor) },
+                { type: 'menuitem', text: 'Corrigir Gramática', onAction: () => melhorarTextoComIA('corrigir', editor) },
+                { type: 'menuitem', text: 'Tornar mais Curto', onAction: () => melhorarTextoComIA('encurtar', editor) },
+                { type: 'menuitem', text: 'Tornar mais Longo', onAction: () => melhorarTextoComIA('expandir', editor) }
+            ]
+        });
+
+        editor.ui.registry.addMenuButton('melhorarTextoIA', {
+            icon: 'edit-sparkles',
+            tooltip: 'Editar com IA',
+            fetch: (callback) => {
+                const items = [
+                    { type: 'menuitem', text: 'Melhorar Escrita', onAction: () => melhorarTextoComIA('melhorar', editor) },
+                    { type: 'menuitem', text: 'Corrigir Gramática', onAction: () => melhorarTextoComIA('corrigir', editor) },
+                    { type: 'menuitem', text: 'Tornar mais Curto', onAction: () => melhorarTextoComIA('encurtar', editor) },
+                    { type: 'menuitem', text: 'Tornar mais Longo', onAction: () => melhorarTextoComIA('expandir', editor) }
                 ];
                 callback(items);
             }
