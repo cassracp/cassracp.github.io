@@ -10,7 +10,7 @@ incluindo manipulação do editor TinyMCE, modais e chamadas de API.
  */
 async function gerarTextoComGemini(prompt) {
     const model = 'gemini-2.5-flash-preview-05-20';
-    const apiKey = ''; // A chave da API será fornecida pelo ambiente de execução.
+    const apiKey = 'AIzaSyA2OQvGwLMD2DJiES4k4uNyx1F4QP_JEsE'; // A chave da API será fornecida pelo ambiente de execução.
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
     const payload = {
