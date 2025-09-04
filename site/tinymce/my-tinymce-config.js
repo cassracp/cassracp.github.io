@@ -72,7 +72,8 @@ tinymce.init({
 // ===================================================================================
 
         editor.ui.registry.addIcon('sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.25L13.06 5.69L16.5 6.75L13.06 7.81L12 11.25L10.94 7.81L7.5 6.75L10.94 5.69L12 2.25ZM6 9L7.06 12.44L10.5 13.5L7.06 14.56L6 18L4.94 14.56L1.5 13.5L4.94 12.44L6 9ZM18 12L16.94 15.44L13.5 16.5L16.94 17.56L18 21L19.06 17.56L22.5 16.5L19.06 15.44L18 12Z" fill="currentColor"/></svg>');
-        editor.ui.registry.addIcon('edit-sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M18 19l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /><path d="M14 13l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /></svg>');
+        //editor.ui.registry.addIcon('edit-sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M18 19l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /><path d="M14 13l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /></svg>');
+        editor.ui.registry.addIcon('edit-sparkles', '<i class="fa-solid fa-wand-magic-sparkles"></i>');
         editor.ui.registry.addIcon('fone', '<i class="fa-solid fa-phone fa-lg"></i>');
         editor.ui.registry.addIcon('topicotarefa', '<i class="fa-solid fa-message fa-lg"></i>');
         editor.ui.registry.addIcon('topicoos', '<i class="fa-solid fa-headset fa-lg"></i>');
