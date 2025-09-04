@@ -267,9 +267,13 @@ function FormatarTopicoOS() {
 	const chkINotas = document.getElementById("chkINotas");
 	const chkUI = document.getElementById("chkUI");
 	const chkPol = document.getElementById("chkPol");
-	const chkAol = document.getElementById("chkAol");
+	const chkDOCFila = document.getElementById("chkDOCFila");
+	const chkDOCMultiscan = document.getElementById("chkDOCMultiscan");
+
 	const chkWindows = document.getElementById("chkWindows");
 	const chkWeb = document.getElementById("chkWeb");
+
+	const chkAol = document.getElementById("chkAol");
 
 
     // Verifica se o assunto foi selecionado ou digitado
@@ -300,29 +304,44 @@ function FormatarTopicoOS() {
         txtFormatado += topicosSelecionados.join("/");
     } 	
 
-	let modulosSelecionados = [];
-	
-	if (chkNascimento.checked) modulosSelecionados.push(chkNascimento.value);
-	if (chkCasamento.checked) modulosSelecionados.push(chkCasamento.value);
-	if (chkObito.checked) modulosSelecionados.push(chkObito.value);
-	if (chkLivroE.checked) modulosSelecionados.push(chkLivroE.value);
-	if (chkComunica.checked) modulosSelecionados.push(chkComunica.value);
-	if (chkAverba.checked) modulosSelecionados.push(chkAverba.value);
-	if (chkSelagem.checked) modulosSelecionados.push(chkSelagem.value);
-	if (chkFirmas.checked) modulosSelecionados.push(chkFirmas.value);
-	if(chkFinanceiro.checked) modulosSelecionados.push(chkFinanceiro.value);
-	if(chkINotas.checked) modulosSelecionados.push(chkINotas.value);
-	if(chkEscrituras.checked) modulosSelecionados.push(chkEscrituras.value);
-	if(chkProc.checked) modulosSelecionados.push(chkProc.value);
-	if(chkBkp.checked) modulosSelecionados.push(chkBkp.value);
-	if(chkPol.checked) modulosSelecionados.push(chkPol.value);
-	if(chkUI.checked) modulosSelecionados.push(chkUI.value);	
-	if(chkWindows.checked) modulosSelecionados.push(chkWindows.value);
-	if(chkWeb.checked) modulosSelecionados.push(chkWeb.value);
-	if(chkAol.checked) modulosSelecionados.push(chkAol.value);
+	// ** LÓGICA CORRIGIDA PARA GARANTIR A ORDEM DOS MÓDULOS **
+	let modulosPrincipais = [];
+	if (chkNascimento.checked) modulosPrincipais.push(chkNascimento.value);
+	if (chkCasamento.checked) modulosPrincipais.push(chkCasamento.value);
+	if (chkObito.checked) modulosPrincipais.push(chkObito.value);
+	if (chkLivroE.checked) modulosPrincipais.push(chkLivroE.value);
+	if (chkComunica.checked) modulosPrincipais.push(chkComunica.value);
+	if (chkAverba.checked) modulosPrincipais.push(chkAverba.value);
+	if (chkSelagem.checked) modulosPrincipais.push(chkSelagem.value);
+	if (chkFirmas.checked) modulosPrincipais.push(chkFirmas.value);
+	if(chkFinanceiro.checked) modulosPrincipais.push(chkFinanceiro.value);
+	if(chkINotas.checked) modulosPrincipais.push(chkINotas.value);
+	if(chkEscrituras.checked) modulosPrincipais.push(chkEscrituras.value);
+	if(chkProc.checked) modulosPrincipais.push(chkProc.value);
+	if(chkBkp.checked) modulosPrincipais.push(chkBkp.value);
+	if(chkPol.checked) modulosPrincipais.push(chkPol.value);
+	if(chkUI.checked) modulosPrincipais.push(chkUI.value);
+	if(chkDOCFila.checked) modulosPrincipais.push(chkDOCFila.value);
+	if(chkDOCMultiscan.checked) modulosPrincipais.push(chkDOCMultiscan.value);
 
-	if (modulosSelecionados.length > 0){
-		txtFormatado += ` [${modulosSelecionados.join("")}]`
+	let modulosSistema = [];
+	if(chkWindows.checked) modulosSistema.push(chkWindows.value);
+	if(chkWeb.checked) modulosSistema.push(chkWeb.value);
+
+	// Junta os módulos principais e de sistema na ordem correta
+	let modulosCombinados = modulosPrincipais.join("") + modulosSistema.join("");
+
+	// Trata o AOL separadamente para garantir o espaço
+	if (chkAol.checked) {
+		if (modulosCombinados.length > 0) {
+			modulosCombinados += " AOL"; // Adiciona com espaço
+		} else {
+			modulosCombinados = "AOL"; // Adiciona sem espaço se for o único
+		}
+	}
+
+	if (modulosCombinados.length > 0){
+		txtFormatado += ` [${modulosCombinados}]`
 	}
 
 
