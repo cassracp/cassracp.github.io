@@ -624,8 +624,8 @@ tinymce.init({
                 text: 'Tipos de Protocolo',
                 icon: 'menu-protocolos-de-maria',
                 getSubmenuItems: () => [
-                    { type: 'nestedmenuitem', text: 'Migracões', icon: 'migration', getSubmenuItems: () => tiposProtocoloMigracao() },
-                    { type: 'nestedmenuitem', text: 'Implantações', icon: 'em-construcao', getSubmenuItems: () => [] }
+                    { type: 'nestedmenuitem', text: 'Implantações', icon: 'em-construcao', getSubmenuItems: () => [] },
+                    { type: 'nestedmenuitem', text: 'Migracões', icon: 'migration', getSubmenuItems: () => tiposProtocoloMigracao() }
                 ]
             }
             // { type: 'menuitem', text: 'Gerar Protocolo de Migração com IA', icon: 'sparkles', onAction: () => openGerarProtocoloIADialog(editor) }
