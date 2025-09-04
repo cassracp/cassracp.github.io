@@ -90,6 +90,10 @@ tinymce.init({
         editor.ui.registry.addIcon('folder', '<i class="fa-solid fa-folder-tree"></i>');
         editor.ui.registry.addIcon('menu-protocolos-de-maria', '<i class="fa-solid fa-ellipsis-vertical"></i>');
         editor.ui.registry.addIcon('migration', '<i class="fa-solid fa-database"></i>');
+        editor.ui.registry.addIcon('building', '<i class="fa-solid fa-building"></i>');
+
+
+        editor.ui.registry.addIcon('em-construcao', '<i class="fa-solid fa-person-digging"></i>');
 
 
 // ===================================================================================
@@ -620,10 +624,11 @@ tinymce.init({
                 text: 'Tipos de Protocolo',
                 icon: 'menu-protocolos-de-maria',
                 getSubmenuItems: () => [
-                    { type: 'nestedmenuitem', text: 'Migracões', icon: 'migration', getSubmenuItems: () => tiposProtocoloMigracao() }
+                    { type: 'nestedmenuitem', text: 'Migracões', icon: 'migration', getSubmenuItems: () => tiposProtocoloMigracao() },
+                    { type: 'nestedmenuitem', text: 'Implantações', icon: 'em-construcao', getSubmenuItems: () => [] }
                 ]
-            },
-            { type: 'menuitem', text: 'Gerar Protocolo de Migração com IA', icon: 'sparkles', onAction: () => openGerarProtocoloIADialog(editor) }
+            }
+            // { type: 'menuitem', text: 'Gerar Protocolo de Migração com IA', icon: 'sparkles', onAction: () => openGerarProtocoloIADialog(editor) }
         ];
 
 
