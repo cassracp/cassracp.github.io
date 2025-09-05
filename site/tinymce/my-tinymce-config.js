@@ -1,11 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    // ===================================================================================
-    // == GERENCIAMENTO DE ESTADO DAS ABAS E EDITORES =====================================
-    // ===================================================================================
-    let editors = {}; // Armazena as instâncias do TinyMCE
-    let activeTabId = null; // ID da aba atualmente ativa
-
     const style = document.createElement('style');
     style.innerHTML = `
         #main-header.hidden {
@@ -13,6 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // ===================================================================================
+    // == GERENCIAMENTO DE ESTADO DAS ABAS E EDITORES =====================================
+    // ===================================================================================
+    let editors = {}; // Armazena as instâncias do TinyMCE
+    let activeTabId = null; // ID da aba atualmente ativa
 
     const tabContainer = document.getElementById('tab-container');
     const editorAreaContainer = document.getElementById('editor-area-container');
@@ -23,8 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Encontra o próximo número de aba disponível de forma sequencial.
-     * Ex: Se existem abas 1 e 3, esta função retornará 2.
-     * @returns {number} O menor número de aba disponível.
      */
     function findNextTabNumber() {
         const existingTabNumbers = Object.keys(editors)
@@ -37,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (num === nextNumber) {
                 nextNumber++;
             } else {
-                // Encontramos uma lacuna na sequência (ex: 1, 3), então o próximo número é '2'.
                 break;
             }
         }
@@ -58,35 +54,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Alterna para uma aba específica, mostrando seu editor e destacando a aba.
-     * @param {string} tabId - O ID da aba/editor para ativar.
      */
     function switchTab(tabId) {
         if (!tabId || !editors[tabId]) return;
 
         activeTabId = tabId;
 
-        // Atualiza a classe ativa nas abas
         document.querySelectorAll('.tab-item').forEach(tab => {
             tab.classList.toggle('active', tab.dataset.tabId === tabId);
         });
 
-        // Atualiza a classe ativa nos wrappers dos editores
         document.querySelectorAll('.editor-wrapper').forEach(wrapper => {
             wrapper.classList.toggle('active', wrapper.id === `wrapper-${tabId}`);
         });
 
-        // Foca no editor ativado
         tinymce.get(tabId).focus();
         console.log(`Switched to tab: ${tabId}`);
     }
 
     /**
      * Fecha uma aba, destrói o editor e remove os elementos do DOM.
-     * @param {Event} e - O evento do clique.
-     * @param {string} tabId - O ID da aba/editor a ser fechada.
      */
     function closeTab(e, tabId) {
-        e.stopPropagation(); // Impede que o clique no 'x' também acione a troca de aba
+        e.stopPropagation();
 
         const editorInstance = tinymce.get(tabId);
         if (!editorInstance) return;
@@ -95,30 +85,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const tabElement = document.querySelector(`.tab-item[data-tab-id="${tabId}"]`);
             const editorWrapper = document.getElementById(`wrapper-${tabId}`);
             
-            // Remove o editor TinyMCE
             editorInstance.destroy();
             
-            // Remove os elementos do DOM
             if (tabElement) tabElement.remove();
             if (editorWrapper) editorWrapper.remove();
             
-            // Remove do nosso gerenciador de estado
             delete editors[tabId];
 
-            // Se a aba fechada era a ativa, muda para outra aba
             if (activeTabId === tabId) {
                 const remainingTabs = Object.keys(editors);
                 if (remainingTabs.length > 0) {
                     switchTab(remainingTabs[0]);
                 } else {
-                    // Se não houver mais abas, cria uma nova.
-                    // A função createTab agora encontrará o número '1' automaticamente.
                     createTab();
                 }
             }
-            saveAllTabs(); // Salva o estado após fechar
+            saveAllTabs();
             updateTabContainerVisibility();
-
         };
 
         if (editorInstance.isDirty()) {
@@ -143,15 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     /**
      * Cria uma nova aba e um novo editor TinyMCE.
-     * @param {string} [tabIdToCreate] - ID opcional para recriar abas salvas.
-     * @param {string} [initialContent=''] - Conteúdo inicial para o novo editor.
      */
     function createTab(tabIdToCreate = null, initialContent = '') {
         let newTabNumber;
         let tabId;
 
-        // Se estamos recriando uma aba salva, usamos o ID existente.
-        // Se não, encontramos o próximo número disponível.
         if (tabIdToCreate) {
             tabId = tabIdToCreate;
             newTabNumber = parseInt(tabIdToCreate.split('-')[1], 10);
@@ -162,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const tabTitle = `Documento ${newTabNumber}`;
 
-        // 1. Cria o elemento da aba
         const tabElement = document.createElement('div');
         tabElement.className = 'tab-item';
         tabElement.dataset.tabId = tabId;
@@ -172,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         tabContainer.appendChild(tabElement);
 
-        // 2. Cria o container para o editor
         const editorWrapper = document.createElement('div');
         editorWrapper.id = `wrapper-${tabId}`;
         editorWrapper.className = 'editor-wrapper';
@@ -181,20 +158,16 @@ document.addEventListener('DOMContentLoaded', () => {
         editorWrapper.appendChild(textarea);
         editorAreaContainer.appendChild(editorWrapper);
 
-        // 3. Adiciona os event listeners
         tabElement.addEventListener('click', () => switchTab(tabId));
         tabElement.querySelector('.tab-close-btn').addEventListener('click', (e) => closeTab(e, tabId));
         
-        // 4. Inicializa o TinyMCE na nova textarea
         const config = getTinyMceConfig(`#${tabId}`, initialContent);
         tinymce.init(config).then(initedEditors => {
             const newEditor = initedEditors[0];
             editors[tabId] = newEditor;
             
-            // Liga o salvamento automático ao digitar
             newEditor.on('input change', saveAllTabs);
             
-            // Foca na nova aba criada
             switchTab(tabId);
             updateTabContainerVisibility();
         });
@@ -207,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveAllTabs() {
         const tabsData = {};
         for (const id in editors) {
-            if (tinymce.get(id)) { // Verifica se o editor ainda existe
+            if (tinymce.get(id)) {
                 tabsData[id] = tinymce.get(id).getContent();
             }
         }
@@ -221,17 +194,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const tabsData = JSON.parse(savedTabs);
             const tabIds = Object.keys(tabsData);
             if (tabIds.length > 0) {
-                // Recria cada aba salva
                 tabIds.forEach(id => {
                     const content = tabsData[id];
                     createTab(id, content);
                 });
             } else {
-                 // Se não havia abas salvas, cria a primeira
                 createTab();
             }
         } else {
-            // Se não há nada no storage, cria a primeira aba
             createTab();
         }
         updateTabContainerVisibility();
@@ -243,10 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Retorna o objeto de configuração completo para uma instância do TinyMCE.
-     * Isso evita repetição de código.
-     * @param {string} selector - O seletor CSS para o textarea do editor.
-     * @param {string} content - O conteúdo inicial.
-     * @returns {object} Objeto de configuração do TinyMCE.
      */
     function getTinyMceConfig(selector, content) {
         return {
@@ -258,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resize: false,
             placeholder: 'Digite aqui...',
             language_url: 'my_tinymce_app/langs/pt_BR.js',
-            language: 'pt_BR', // Define o idioma para Português do Brasil
+            language: 'pt_BR',
             plugins: [
                 'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
                 'code', 'insertdatetime', 'help', 'quickbars',
@@ -274,6 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ],
             menu: {
                 file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print' },
+                view: { title: 'Exibir', items: 'visualblocks visualchars | modofoco preview' },
                 insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
                     title: 'Formatar', 
@@ -287,22 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 help: { title: 'Ajuda', items: 'help' }
             },
             toolbar: 'undo redo novodocumento closetab copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini code modofoco preview',
-            font_family_formats: 
-            'Andale Mono=andale mono,times;' +
-            'Arial=arial,helvetica,sans-serif;' +
-            'Arial Black=arial black,avant garde;' +
-            'Book Antiqua=book antiqua,palatino;' +
-            'Comic Sans MS=comic sans ms,sans-serif;' +
-            'Consolas=Consolas,monospace;' +
-            'Courier New=courier new,courier;' +
-            'Georgia=georgia,palatino;' +
-            'Helvetica=helvetica;' +
-            'Impact=impact,chicago;' +
-            'Tahoma=tahoma,arial,helvetica,sans-serif;' +
-            'Terminal=terminal,monaco;' +
-            'Times New Roman=times new roman,times;' +
-            'Trebuchet MS=trebuchet ms,geneva;' +
-            'Verdana=verdana,geneva;',
+            font_family_formats: 'Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Consolas=Consolas,monospace;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;',
             font_size_formats: '6pt 8pt 10pt 12pt 14pt 16pt 18pt 24pt 26pt 32pt 48pt',
             insertdatetime_timeformat: '%H:%M:%S',
             insertdatetime_formats: ['%d/%m/%Y', '%d-%m-%Y', '%d/%m/%Y às %H:%M', '%d-%m-%Y às %H:%M', '%H:%M (Brasília, GMT -03:00)'],
@@ -314,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
-            //forced_root_block: '',
+            forced_root_block: 'p',
             setup: function (editor) {
                 // ===================================================================================
                 // == ÍCONES PERSONALIZADOS ==========================================================
@@ -342,8 +294,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('building', '<i class="fa-solid fa-building"></i>');
                 editor.ui.registry.addIcon('limpar', '<i class="fa-solid fa-eraser"></i>');
                 editor.ui.registry.addIcon('closetab', '<i class="fa-solid fa-times-circle"></i>');
-                editor.ui.registry.addIcon('modo-foco-max', '<i class="fa-solid fa-maximize"></i>');
-                editor.ui.registry.addIcon('modo-foco-min', '<i class="fa-solid fa-minimize"></i>');
+                //editor.ui.registry.addIcon('modo-foco-max', '<i class="fa-solid fa-maximize"></i>');
+                editor.ui.registry.addIcon('modo-foco-max', '<svg width="25px" height="25px" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <path d="M7 2H2v5l1.8-1.8L6.5 8 8 6.5 5.2 3.8 7 2zm6 0l1.8 1.8L12 6.5 13.5 8l2.7-2.7L18 7V2h-5zm.5 10L12 13.5l2.7 2.7L13 18h5v-5l-1.8 1.8-2.7-2.8zm-7 0l-2.7 2.7L2 13v5h5l-1.8-1.8L8 13.5 6.5 12z"></path> </g> </g></svg>');
+                editor.ui.registry.addIcon('modo-foco-min', '<svg width="25px" height="25px" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <path d="M3.4 2L2 3.4l2.8 2.8L3 8h5V3L6.2 4.8 3.4 2zm11.8 4.2L18 3.4 16.6 2l-2.8 2.8L12 3v5h5l-1.8-1.8zM4.8 13.8L2 16.6 3.4 18l2.8-2.8L8 17v-5H3l1.8 1.8zM17 12h-5v5l1.8-1.8 2.8 2.8 1.4-1.4-2.8-2.8L17 12z"></path> </g> </g></svg>');
 
 
 
@@ -358,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
                     event.preventDefault();
-                    editor.execCommand('mceContextMenu', false);
                 });
         
                 const novodocumentoAction = () => {
@@ -389,7 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                
                 const salvarComoHTML = (editor) => {
                     const editorContent = editor.getContent();
                     if (!editorContent) {
@@ -408,6 +359,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     URL.revokeObjectURL(url);
                 }
 
+                const toggleModoFoco = () => {
+                    const header = document.getElementById('main-header');
+                    if (header) {
+                        header.classList.toggle('hidden');
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                };
+                
                 const FormatarUpperCase = (editor) => {
                     const bookmark = editor.selection.getBookmark();
                     const selectedText = editor.selection.getContent({ format: 'text' });
@@ -727,16 +686,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                  const openRelatorioAnaliseDialog = (editor) => {
-                    // 1. Define uma função na janela principal que o modal irá chamar.
-                    //    Esta função contém a lógica de formatação original.
                     window.handleRelatorioData = (text) => {
                         if (!text || text.trim() === '') {
-                            // Não faz nada se o texto estiver vazio
                             return;
                         }
                         
                         try {
-                            // TODA A LÓGICA DE FORMATAÇÃO ESTÁ AQUI AGORA
                             const dbMatch = text.match(/Banco de dados analisado:\s*([^\n\r]+)/i);
                             const dateMatch = text.match(/Data de coleta do Backup:\s*([^\n\r]+)/i);
                             const prazoBlockMatch = text.match(/Prazo para desenvolvimento:[\s\S]*/i);
@@ -784,19 +739,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             console.error("Erro ao processar o texto do relatório:", error);
                             Swal.fire('Erro', 'Não foi possível formatar o texto. Verifique se o conteúdo colado está no formato esperado.', 'error');
                         } finally {
-                            // Limpa a função da janela para evitar lixo de memória
                             delete window.handleRelatorioData;
                         }
                     };
 
-                    // 2. Abre o modal externo que irá chamar a função acima.
+                    const idealWidth = Math.min(900, window.innerWidth * 0.9);
+                    const idealHeight = Math.min(700, window.innerHeight * 0.9);
+
                     editor.windowManager.openUrl({
                         title: 'Inserir Dados do Relatório',
                         url: 'site/relatorioanalise.html',
-                        width: 900,
-                        height: 700,
+                        width: idealWidth,
+                        height: idealHeight,
                         onClose: () => {
-                            // Garante que a função seja limpa mesmo se o usuário fechar o modal manualmente
                             if (window.handleRelatorioData) {
                                 delete window.handleRelatorioData;
                             }
@@ -822,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     tinymce.activeEditor.windowManager.openUrl({
                         title: 'Tópico Tarefa',
-                        url: 'site/topicotarefa.html', // Caminho corrigido
+                        url: 'site/topicotarefa.html',
                         width: idealWidth,
                         height: idealHeight
                     });
@@ -834,70 +789,81 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     tinymce.activeEditor.windowManager.openUrl({
                         title: 'Tópico OS',
-                        url: 'site/topicoos.html', // Caminho corrigido
+                        url: 'site/topicoos.html',
                         width: idealWidth,
                         height: idealHeight
                     });
                 }
 
-                const toggleModoFoco = () => {
-                    const header = document.getElementById('main-header');
-                    if (header) {
-                        header.classList.toggle('hidden');
-                        // Força o redimensionamento do editor para ocupar o novo espaço
-                        window.dispatchEvent(new Event('resize'));
-                    }
-                };
-
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
 
+                editor.ui.registry.addMenuItem('modofoco', {
+                    text: 'Modo Foco',
+                    icon: 'modo-foco-max',
+                    shortcut: 'Alt+A',
+                    onAction: toggleModoFoco,
+                    onSetup: function(api) {
+                         const interval = setInterval(() => {
+                            const header = document.getElementById('main-header');
+                            if (header) {
+                                const isFocoAtivo = header.classList.contains('hidden');
+                                api.setIcon(isFocoAtivo ? 'modo-foco-min' : 'modo-foco-max');
+                                api.setText(isFocoAtivo ? 'Sair do Modo Foco' : 'Modo Foco');
+                            }
+                        }, 250);
+                        return () => clearInterval(interval);
+                    }
+                });
+                
+                editor.ui.registry.addButton('modoFoco', {
+                    icon: 'modo-foco-max',
+                    tooltip: 'Modo Foco (Ocultar Cabeçalho)',
+                    onAction: toggleModoFoco,
+                    onSetup: function (api) {
+                        const interval = setInterval(() => {
+                            const header = document.getElementById('main-header');
+                            if (header) {
+                                const isFocoAtivo = header.classList.contains('hidden');
+                                api.setIcon(isFocoAtivo ? 'modo-foco-min' : 'modo-foco-max');
+                                api.setTooltip(isFocoAtivo ? 'Sair do Modo Foco' : 'Modo Foco (Ocultar Cabeçalho)');
+                            }
+                        }, 250);
+                        return () => clearInterval(interval);
+                    }
+                });
+                
                 editor.ui.registry.addButton('gerarTextoGemini', { icon: 'sparkles', tooltip: 'Gerar texto com IA', onAction: openGeminiModal });
                 editor.ui.registry.addMenuItem('gerarTextoGemini', { text: 'Gerar Texto com IA', icon: 'sparkles', onAction: openGeminiModal });
-
                 editor.ui.registry.addButton('responderMensagem', { icon: 'reply', tooltip: 'Responder Mensagem', onAction: responderMensagem });
                 editor.ui.registry.addMenuItem('responderMensagem', { text: 'Responder Mensagem', icon: 'reply', onAction: responderMensagem }); 
-
                 editor.ui.registry.addButton('inserirAudio', { icon: 'inseriraudio', tooltip: 'Inserir Áudio', onAction: () => openInsertAudioDialog(editor) });
                 editor.ui.registry.addMenuItem('inserirAudio', { text: 'Inserir Áudio', icon: 'inseriraudio', onAction: () => openInsertAudioDialog(editor) });
-
                 editor.ui.registry.addButton('inserirData', { icon: 'calendar-days', tooltip: 'Inserir Data', onAction: () => openCalendarDialog(editor) });
                 editor.ui.registry.addMenuItem('inserirData', { text: 'Inserir Data', icon: 'calendar-days', onAction: () => openCalendarDialog(editor) });
-
                 editor.ui.registry.addButton('imagemComLink', { icon: 'image', tooltip: 'Inserir imagem com link', onAction: abrirPainelImagemComLink });
                 editor.ui.registry.addMenuItem('imagemComLink', { text: 'Inserir imagem com link', icon: 'image', onAction: abrirPainelImagemComLink });
-
                 editor.ui.registry.addButton('novodocumento', { icon: 'new-document', tooltip: 'Novo documento (Alt+N)', onAction: novodocumentoAction });
                 editor.ui.registry.addMenuItem('novodocumento', { text: 'Novo documento', icon: 'new-document', shortcut: 'Alt+N', onAction: novodocumentoAction });
-
                 editor.ui.registry.addButton('closetab', { icon: 'closetab', tooltip: 'Fechar Aba Atual (Alt+X)', onAction: closeCurrentTabAction });
                 editor.ui.registry.addMenuItem('closetab', { text: 'Fechar Aba Atual', icon: 'closetab', shortcut: 'Alt+X', onAction: closeCurrentTabAction });
-                
                 editor.ui.registry.addButton('savehtml', { icon: 'save', tooltip: 'Salvar HTML (Ctrl+S)', onAction: () => salvarComoHTML(editor) });
                 editor.ui.registry.addMenuItem('savehtml', { text: 'Salvar HTML', icon: 'save', shortcut: 'Ctrl+S', onAction: () => salvarComoHTML(editor) });
-
                 editor.ui.registry.addButton('limpartexto', { icon: 'limpar', tooltip: 'Limpar Texto (Alt+B)', onAction: limpardocumentoAction });
                 editor.ui.registry.addMenuItem('limpartexto', { text: 'Limpar Texto', icon: 'limpar', shortcut: 'Alt+B', onAction: limpardocumentoAction });
-                
                 editor.ui.registry.addButton('copyhtml', { icon: 'copy', tooltip: 'Copiar HTML (Ctrl+Shift+C)', onAction: () => copiarHTML(editor) });
                 editor.ui.registry.addMenuItem('copyhtml', { text: 'Copiar HTML', icon: 'copy', shortcut: 'Ctrl+Shift+C', onAction: () => copiarHTML(editor) });
-
                 editor.ui.registry.addButton('formatarTelefone', { icon: 'fone', tooltip: 'Formatar Telefone', onAction: () => ExibirFormatarTelefone() });
                 editor.ui.registry.addMenuItem('formatarTelefone', { text: 'Formatar Telefone',icon: 'fone', onAction: () => ExibirFormatarTelefone() });
-
                 editor.ui.registry.addButton('topicoTarefa', { icon: 'topicotarefa', tooltip: 'Tópico Tarefa', onAction: () => ExibirTopicoTarefa() });
                 editor.ui.registry.addMenuItem('topicoTarefa', { text: 'Tópico Tarefa', icon: 'topicotarefa', onAction: () => ExibirTopicoTarefa() });
-
                 editor.ui.registry.addButton('topicoOS', { icon: 'topicoos', tooltip: 'Tópico OS', onAction: () => ExibirTopicoOS() });
                 editor.ui.registry.addMenuItem('topicoOS', { text: 'Tópico OS', icon: 'topicoos', onAction: () => ExibirTopicoOS() });
-
                 editor.ui.registry.addButton("insertCalendarDate", { icon: "calendar-days", tooltip: "Inserir data formatada", onAction: () => openCalendarDialog(editor) });
                 editor.ui.registry.addMenuItem('insertCalendarDate', { text: "Data Formatada", icon: "calendar-days", onAction: () => openCalendarDialog(editor) });
-
                 editor.ui.registry.addButton('linkOS', { icon: 'linkos', tooltip: 'Inserir Link OS', onAction: () => openLinkOSDialog(editor) });        
                 editor.ui.registry.addMenuItem('linkOS', { text: 'Link de OS...', icon: 'linkos', onAction: () => openLinkOSDialog(editor) });
-
                 editor.ui.registry.addButton('linkTarefa', { icon: 'linktarefa', tooltip: 'Inserir Link Tarefa', onAction: () => openLinkTarefaDialog(editor) });
                 editor.ui.registry.addMenuItem('linkTarefa', { text: 'Link de Tarefa...', icon: 'linktarefa', onAction: () => openLinkTarefaDialog(editor) });
                 
@@ -1003,25 +969,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                editor.ui.registry.addButton('modoFoco', {
-                    icon: 'modo-foco-max', // Define o ícone inicial
-                    tooltip: 'Modo Foco (Ocultar Cabeçalho)',
-                    onAction: toggleModoFoco,
-                    onSetup: function (api) {
-                        // Monitora o estado do Modo Foco para atualizar o ícone e a dica
-                        const interval = setInterval(() => {
-                            const header = document.getElementById('main-header');
-                            if (header) {
-                                const isFocoAtivo = header.classList.contains('hidden');
-                                api.setIcon(isFocoAtivo ? 'modo-foco-min' : 'modo-foco-max');
-                                api.setTooltip(isFocoAtivo ? 'Sair do Modo Foco' : 'Modo Foco (Ocultar Cabeçalho)');
-                            }
-                        }, 250);
-
-                        return () => clearInterval(interval);
-                    }
-                });
-
                 // ===================================================================================
                 // == ATALHOS E EVENTOS ==============================================================
                 // ===================================================================================
@@ -1031,6 +978,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.addShortcut('alt+n', 'Novo documento', () => editor.ui.registry.getAll().buttons.novodocumento.onAction());
                 editor.addShortcut('alt+b', 'Limpar documento', () => editor.ui.registry.getAll().buttons.limpartexto.onAction());                
                 editor.addShortcut('alt+x', 'Fechar aba atual', () => editor.ui.registry.getAll().buttons.closetab.onAction());
+                editor.addShortcut('alt+a', 'Modo Foco', toggleModoFoco);
 
                 let timeoutId;
                 const salvarTextoComoLocalStorage = () => {
@@ -1047,7 +995,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     timeoutId = setTimeout(salvarTextoComoLocalStorage, 3000);
                 };
 
-                editor.on('init', carregarTextoDoLocalStorage);
+                editor.on('init', () => {
+                    carregarTextoDoLocalStorage();
+
+                    editor.getDoc().body.addEventListener('mousedown', () => {
+                        const event = new MouseEvent('mousedown', {
+                            bubbles: true,
+                            cancelable: true,
+                            view: window
+                        });
+                        document.body.dispatchEvent(event);
+                    });
+                });
                 editor.on('input', iniciarTemporizador);
             }
         };
