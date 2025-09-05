@@ -314,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ===================================================================================
 
                 editor.ui.registry.addIcon('sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.25L13.06 5.69L16.5 6.75L13.06 7.81L12 11.25L10.94 7.81L7.5 6.75L10.94 5.69L12 2.25ZM6 9L7.06 12.44L10.5 13.5L7.06 14.56L6 18L4.94 14.56L1.5 13.5L4.94 12.44L6 9ZM18 12L16.94 15.44L13.5 16.5L16.94 17.56L18 21L19.06 17.56L22.5 16.5L19.06 15.44L18 12Z" fill="currentColor"/></svg>');
-                //editor.ui.registry.addIcon('edit-sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /><path d="M18 19l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /><path d="M14 13l2 1l1 -2l-1 -2l-2 -1l-1 2l2 1z" /></svg>');
                 editor.ui.registry.addIcon('edit-sparkles', '<i class="fa-solid fa-wand-magic-sparkles"></i>');
                 editor.ui.registry.addIcon('fone', '<i class="fa-solid fa-phone fa-lg"></i>');
                 editor.ui.registry.addIcon('topicotarefa', '<i class="fa-solid fa-message fa-lg"></i>');
@@ -327,12 +326,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('calendar-days', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 11.993a.75.75 0 0 0-.75.75v.006c0 .414.336.75.75.75h.006a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75H12ZM12 16.494a.75.75 0 0 0-.75.75v.005c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H12ZM8.999 17.244a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.006ZM7.499 16.494a.75.75 0 0 0-.75.75v.005c0 .414.336.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H7.5ZM13.499 14.997a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.005a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.005ZM14.25 16.494a.75.75 0 0 0-.75.75v.006c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75h-.005ZM15.75 14.995a.75.75 0 0 1 .75-.75h.005a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75H16.5a.75.75 0 0 1-.75-.75v-.006ZM13.498 12.743a.75.75 0 0 1 .75-.75h2.25a.75.75 0 1 1 0 1.5h-2.25a.75.75 0 0 1-.75-.75ZM6.748 14.993a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z" /><path fill-rule="evenodd" d="M18 2.993a.75.75 0 0 0-1.5 0v1.5h-9V2.994a.75.75 0 1 0-1.5 0v1.497h-.752a3 3 0 0 0-3 3v11.252a3 3 0 0 0 3 3h13.5a3 3 0 0 0 3-3V7.492a3 3 0 0 0-3-3H18V2.993ZM3.748 18.743v-7.5a1.5 1.5 0 0 1 1.5-1.5h13.5a1.5 1.5 0 0 1 1.5 1.5v7.5a1.5 1.5 0 0 1-1.5 1.5h-13.5a1.5 1.5 0 0 1-1.5-1.5Z" clip-rule="evenodd" /></svg>');
                 editor.ui.registry.addIcon('linkos', '<i class="fa-solid fa-arrow-up-right-from-square"></i>'); 
                 editor.ui.registry.addIcon('linktarefa', '<i class="fa-solid fa-square-arrow-up-right fa-lg"></i>');
-                //editor.ui.registry.addIcon('protocolo', '<svg width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><rect x="9" y="3" width="6" height="4" rx="2" /><path d="M9 12h6" /><path d="M9 16h6" /></svg>');
                 editor.ui.registry.addIcon('protocolo', '<i class="fa-solid fa-file-import"></i>');  
                 editor.ui.registry.addIcon('attachment', '<i class="fa-solid fa-paperclip"></i>');
                 editor.ui.registry.addIcon('folder', '<i class="fa-solid fa-folder-tree"></i>');
                 editor.ui.registry.addIcon('menu-protocolos-de-maria', '<i class="fa-solid fa-ellipsis-vertical"></i>');
                 editor.ui.registry.addIcon('migration', '<i class="fa-solid fa-database"></i>');
+                editor.ui.registry.addIcon('analysis-report', '<i class="fa-solid fa-magnifying-glass-chart"></i>');
                 editor.ui.registry.addIcon('building', '<i class="fa-solid fa-building"></i>');
                 editor.ui.registry.addIcon('limpar', '<i class="fa-solid fa-eraser"></i>');
                 editor.ui.registry.addIcon('closetab', '<i class="fa-solid fa-times-circle"></i>');
@@ -352,27 +351,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     event.preventDefault();
                     editor.execCommand('mceContextMenu', false);
                 });
-
-                /*const novodocumento = function () {
-                        confirmacao("Limpar Editor?", "Todo o conteúdo não salvo será perdido.", () => editor.setContent(''));
-                };*/
         
                 const novodocumentoAction = () => {
-                        // Agora o botão "Novo Documento" chama a função global para criar uma nova aba.
                         createTab();
                     };
 
-                // A função `novodocumento` antiga, que limpava, agora é chamada pela confirmação
                 const limpardocumentoAction = function () {
                     confirmacao("Limpar Editor?", "Todo o conteúdo não salvo será perdido.", () => editor.setContent(''));
                 };
 
                  const closeCurrentTabAction = () => {
                     if(activeTabId) {
-                        // Passamos um evento 'fake' para a função closeTab poder chamar stopPropagation
                         closeTab({ stopPropagation: () => {} }, activeTabId);
                     }
                  };
+
+                const copiarHTML = (editor) => {
+                    const htmlContent = editor.getContent();
+                    if (!htmlContent) {
+                        Swal.fire('Atenção', 'Não há conteúdo para copiar.', 'warning');
+                        return;
+                    }
+                    navigator.clipboard.writeText(htmlContent).then(() => {
+                        console.log('HTML copiado com sucesso!');
+                    }).catch(err => {
+                        console.error('Erro ao copiar o HTML: ', err);
+                        Swal.fire('Erro', 'Não foi possível copiar o conteúdo.', 'error');
+                    });
+                }
+
+                
+                const salvarComoHTML = (editor) => {
+                    const editorContent = editor.getContent();
+                    if (!editorContent) {
+                        Swal.fire('Atenção', 'Não há conteúdo para salvar.', 'warning');
+                        return;
+                    }
+
+                    const blob = new Blob([editorContent], { type: 'text/html;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'conteudo_editado.html';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }
 
                 const FormatarUpperCase = (editor) => {
                     const bookmark = editor.selection.getBookmark();
@@ -490,7 +515,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 };
 
-                // Função para abrir o modal e lidar com a geração de texto usando Gemini AI.
                 const openGeminiModal = function () {
                     editor.windowManager.open({
                         title: 'Gerar Texto com Gemini AI',
@@ -588,7 +612,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
 
                     try {
-                        // Assume que `gerarTextoComGemini` é uma função global que você já possui
                         const generatedText = await gerarTextoComGemini(prompt); 
                         editor.selection.moveToBookmark(bookmark);
                         editor.insertContent(generatedText.replace(/\n/g, '<br>'));
@@ -694,89 +717,125 @@ document.addEventListener('DOMContentLoaded', () => {
                     editor.insertContent(template.replace(/    /g, '').trim());
                 };
 
-                const openGerarProtocoloIADialog = (editor) => {
+                const openRelatorioAnaliseDialog = (editor) => {
                     editor.windowManager.open({
-                        title: 'Gerar Protocolo de Migração com IA',
+                        title: 'Gerar Relatório de Análise de Migração',
                         body: {
                             type: 'panel',
                             items: [
-                                { type: 'input', name: 'tipoMigracao', label: 'Tipo da Migração', placeholder: 'Ex: NASCIMENTO, PROCURAÇÕES...' },
                                 {
-                                    type: 'listbox',
-                                    name: 'metodoEntrega',
-                                    label: 'Método de Entrega',
-                                    items: [
-                                        { text: 'Arquivo em Anexo', value: 'anexo' },
-                                        { text: 'Caminho de Rede', value: 'rede' }
-                                    ]
-                                },
-                                { type: 'input', name: 'caminhoRede', label: 'Caminho da Rede', placeholder: '//192.168.1.179/cpt-008/...', visible: false }, // Começa invisível
-                                { type: 'textarea', name: 'observacoes', label: 'Observações ao Validador', placeholder: 'Se não houver, deixe em branco.' }
+                                    type: 'textarea',
+                                    name: 'rtfContent',
+                                    label: 'Cole o conteúdo do relatório (.rtf) abaixo:',
+                                    placeholder: 'Banco de dados analisado: ...\nData de coleta do Backup: ...',
+                                    maximized: true
+                                }
                             ]
                         },
                         buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Gerar Protocolo', type: 'submit', primary: true } ],
-                        onChange: (dialog, component) => {
-                            if (component.name === 'metodoEntrega') {
-                                const data = dialog.getData();
-                                const caminhoRedeComponent = dialog.getBody().find('#caminhoRede')[0];
-                                caminhoRedeComponent.setVisible(data.metodoEntrega === 'rede');
-                            }
-                        },
-                        onSubmit: async (dialog) => {
-                            const data = dialog.getData();
-                            dialog.close();
-                            
-                            if (!data.tipoMigracao) {
-                                Swal.fire({ icon: 'error', title: 'Erro', text: 'O tipo da migração é obrigatório.' });
+                        onSubmit: (dialog) => {
+                            const text = dialog.getData().rtfContent.trim();
+                            if (!text) {
+                                Swal.fire('Erro', 'O campo de conteúdo não pode estar vazio.', 'error');
                                 return;
                             }
 
-                            const instrucaoBase = `
-                                Aja como um analista da empresa DeMaria escrevendo um protocolo técnico para validação interna. O tom é formal e direto.
-                                O protocolo deve seguir estritamente a estrutura do exemplo abaixo, substituindo os campos entre colchetes [].
-                                Se as observações estiverem vazias, use "Nada consta.".
-                                Se o método de entrega for "anexo", use a frase "Segue arquivo em anexo para validação externa.".
-                                Se o método de entrega for "rede", use a frase "Coloquei as amostras no caminho de rede" e formate o caminho dentro de uma tag <pre>.
-                            `;
-
-                            const exemplo = `
-                                EXEMPLO DE ESTRUTURA:
-                                Gerada amostra de [TIPO DA MIGRAÇÃO] e validado internamente.
-                                
-                                [MÉTODO DE ENTREGA]
-                                
-                                OBSERVAÇÕES AO VALIDADOR
-                                
-                                [OBSERVAÇÕES]
-                            `;
-
-                            const prompt = `
-                                ${instrucaoBase}\n\n${exemplo}\n\n
-                                Gere um novo protocolo com as seguintes informações:
-                                - Tipo da Migração: ${data.tipoMigracao}
-                                - Método de Entrega: ${data.metodoEntrega}
-                                - Caminho de Rede: ${data.caminhoRede || 'N/A'}
-                                - Observações: ${data.observacoes || 'Nada consta.'}
-                            `;
-                            
-                            Swal.fire({
-                                title: 'Gerando protocolo...',
-                                text: 'Aguarde enquanto a IA prepara o seu texto.',
-                                allowOutsideClick: false,
-                                didOpen: () => { Swal.showLoading(); }
-                            });
-
                             try {
-                                const generatedText = await gerarTextoComGemini(prompt);
-                                editor.insertContent(generatedText.replace(/\n/g, '<br>'));
-                                Swal.close();
+                                // 1. Extrair os dados usando Regex para maior robustez
+                                const dbMatch = text.match(/Banco de dados analisado:\s*([^\n\r]+)/i);
+                                const dateMatch = text.match(/Data de coleta do Backup:\s*([^\n\r]+)/i);
+                                
+                                const prazoBlockMatch = text.match(/Prazo para desenvolvimento:[\s\S]*/i);
+                                let prazo = '[NÃO ENCONTRADO]';
+                                if (prazoBlockMatch) {
+                                    prazo = prazoBlockMatch[0]
+                                        .replace(/Prazo para desenvolvimento:/i, '')
+                                        .replace(/[\r\n]+/g, ' ')
+                                        .trim();
+                                }
+                                
+                                const dbName = dbMatch ? dbMatch[1].trim() : '[NÃO ENCONTRADO]';
+                                const backupDate = dateMatch ? dateMatch[1].trim() : '[NÃO ENCONTRADO]';
+
+                                // 2. Extrair a lista de registros
+                                const records = [];
+                                const recordRegex = /^\s*(?:•\s*)?([\w\sçãéóíúâêôûà`ü]+):\s*([\d\.]+|Não localizado)[\s\w]*$/gmi;
+                                let match;
+
+                                const textWithoutPrazo = prazoBlockMatch ? text.substring(0, prazoBlockMatch.index) : text;
+
+                                while ((match = recordRegex.exec(textWithoutPrazo)) !== null) {
+                                     // Ignorar as correspondências que já pegamos
+                                    if (!/banco|data|prazo/i.test(match[1])) {
+                                        records.push({ 
+                                            key: match[1].trim(), 
+                                            value: match[2].trim() 
+                                        });
+                                    }
+                                }
+                                
+                                // 3. Construir o HTML
+                                let summaryHtml = `<p>Banco de dados analisado: <strong>${dbName}</strong><br>Data de coleta do Backup: <strong>${backupDate}</strong><br>`;
+                                if (records.length > 0){
+                                    records.forEach(record => {
+                                        const valueText = /não localizado/i.test(record.value) ? record.value : `${record.value} registros`;
+                                        summaryHtml += `&nbsp; &nbsp; &bull; ${record.key}: <strong>${valueText}</strong><br>`;
+                                    });
+                                    summaryHtml = summaryHtml.slice(0, -4); // Remove o último <br>
+                                }
+                                summaryHtml += `</p>`;
+                                
+                                const prazoHtml = `<p>Prazo para desenvolvimento: <strong>${prazo}</strong></p>`;
+
+                                const finalHtml = `
+                                    <p>Realizada análise de migração.</p>
+                                    <p>Segue relatório completo em anexo.</p>
+                                    <p><strong>RESUMO</strong></p>
+                                    ${summaryHtml}
+                                    ${prazoHtml}
+                                    <hr>
+                                    <p><strong>INFORMAÇÕES INTERNAS</strong></p>
+                                    <p>Projeto de migração ${dbName} <strong>desenvolvido</strong>.</p>
+                                `;
+
+                                editor.insertContent(finalHtml.replace(/    /g, '').trim());
+                                dialog.close();
+
                             } catch (error) {
-                                console.error("Erro ao chamar a API Gemini:", error);
-                                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Não foi possível gerar o texto.' });
+                                console.error("Erro ao processar o texto do relatório:", error);
+                                Swal.fire('Erro', 'Não foi possível formatar o texto. Verifique se o conteúdo colado está no formato esperado.', 'error');
                             }
                         }
                     });
                 };
+
+                const ExibirFormatarTelefone = function() {
+                    tinymce.activeEditor.windowManager.openUrl({
+                        title: 'Formatar Telefone',
+                        url: 'site/numertel.html', // Caminho corrigido
+                        width: 800,
+                        height: 450
+                    });
+                }
+
+                const ExibirTopicoTarefa = function() {
+                    tinymce.activeEditor.windowManager.openUrl({
+                        title: 'Tópico Tarefa',
+                        url: 'site/topicotarefa.html', // Caminho corrigido
+                        width: 1200,
+                        height: 600
+                    });
+                }
+
+                const ExibirTopicoOS = function() {
+                    tinymce.activeEditor.windowManager.openUrl({
+                        title: 'Tópico OS',
+                        url: 'site/topicoos.html', // Caminho corrigido
+                        width: 1200,
+                        height: 800
+                    });
+                }
+
 
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
@@ -830,7 +889,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addButton('linkTarefa', { icon: 'linktarefa', tooltip: 'Inserir Link Tarefa', onAction: () => openLinkTarefaDialog(editor) });
                 editor.ui.registry.addMenuItem('linkTarefa', { text: 'Link de Tarefa...', icon: 'linktarefa', onAction: () => openLinkTarefaDialog(editor) });
                 
-                // Menu e botão suspenso para Maiúsculas/Minúsculas
                 editor.ui.registry.addNestedMenuItem('upperCaselowerCaseMenu', {
                     text: 'Maiúsculas/Minúsculas',
                     icon: 'upperlowercase',
@@ -851,7 +909,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Botão de formatação monoespaçada personalizada
                 editor.ui.registry.addButton('togglecodeformat', {
                     icon: 'sourcecode',
                     tooltip: 'Monoespaçado',
@@ -896,14 +953,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         icon: 'menu-protocolos-de-maria',
                         getSubmenuItems: () => [
                             { type: 'nestedmenuitem', text: 'Implantações', icon: 'em-construcao', getSubmenuItems: () => [] },
-                            { type: 'nestedmenuitem', text: 'Migracões', icon: 'migration', getSubmenuItems: () => tiposProtocoloMigracao() }
+                            { type: 'nestedmenuitem', text: 'Migrações', icon: 'migration', getSubmenuItems: () => tiposProtocoloMigracao() }
                         ]
                     }
-                    // { type: 'menuitem', text: 'Gerar Protocolo de Migração com IA', icon: 'sparkles', onAction: () => openGerarProtocoloIADialog(editor) }
                 ];
 
 
                 const tiposProtocoloMigracao = () => [
+                     {
+                        type: 'menuitem',
+                        text: 'Relatório de Análise',
+                        icon: 'analysis-report',
+                        onAction: () => openRelatorioAnaliseDialog(editor)
+                    },
                     {
                         type: 'nestedmenuitem',
                         text: 'Scripts de Validação',
@@ -964,3 +1026,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================================
     loadTabs();
 });
+
