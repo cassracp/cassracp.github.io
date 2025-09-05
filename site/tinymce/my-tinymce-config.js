@@ -699,6 +699,10 @@ function InserirLinkOS (nOS) {
     return `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${nOS}" target="_blank" rel="noopener">OS ${nOS}</a>`;
 }
 
+function InserirLinkTarefa (nTarefa) {
+    return `<a href="https://www.demaria.com.br/intranet/v3/tarefa/detalhe.php?tarefa_id=${nTarefa}" target="_blank" rel="noopener">Tarefa nº ${nTarefa}</a>`;
+}
+
 function confirmacao(titulo, mensagem, callbackConfirm, callbackCancel) {
     Swal.fire({
         title: titulo,
