@@ -5,7 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================================
     let editors = {}; // Armazena as instâncias do TinyMCE
     let activeTabId = null; // ID da aba atualmente ativa
-    // O contador incremental foi removido para dar lugar a uma lógica mais inteligente.
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #main-header.hidden {
+            display: none;
+        }
+    `;
+    document.head.appendChild(style);
 
     const tabContainer = document.getElementById('tab-container');
     const editorAreaContainer = document.getElementById('editor-area-container');
@@ -255,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             plugins: [
                 'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
                 'code', 'insertdatetime', 'help', 'quickbars',
-                'visualchars', 'fullscreen', 'preview'
+                'visualchars', 'preview'
             ],
             codesample_languages: [
                 {text: 'SQL', value: 'sql'},
@@ -279,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
                 help: { title: 'Ajuda', items: 'help' }
             },
-            toolbar: 'undo redo novodocumento closetab copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini code fullscreen preview',
+            toolbar: 'undo redo novodocumento closetab copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini code modofoco preview',
             font_family_formats: 
             'Andale Mono=andale mono,times;' +
             'Arial=arial,helvetica,sans-serif;' +
@@ -335,6 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('building', '<i class="fa-solid fa-building"></i>');
                 editor.ui.registry.addIcon('limpar', '<i class="fa-solid fa-eraser"></i>');
                 editor.ui.registry.addIcon('closetab', '<i class="fa-solid fa-times-circle"></i>');
+                editor.ui.registry.addIcon('modo-foco-max', '<i class="fa-solid fa-maximize"></i>');
+                editor.ui.registry.addIcon('modo-foco-min', '<i class="fa-solid fa-minimize"></i>');
 
 
 
@@ -831,6 +840,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
+                const toggleModoFoco = () => {
+                    const header = document.getElementById('main-header');
+                    if (header) {
+                        header.classList.toggle('hidden');
+                        // Força o redimensionamento do editor para ocupar o novo espaço
+                        window.dispatchEvent(new Event('resize'));
+                    }
+                };
 
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
@@ -983,6 +1000,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     tooltip: 'Protocolos DeMaria',
                     fetch: (callback) => {
                         callback(itensProtocolo());
+                    }
+                });
+
+                editor.ui.registry.addButton('modoFoco', {
+                    icon: 'modo-foco-max', // Define o ícone inicial
+                    tooltip: 'Modo Foco (Ocultar Cabeçalho)',
+                    onAction: toggleModoFoco,
+                    onSetup: function (api) {
+                        // Monitora o estado do Modo Foco para atualizar o ícone e a dica
+                        const interval = setInterval(() => {
+                            const header = document.getElementById('main-header');
+                            if (header) {
+                                const isFocoAtivo = header.classList.contains('hidden');
+                                api.setIcon(isFocoAtivo ? 'modo-foco-min' : 'modo-foco-max');
+                                api.setTooltip(isFocoAtivo ? 'Sair do Modo Foco' : 'Modo Foco (Ocultar Cabeçalho)');
+                            }
+                        }, 250);
+
+                        return () => clearInterval(interval);
                     }
                 });
 
