@@ -3,95 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formatador de Números de Telefone</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <script src="js/bootstrap.min.js"></script>
-	<script src="functions.js"></script>
+    <title>Formatador de Telefone para Discagem</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding: 20px; background-color: #f8f9fa; display: flex; flex-direction: column; height: 100vh; }
+        .container-fluid { display: flex; flex-direction: column; flex-grow: 1; }
+        .form-content { flex-grow: 1; }
+        .btn-container { text-align: right; padding-top: 15px; border-top: 1px solid #dee2e6; }
+        .radio-group label { margin-bottom: 0; }
+        .radio-group small { font-size: 0.75rem; color: #6c757d; }
+    </style>
 </head>
 <body>
-    <div class="container" id="numertelContent">
-        <label for="codigoSelect"><b>Opções de código de discagem para celular:</b></label>
-        <br>
-        <!--<select id="codigoSelect" class="">
-            <option value="50">Código 50 (Padrão)</option>
-            <option value="60">Código 60</option>
-            <option value="70">Código 70</option>
-            <option value="80">Código 80</option>
-            <option value="90">Código 90</option>
-        </select>-->
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo50" value="50" accesskey="1" checked tabindex="0" aria-label="Código 50 (Padrão): Selecionar">
-            <label class="form-check-label" for="codigo50">Código 50 (Padrão)</label>
-            <div class="d-block">
-                <label class="form-check-label" for="codigo50"><font size="1">alt+1</font></label>
+    <div class="container-fluid">
+        <div class="form-content">
+            <h4>Formatador de Telefone para Discagem</h4>
+            <p class="text-muted">Insira o número, selecione a operadora e o resultado será copiado automaticamente.</p>
+
+            <div class="form-group">
+                <label><b>Operadora para celular:</b></label>
+                <div class="d-flex flex-wrap radio-group">
+                    <div class="form-check form-check-inline mr-4">
+                        <div>
+                            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo50" value="50" accesskey="1" checked>
+                            <label class="form-check-label" for="codigo50">Código 50 (Padrão)</label><br>
+                            <small>alt+1</small>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline mr-4">
+                        <div>
+                            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo60" value="60" accesskey="2">
+                            <label class="form-check-label" for="codigo60">Código 60</label><br>
+                            <small>alt+2</small>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline mr-4">
+                        <div>
+                            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo70" value="70" accesskey="3">
+                            <label class="form-check-label" for="codigo70">Código 70</label><br>
+                            <small>alt+3</small>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline mr-4">
+                        <div>
+                            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo80" value="80" accesskey="4">
+                            <label class="form-check-label" for="codigo80">Código 80</label><br>
+                            <small>alt+4</small>
+                        </div>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <div>
+                            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo90" value="90" accesskey="5">
+                            <label class="form-check-label" for="codigo90">Código 90</label><br>
+                            <small>alt+5</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="numTel"><b>Número de telefone:</b></label>
+                <input type="text" id="numTel" class="form-control" onkeyup="formatarEcopiar(event);" placeholder="Digite o número com DDD">
+            </div>
+            
+            <div class="form-group">
+                <label for="numeroFormatado"><b>Número Formatado (pronto para colar):</b></label>
+                <input type="text" id="numeroFormatado" readonly class="form-control" placeholder="O número formatado aparecerá aqui...">
             </div>
         </div>
-        
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo60" value="60" accesskey="2" tabindex="0" aria-label="Código 60: Selecionar">
-            <label class="form-check-label" for="codigo60">Código 60</label>
-            <div class="d-block">
-                <label class="form-check-label" for="codigo60"><font size="1">alt+2</font></label>
-            </div>  
+
+        <div class="btn-container">
+             <button onclick="closeDialog()" class="btn btn-secondary">Cancelar</button>
+             <button onclick="formatarEcopiar()" class="btn btn-primary">Formatar e Copiar</button>
         </div>
-        
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo70" value="70" accesskey="3" tabindex="0" aria-label="Código 70: Selecionar">
-            <label class="form-check-label" for="codigo70">Código 70</label>
-            <div class="d-block">
-                <label class="form-check-label" for="codigo70"><font size="1">alt+3</font></label>
-            </div>
-        </div>
-        
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo80" value="80" accesskey="4" tabindex="0" aria-label="Código 80: Selecionar">
-            <label class="form-check-label" for="codigo80">Código 80</label>
-            <div class="d-block">
-                <label class="form-check-label" for="codigo80"><font size="1">alt+4</font></label>
-            </div>
-        </div>
-        
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="codigoRadio" id="codigo90" value="90" accesskey="5" tabindex="0" aria-label="Código 90: Selecionar">
-            <label class="form-check-label" for="codigo90">Código 90</label>
-            <div class="d-block">
-                <label class="form-check-label" for="codigo90"><font size="1">alt+5</font></label>
-            </div>
-        </div>        
-        
-        <br><hr>
-        <label for="numTel"><b>Insira o número de telefone:</b></label>
-        <input type="text" id="numTel" class="form-control" onkeyup="FormatarNumeroDeTelefone(event);"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
-        <br>
-        <button onclick="FormatarNumeroDeTelefone()" class="btn btn-info text-white">Formatar</button> <!-- Adicione a classe "btn" para estilos de botão -->
-        <br><br>
-        <label for="numeroFormatado"><b>Número Formatado:</b></label> <!-- Adicione a classe "label" para estilos de rótulo -->
-        <br><input type="text" id="numeroFormatado" readonly class="form-control"> <!-- Adicione a classe "input-field" para estilos de campo de entrada -->
-        <br>
-        <button onclick="LimparCamposNumerTel()" class="btn btn-secondary">Limpar Campos</button>
     </div>
     <script>
+        function closeDialog() {
+            if (window.parent && window.parent.tinymce) {
+                window.parent.tinymce.activeEditor.windowManager.close();
+            } else {
+                window.close();
+            }
+        }
+
+        function formatarEcopiar(event) {
+            if (event && event.key !== 'Enter' && event.type === 'keyup') {
+                return;
+            }
+
+            const codigoSelecionado = document.querySelector('input[name="codigoRadio"]:checked').value;
+            const numTelInput = document.getElementById("numTel");
+            let numeroTel = numTelInput.value.replace(/\D/g, "");
+            const numeroFormatadoOutput = document.getElementById("numeroFormatado");
+            
+            let ddd = "";
+            let numeroFormatado = "";
+
+            if (numeroTel.startsWith("55")) numeroTel = numeroTel.substring(2);
+            else if (numeroTel.startsWith("0")) numeroTel = numeroTel.substring(1);
+            
+            if (numeroTel.length > 11 || numeroTel.length < 10) {
+                 numeroFormatadoOutput.value = "Número inválido.";
+                 return;
+            }
+
+            ddd = numeroTel.substring(0, 2);
+            numeroTel = numeroTel.substring(2);
+
+            if (numeroTel.length === 9 && numeroTel.startsWith("9")) {
+                numeroFormatado = codigoSelecionado + ddd + numeroTel;
+            } else if (numeroTel.length === 8 && (numeroTel.startsWith("9") || numeroTel.startsWith("8") || numeroTel.startsWith("7"))) {
+                numeroFormatado = codigoSelecionado + ddd + "9" + numeroTel;
+            } else if (numeroTel.length === 8) {
+                numeroFormatado = "00" + ddd + numeroTel;
+            } else {
+                numeroFormatadoOutput.value = "Número inválido.";
+                return;
+            }
+            
+            numeroFormatadoOutput.value = numeroFormatado;
+            copiarParaClipboard(numeroFormatado);
+        }
+
+        function copiarParaClipboard(texto) {
+            if (!texto || texto === "Número inválido.") {
+                return;
+            }
+            navigator.clipboard.writeText(texto).then(() => {
+                console.log("Número copiado!");
+                // Feedback visual rápido
+                const outputField = document.getElementById("numeroFormatado");
+                const originalPlaceholder = outputField.placeholder;
+                outputField.placeholder = "Copiado!";
+                setTimeout(() => { outputField.placeholder = originalPlaceholder; }, 1500);
+            }).catch(err => {
+                console.error("Falha ao copiar: ", err);
+                alert("Não foi possível copiar o número.");
+            });
+        }
+
+        // Listener de atalhos
         document.addEventListener("keydown", function (event) {
             if (event.altKey) {
                 switch (event.key) {
-                    case "1":
-                        document.getElementById("codigo50").click(); // Seleciona o código 50
-                        break;
-                    case "2":
-                        document.getElementById("codigo60").click(); // Seleciona o código 60
-                        break;
-                    case "3":
-                        document.getElementById("codigo70").click(); // Seleciona o código 70
-                        break;
-                    case "4":
-                        document.getElementById("codigo80").click(); // Seleciona o código 80
-                        break;
-                    case "5":
-                        document.getElementById("codigo90").click(); // Seleciona o código 90
-                        break;
+                    case "1": document.getElementById("codigo50").click(); break;
+                    case "2": document.getElementById("codigo60").click(); break;
+                    case "3": document.getElementById("codigo70").click(); break;
+                    case "4": document.getElementById("codigo80").click(); break;
+                    case "5": document.getElementById("codigo90").click(); break;
                 }
             }
         });
     </script>
 </body>
 </html>
+

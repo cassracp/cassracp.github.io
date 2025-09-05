@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             type: 'panel',
                             items: [{ type: 'input', name: 'nOS', label: 'Nº da OS:', inputType: 'number', placeholder: 'Digite apenas números' }]
                         },
-                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Salvar', type: 'submit', primary: true } ],
+                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Inserir', type: 'submit', primary: true } ],
                         onSubmit: (dialog) => {
                             const data = dialog.getData();
                             if (data.nOS && SomenteNumeros(data.nOS)) {
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             type: 'panel',
                             items: [{ type: 'input', name: 'nTarefa', label: 'Nº da Tarefa:', inputType: 'number', placeholder: 'Digite apenas números' }]
                         },
-                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Salvar', type: 'submit', primary: true } ],
+                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Inserir', type: 'submit', primary: true } ],
                         onSubmit: (dialog) => {
                             const data = dialog.getData();
                             if (data.nTarefa && SomenteNumeros(data.nTarefa)) {
@@ -480,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             type: 'panel',
                             items: [{ type: 'input', name: 'audioUrl', label: 'URL do Áudio', placeholder: 'Insira a URL do áudio'}]
                         },
-                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Salvar', type: 'submit', primary: true } ],
+                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Inserir', type: 'submit', primary: true } ],
                         onSubmit: (dialog) => {
                             const data = dialog.getData();
                             if (data.audioUrl) {
@@ -502,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 html: `<label for="datepicker-field" style="display: block; margin-bottom: 5px;">Data:</label><input type="date" id="datepicker-field" value="${hoje}" style="width: 100%; padding: 8px; font-size: 14px; border-radius: 4px; border: 1px solid #ccc;" />`
                             }]
                         },
-                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Salvar', type: 'submit', primary: true } ],
+                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Inserir', type: 'submit', primary: true } ],
                         onSubmit: (dialog) => {
                             const dataSelecionada = document.getElementById("datepicker-field").value;
                             if (dataSelecionada) {
@@ -796,29 +796,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 const ExibirFormatarTelefone = function() {
+                    const idealWidth = Math.min(800, window.innerWidth * 0.9);
+                    const idealHeight = Math.min(500, window.innerHeight * 0.9);
+
                     tinymce.activeEditor.windowManager.openUrl({
-                        title: 'Formatar Telefone',
-                        url: 'site/numertel.html', // Caminho corrigido
-                        width: 800,
-                        height: 450
+                        title: 'Formatar Telefone para Discagem',
+                        url: 'site/numertel.html',
+                        width: idealWidth,
+                        height: idealHeight
                     });
-                }
+                };
 
                 const ExibirTopicoTarefa = function() {
+                    const idealWidth = Math.min(1000, window.innerWidth * 0.9);
+                    const idealHeight = Math.min(650, window.innerHeight * 0.9);
+
                     tinymce.activeEditor.windowManager.openUrl({
                         title: 'Tópico Tarefa',
                         url: 'site/topicotarefa.html', // Caminho corrigido
-                        width: 1200,
-                        height: 600
+                        width: idealWidth,
+                        height: idealHeight
                     });
                 }
 
                 const ExibirTopicoOS = function() {
+                    const idealWidth = Math.min(1200, window.innerWidth * 0.9);
+                    const idealHeight = Math.min(850, window.innerHeight * 0.9);
+
                     tinymce.activeEditor.windowManager.openUrl({
                         title: 'Tópico OS',
                         url: 'site/topicoos.html', // Caminho corrigido
-                        width: 1200,
-                        height: 800
+                        width: idealWidth,
+                        height: idealHeight
                     });
                 }
 
