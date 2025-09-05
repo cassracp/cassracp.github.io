@@ -163,7 +163,7 @@ function ExibirTopicoOS() {
  * @param {string} mensagem O texto do alerta.
  * @param {function} callbackConfirm Função a ser executada se o usuário confirmar.
  */
-function confirmacao(titulo, mensagem, callbackConfirm) {
+/*function confirmacao(titulo, mensagem, callbackConfirm) {
     Swal.fire({
         title: titulo,
         text: mensagem,
@@ -178,5 +178,5 @@ function confirmacao(titulo, mensagem, callbackConfirm) {
             callbackConfirm();
         }
     });
-}
+}*/
 

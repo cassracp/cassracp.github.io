@@ -3,52 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Auxiliar DeMaria</title>
-    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
-
-    <link rel="manifest" href="/manifest.json">
-
-    <script type="text/javascript" src="site/jquery/jquery-3.7.1.js"></script>
-    <script type="text/javascript" src="site/spectrum/spectrum.js?v=1.1"></script>
-    <script type="text/javascript" src="spectrum/tinycolor.js?v=1.1"></script>
-    <script type="text/javascript" src="site/js/bootstrap.min.js?v=1.1"></script>
-    <script type="text/javascript" src="site/editorhtml/editorhtml.js?v=1.2"></script>
-    <script type="application/javascript" src="site/tinymce/tinymce.min.js?v=1.1"></script>
-    <script type="application/javascript" src="site/tinymce/my-tinymce-config.js?v=1.6.4"></script>
-    <script src="site/prism/prism.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" type="text/css" href="site/spectrum/spectrum.css">
-    <link rel="stylesheet" type="text/css" href="site/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://kit.fontawesome.com/da97544b74.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="site/prism/prism.css">
-
-    <!-- Adicione os ícones para diferentes tamanhos -->
-    <link rel="icon" type="image/png" sizes="32x32" href="site/icons/icon_base32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="site/icons/icon_base16.png">
-    <!-- Adicione o ícone para o aplicativo da web -->
-    <link rel="apple-touch-icon" sizes="96x96" href="site/icons/icon_base96.png">
-
-    <style>
-        .spoiler-container {
-            margin: 5px 0;
-        }
-        .spoiler-button {
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            padding: 5px;
-            cursor: pointer;
-        }
-        .spoiler-content {
-            margin-top: 5px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-        }
-    </style>
+    <title>Auxiliar Demaria</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body>
-    <div class="container-fluid">
+        <div class="container-fluid">
         <div class="row">
             <!-- Menu Lateral -->
             <nav class="navbar navbar-brand bg-info">
@@ -67,319 +33,20 @@
         </div>
     </div>
 
-    <div class="container-fluid align-items-center" style="display: none;">  
-        <div class="btn-toolbar align-self-center">
-            <div class="btn-group">
-                <!--<button class="btn btn-outline-secondary border-dark" id="btnNovo" accesskey="K" title="Novo (Alt+K)" onclick="window.open('https://cassracp.github.io/', '_blank')"><i class="fas fa-copy"></i></button>-->
-                <button class="btn btn-light border-dark" id="btnCopiar" accesskey="a" title="Copiar (Alt+A)" onclick="CopiarHTML()" style="display: none;"><img src="site/icons/copiar.png" alt="Copiar"></button>
-                <button class="btn btn-outline-warning border-dark" id="btnLimpar" accesskey="x" title="Limpar (Alt+X)" onclick="LimparEditor()" style="display: none;" ><img src="site/icons/limpar.png" alt="Limpar"></button>
-                <!--<button class="btn btn-outline-info border-dark" id="btnPrevia" accesskey="v" title="Prévia (Alt+V)" onclick="ExibirPrevia()" disabled="true"><img src="site/icons/previa.png" height="25px" width="25px" alt="Prévia"></button>-->
-                <button class="btn btn-outline-success border-dark" id="btnSalvar" accesskey="s" title="Salvar (Shift+Alt+S)" onclick="SalvarHTML()" style="display: none;" ><img src="site/icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
-                <button class="btn btn-group" disabled>Ferramentas: </button> 
-                <button class="btn btn-outline-primary border-dark" id="btnFormatarTelefone" title="Formatar Telefone" onclick="ExibirFormatarTelefone()" >Formatar Telefone <img src="site/icons/phone.png" alt="Formatar Telefone"></button>
-                <button class="btn btn-outline-primary border-dark" id="btnTopicoTarefa" title="Tópico Tarefa" onclick="ExibirTopicoTarefa()" >Tópico Tarefa <img src="site/icons/topico.png" alt="Tópico"></button>
-                <button class="btn btn-outline-primary border-dark" id="btnTopicoOS" title="Tópico OS" onclick="ExibirTopicoOS()" >Tópico OS <img src="site/icons/topicoos.png" alt="OS"></button>
-                <button class="btn btn-outline-info border-dark" id="btnCopiarCodigo" title="Copiar Código HTML" onclick="CopiarCodigoHTML()" style="display: none;"><img src="site/icons/copiar.png" alt="Copiar Código HTML"></button>
-            </div>
-        </div>
-        <br>
-        <div class="btn-group mt-lg-auto" style="display: none;">
-            <button class="btn btn-group" disabled>Formatar: </button> 
-            <button class="btn btn-outline-info border-dark" id="btnBold" accesskey="b" title="Negrito (Alt+B)" onclick="addTag('b')"><b><img src="site/icons/negrito.png" alt="Negrito"></b></button>
-            <button class="btn btn-outline-info border-dark" id="btnItalic" accesskey="i" title="Itálico (Alt+I)" onclick="addTag('i')"><i><img src="site/icons/italico.png" alt="Itálico"></i></button>
-            <button class="btn btn-outline-info border-dark" id="btnUnderln" accesskey="u" title="Sublinhado (Alt+U)" onclick="addTag('u')"><u><img src="site/icons/sublinhado.png" alt="Sublinhado"></u></button>
-            <button class="btn btn-outline-info border-dark" id="btnStrike" accesskey="t" title="Tachado (Alt+T)" onclick="addTag('s')"><s><img src="site/icons/tachado.png" alt="Tachado"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="site/icons/quote.png" alt="Quote"></button>
-            <button class="btn btn-outline-info border-dark" id="btnColor" title="Cor da Fonte"><img src="site/icons/color.png" alt="Cor da Fonte"></button>
-            
-                
+    <div class="container-fluid editor-container-main">
+        <!-- ** NOVA ESTRUTURA DE ABAS ** -->
+        <!-- O container para as abas será populado dinamicamente pelo JavaScript -->
+        <div id="tab-container" class="tab-container"></div>
 
-            <button class="btn btn-outline-info border-dark" id="btnUpperCase" title="Upper Case/Tudo Maiúsculo" onclick="FormatarUpperCase()"><s><img src="site/icons/upper_case.png" alt="Upper Case"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnLowerCase" title="Lower Case/Tudo Minúsculo" onclick="FormatarLowerCase()"><s><img src="site/icons/lower_case.png" alt="Lower Case"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnTitleCase" title="Title Case/Primeira Maiúscula" onclick="FormatarTitleCase()"><s><img src="site/icons/title_case.png" alt="Title Case"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnBig" title="BIG/Aumentar" onclick="addTag('big')"><s><img src="site/icons/aumentar_fonte.png" alt="BIG"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnSmall" title="SMALL/Diminuir" onclick="addTag('small')"><s><img src="site/icons/diminuir_fonte.png" alt="small"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnParagraph" title="p/Paragrafo" onclick="addParagrafo()"><s><img src="site/icons/paragrafo.png" alt="paragrafo"></s></button>
-            <button class="btn btn-outline-info border-dark" id="btnQuote" accesskey="q" title="Quote (Alt+Q)" onclick="addBlockquote()"><img src="site/icons/quote.png" alt="Quote"></button>
-            <button class="btn btn-outline-info border-dark" id="btnResponse" accesskey="r" title="Resposta (Alt+R)" onclick="addResposta()"><img src="site/icons/resposta.png" alt="Resposta"></button>
-            <button class="btn btn-outline-info border-dark" id="btnList" accesskey="l" title="Lista (Alt+L)" onclick="addLista()"><img src="site/icons/lista.png" alt="Lista"></button>
-            <button class="btn btn-outline-info border-dark" id="btnNumList" accesskey="1" title="Lista Numerada (Alt+1)" onclick="addListaNumerada()"><img src="site/icons/numerada.png" alt="Lista Numerada"></button>
-            <button class="btn btn-outline-info border-dark" id="btnLinha" accesskey="h" title="Linha (Alt+H)" onclick="addTag('hr')"><img src="site/icons/h-line.png" alt="Linha Horizontal"></button>
-            <button class="btn btn-outline-info border-dark" id="btnPre" accesskey="p" title="Texto Pré-Formatado (Alt+P)" onclick="addTag('pre')"><img src="site/icons/pre.png" alt="Texto Pré-Formatado"></button>
-            <button class="btn btn-outline-info border-dark" id="btnCode" accesskey="c" title="Código Fonte (Alt+C)" onclick="addTag('code')"><img src="site/icons/code.png" alt="Código Fonte"></button>
-            <button class="btn btn-group" disabled>Inserir: </button> 
-            <button class="btn btn-outline-info border-dark" id="btnSpoiler" title="Spoiler" onclick="AbrirSpoiler()"><img src="site\icons\spoiler.png" alt="Spoiler"/></button>
-            <button class="btn btn-outline-info border-dark" id="btnLinkURL" title="Link URL" onclick="AbrirLinkURL()"><img src=site\icons\link.png alt="Link URL"></button> 
-            <button class="btn btn-outline-info border-dark" id="btnLinkOS" title="Link OS" onclick="AbrirLinkOS()"><img src=site\icons\link_os.png alt="Link OS"></button> 
-            <button class="btn btn-outline-info border-dark" id="btnLinkTarefa" title="Link Tarefa" onclick="AbrirLinkTarefa()"><img src=site\icons\link_tarefa.png alt="Link Tarefa"></button>
-            <button class="btn btn-outline-info border-dark" id="btnImage" title="Inserir Imagem" onclick="AbrirImagem()"><img src="site\icons\imagem2.png" alt="Imagem"></button>
-            <button class="btn btn-outline-info border-dark" id="btnAbrirData" accesskey="d" title="Inserir Data (Shift+Alt+D)" onclick="AbrirData()"><img src="site\icons\calendar.png" alt="Data"/></button>         
-            <button class="btn btn-outline-info border-dark" id="btnAbrirDataGoogle" accesskey="g" title="Data da Agenda do Google (Shift+Alt+G)" onclick="AbrirDataGoogle()"><img src="site\icons\gcalendar.png" alt="Agenda do Google"/></button>         
-            <button class="btn btn-outline-info border-dark" id="btnAudioWhatsapp" accesskey="w" title="Audio do WhatsApp/AnexoChat (Alt+W)" onclick="AbrirAudio()"><img src="site\icons\audio.png" alt="Audio do WhatsApp"/></button>         
+        <!-- O container para as áreas de texto dos editores -->
+        <div id="editor-area-container" class="editor-area-container">
+            <!-- Cada editor terá seu próprio wrapper criado dinamicamente aqui -->
         </div>
     </div>
+
     
-    <div class="container-fluid align-items-center">
-        <div class="col-md-auto text-left">
-            <textarea id="editor" class="mousetrap form-control" rows="32" placeholder="Digite aqui..."></textarea>
-        </div>
-    </div>
 
-    <!-- Modal de Prévia -->
-    <div class="modal fade" id="previaModal" tabindex="-1" role="dialog" aria-labelledby="previaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="white-space: pre-line;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="previaModalLabel">Prévia do Texto Formatado</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#previaModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="modalPreviaContent"></div>
-                    <button id="btnSalvarHTML" class="btn btn-outline-success" title="Salvar Prévia em .html" onclick="SalvarHTML()">Salvar <img src="site/icons/salvar.png" height="25px" width="25px" alt="Salvar"></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Tormatar Telefone -->
-    <div class="modal fade" id="formatarTelefoneModal" tabindex="-1" role="dialog" aria-labelledby="formatarTelefoneModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="white-space: pre-line;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="formatarTelefoneModalLabel">Formatar Telefone</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#formatarTelefoneModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="modalFormatarTelefoneContent"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de tópico tarefa -->
-    <div class="modal fade" id="topicoTarefaModal" tabindex="-1" role="dialog" aria-labelledby="topicoTarefaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="white-space: pre-line;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="topicoTarefaModalLabel">Tópico de Tarefa</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#topicoTarefaModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="modalTopicoTarefaContent"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de tópico OS -->
-    <div class="modal fade" id="topicoOSModal" tabindex="-1" role="dialog" aria-labelledby="topicoOSModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width: 1225px;">
-            <div class="modal-content" style="white-space: pre-line;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="topicoOSModalLabel">Tópico de OS</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#topicoOSModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="modalTopicoOSContent"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para inserir texto do spoiler -->
-    <div class="modal fade" id="spoilerModal" tabindex="-1" role="dialog" aria-labelledby="spoilerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="spoilerModalLabel">Insira o Título do Spoiler</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#spoilerModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="checkbox" class="form-check-input" id="usarModelo" onchange="UsarTituloModelo()" checked> Usar modelo pré-definido
-                    <br>
-                    <div class="form-group row" id="divSelecionarModelo">Selecione um modelo:
-                        <select id="modeloTitulo" class="form-control">
-                            <option value="Especificações de Hardware Servidor">Especificações de Hardware Servidor</option>
-                            <option value="Informações Importantes">Informações Importantes</option>
-                            <option value="Aviso">Aviso</option>
-                        </select>
-                    </div>
-                    <div class="form-group row d-none" id="divInserirTitulo">
-                        <textarea id="tituloSpoiler" class="form-control" rows="2" placeholder="Insira o Título do spoiler" required></textarea>
-                    </div>     
-                </div>
-                    
-                <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="InserirSpoiler()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para inserir URL -->
-    <div class="modal fade" id="linkURLModal" tabindex="-1" role="dialog" aria-labelledby="linkURLModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="linkURLModalLabel">Insira a URL</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#linkURLModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    Endereço URL do Link:
-                    <div class="form-group row" id="divInserirNumOS">
-                        <input type="text" id="linkURL" class="form-control" rows="1" placeholder="Insira a URL" onkeyup="addLinkURL(event)" required></textarea>
-                    </div>
-                    <br>    
-                    Texto de Máscara do Link:
-                    <div class="form-group row" id="divInserirNumOS">
-                        <input type="text" id="linkURLMask" class="form-control" rows="1" placeholder="Insira a máscara do link (opcional)" onkeyup="addLinkURL(event)" required></textarea>
-                    </div>    
-                </div>
-                    
-                <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="addLinkURL()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal para inserir Número da OS -->
-    <div class="modal fade" id="linkOSModal" tabindex="-1" role="dialog" aria-labelledby="linkOSModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="linkOSModalLabel">Insira o Número da OS</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#linkOSModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row" id="divInserirNumOS">
-                        <input type="number" id="numeroOS" class="form-control" rows="1" placeholder="Insira o número da OS" onkeyup="addLinkOS(event)" required></textarea>
-                    </div>     
-                </div>
-
-                <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="addLinkOS()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Modal para inserir Número da Tarefa -->
-    <div class="modal fade" id="linkTarefaModal" tabindex="-1" role="dialog" aria-labelledby="linkTarefaModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="linkTarefaModalLabel">Insira o Número da Tarefa</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#linkTarefaModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row" id="divInserirNumTarefa">
-                        <input type="number" id="numeroTarefa" class="form-control" rows="1" placeholder="Insira o número da Tarefa" onkeyup="addLinkTarefa(event)" required></textarea>
-                    </div>     
-                </div>
-                    
-                <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="addLinkTarefa()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para inserir Imagem -->
-    <div class="modal fade" id="ImagemModal" tabindex="-1" role="dialog" aria-labelledby="ImagemModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ImagemModalLabel">Insira a data do Calendario</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#ImagemModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    URL da Imagem:
-                    <div class="form-group row" id="divInserirURLImagem">
-                        <textarea id="urlImagem" class="form-control" rows="1" placeholder="Insira a URL da Imagem" onkeyup="addURLImagem(event)" required></textarea>
-                    </div>
-                    <br>
-                    Descrição da imagem: 
-                    <div class="form-group row" id="divInserirDescImagem">
-                        <textarea id="descImagem" class="form-control" rows="1" placeholder="Insira a descrição da Imagem (opcional)" onkeyup="addURLImagem(event)"></textarea>
-                    </div>     
-                </div>
-                    
-                <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="addURLImagem()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal para inserir Data -->
-    <div class="modal fade" id="DataModal" tabindex="-1" role="dialog" aria-labelledby="DataModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="DataModalLabel">Insira a Data</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#DataModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="date" id="dataSelecionada" onchange="UsarDataFormatada(document.getElementById('dataSelecionada').value)"><br>
-                    <input type="checkbox" class="form-check-input" id="chkDataFormatada" onchange="UsarDataFormatada()" checked> Usar Data Formatada
-                    <br><p>Exemplo: <span class="" id="exemploDataFormatada"></span></p>
-                </div>
-                <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="addData()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal para inserir Data do Calendario do Google -->
-    <div class="modal fade" id="DataGoogleModal" tabindex="-1" role="dialog" aria-labelledby="DataGoogleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="DataGoogleModalLabel">Insira a Data da Agenda do Google</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#DataGoogleModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row" id="divAbrirDataGoogle">
-                        <textarea id="dataGoogle" class="form-control" rows="1" placeholder="Cole a Data da Agenda do Google (conforme exemplo)" onkeyup="addDataGoogle(event)" required></textarea>
-                        <br>
-                        <div style="margin: 5px 20px 20px;"><div class="smallfont" style="margin-bottom: 2px;"><b>Exemplo:</b>: <input value="Open" style="margin: 0px; padding: 0px; width: 50px; font-size: 11px;" onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" type="button"></div><div class="alt2" style="border: 1px inset ; margin: 0px; padding: 6px;"><div style="display: none;">                            <img src="https://lh3.googleusercontent.com/pw/ADCreHfFlsSHnw0zwDo1FaoUnR5DIE6_WUCEUN1Tn3KvZB-ZaYbKotL7hmMVv9Gy40OdSVa1y55VsWSL2E38VAdpmbekExnHeGgUBU_vr5COsXDOQvk-fGt8aZVBToXts5r9Ku6BHwBlLXUGKTKu-6k1p33Y=w445-h124-s-no-gm?authuser=0" width="300" height="150"></div></div></div>
-                    </div>     
-                </div>
-                    
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="addDataGoogle()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal para inserir Audio do WhatsApp -->
-    <div class="modal fade" id="AudioModal" tabindex="-1" role="dialog" aria-labelledby="AudioModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="AudioModalLabel">Insira a URL do Audio do AnexoChat</h5>
-                    <button type="button" class="btn btn-outline-secondary border-dark" title="Fechar" data-dismiss="modal" onclick="$('#AudioModal').modal('hide');"><img src="site/icons/close.png" alt="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row" id="divAbrirAudio">
-                        <textarea id="audioWhatsapp" class="form-control" rows="1" placeholder="Cole a URL do Audio do AnexoChat" required></textarea>
-                        <br>
-                    </div>     
-                </div>
-                    
-                <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="AdicionarAudio()">Inserir</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer-container">
+        <div class="footer-container">
         <footer style="text-align: center;">
             <font size="1">
                 Ferramenta desenvolvida por Cássio Rodolfo Alves de Carvalho Pinto (cassio@demaria.com.br). Sem fins lucrativos e para uso interno dos colaboradores da DeMaria Software®. DeMaria Software® é uma marca registrada e tem todos os seus direitos reservados.
@@ -389,140 +56,47 @@
                 
 
     <input type='text' id="custom" style="display: none;"/>
-            
+
+    <!-- Scripts -->
+     <!-- FontAwasome-->
+    <script src="https://kit.fontawesome.com/da97544b74.js" crossorigin="anonymous"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <!-- TinyMCE -->
+    <script type="application/javascript" src="site/tinymce/tinymce.min.js?v=1.1"></script>
+    <!-- Configuração do TinyMCE (agora com lógica de abas) -->
+    <script type="application/javascript" src="site/tinymce/my-tinymce-config.js?v=2.0"></script>
+
+    <!-- Funções globais que podem ser chamadas pelo editor -->
     <script>
-        $(document).ready(function () {
-            // Initialize Spectrum on the custom color picker
-                $("#btnColor").spectrum({
-                preferredFormat: "name",
-                showPaletteOnly: true,
-                togglePaletteOnly: true,
-                hideAfterPaletteSelect:true,
-                showInitial: true,
-                togglePaletteMoreText: '+',
-                togglePaletteLessText: '-',
-                palette: [
-                    ['#Black', '#Gray', '#Yellow'],
-                    ['#Red', '#Green', '#MediumBlue'], 
-                    // Add more colors if desired
-                ],
-                change: function (color) {
-                    // Handle color change if needed
-                    const editor = document.getElementById("editor");
-                    const inicio = editor.selectionStart;
-                    const fim = editor.selectionEnd;
-                    const selectedText = editor.value.substring(inicio, fim);
-                    var textoComCor;
-
-                    if (selectedText.length > 0) {
-                        if (color.toName() === false){
-                            textoComCor = `<font color="${color.toHexString()}">${selectedText}</font>`;
-                        } else {
-                            textoComCor = `<font color="${color.toName()}">${selectedText}</font>`;
-                        }                        
-                        editor.value = editor.value.substring(0, inicio) + textoComCor + editor.value.substring(fim);
-                        editor.focus();
-                    } else {
-                        alert("Selecione um texto antes");
-                    }
-                },
-                show: function () {
-                    $(this).spectrum("set", "black");
-                },
-                // Atualize a cor selecionada quando o Spectrum é fechado
-                hide: function () {
-                    $(this).spectrum("set", "black");
-                },
-            });  
-            
-        });
-
-
-
-        let timeoutId; // Variável para armazenar o ID do temporizador
-
-        // Evento antes de descarregar a página
-        window.addEventListener('beforeunload', function() {
-            salvarTextoComoLocalStorage(); // Salvar texto antes de descarregar a página
-        });
-
-        // Evento de carregamento da página
-        window.addEventListener('DOMContentLoaded', function() {
-            carregarTextoDoLocalStorage(); // Carregar texto ao carregar a página
-        });
-
-        // Função para salvar o texto do editor no armazenamento local
-        function salvarTextoComoLocalStorage() {
-            const editor = tinymce.get('editor');
-            const texto = editor.getContent();
-            localStorage.setItem('textoSalvo', texto);
+        // Funções que precisam estar no escopo global para serem acessadas pelo editor
+        function InserirLinkOS(nOS) {
+            return `<a href="https://app.pipefy.com/pipes/1576343301#cards/${nOS}" target="_blank" rel="noopener">OS ${nOS}</a>`;
         }
-
-        // Função para carregar o texto do armazenamento local
-        function carregarTextoDoLocalStorage() {
-            const textoSalvo = localStorage.getItem('textoSalvo');
-            if (textoSalvo) {
-                const editor = tinymce.get('editor');
-                editor.setContent(textoSalvo);
-            }
+        function InserirLinkTarefa(nTarefa) {
+            return `<a href="https://app.pipefy.com/pipes/1576343301#cards/${nTarefa}" target="_blank" rel="noopener">Tarefa ${nTarefa}</a>`;
         }
-
-        // Função para iniciar o temporizador após digitar um caractere
-        function iniciarTemporizador() {
-            clearTimeout(timeoutId); // Limpa o temporizador existente, se houver
-            timeoutId = setTimeout(salvarTextoComoLocalStorage, 3000); // Inicia um novo temporizador de 3 segundos
+        function SomenteNumeros(texto) {
+            return /^\d+$/.test(texto);
         }
-
-        // Evento de teclado para monitorar a digitação
-        tinymce.init({
-            selector: '#editor',
-            setup: function (editor) {
-                editor.on('input', function () {
-                    iniciarTemporizador(); // Chama a função para iniciar o temporizador ao digitar
-                });
-            }
-        });
-
-        // Adicionar um evento para interceptar o fechamento do modal
-        $('#previaModal').on('hidden.bs.modal', function (e) {
-            // Quando o modal é fechado, pause a reprodução de áudio, se houver
-            const audio = document.getElementById("audioPlayer");
-            if (audio) {
-                audio.pause();
-            }
-        });
-
-        function CopiarHTML() {
-            const editor = tinymce.get('editor');
-            const htmlContent = editor.getContent();
-            CopiarParaClipboard(htmlContent);
-            //alert('Conteúdo copiado para a área de transferência!');
-        }
-
-        function CopiarParaClipboard(texto) {
-            // Usando a nova API Clipboard
-            navigator.clipboard.writeText(texto)
-                .then(function() {
-                    console.log("Texto copiado para a área de transferência!");
-                })
-                .catch(function(err) {
-                    console.error("Erro ao copiar o texto: ", err);
-                });
-        }
-
-        function CopiarCodigoHTML() {
-            const editor = tinymce.get('editor');
-            const htmlContent = editor.getContent();
-            CopiarParaClipboard(htmlContent);
-            alert('Código HTML copiado para a área de transferência!');
-        }
-
-        function ExibirTopicoTarefa() {
-            tinymce.activeEditor.windowManager.openUrl({
-                title: 'Tópico Tarefa',
-                url: '/site/topicotarefa.html',
-                width: 600,
-                height: 600
+        // Funções de Tópicos e Telefone (mantidas para compatibilidade)
+        function ExibirFormatarTelefone() { console.log("Formatar Telefone chamado"); }
+        function ExibirTopicoTarefa() { console.log("Tópico Tarefa chamado"); }
+        function ExibirTopicoOS() { console.log("Tópico OS chamado"); }
+        function confirmacao(titulo, mensagem, callbackConfirm, callbackCancel) {
+            Swal.fire({
+                title: titulo,
+                text: mensagem,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Sim",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (callbackConfirm) callbackConfirm();
+                } else {
+                    if (callbackCancel) callbackCancel();
+                }
             });
         }
     </script>
