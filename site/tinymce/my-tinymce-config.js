@@ -696,7 +696,7 @@ tinymce.init({
         }
 
 function InserirLinkOS (nOS) {
-    return `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=/${nOS}" target="_blank" rel="noopener">OS ${nOS}</a>`;
+    return `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${nOS}" target="_blank" rel="noopener">OS ${nOS}</a>`;
 }
 
 function confirmacao(titulo, mensagem, callbackConfirm, callbackCancel) {
