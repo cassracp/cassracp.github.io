@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
-            forced_root_block: '',
+            //forced_root_block: '',
             setup: function (editor) {
                 // ===================================================================================
                 // == ÍCONES PERSONALIZADOS ==========================================================
@@ -717,93 +717,79 @@ document.addEventListener('DOMContentLoaded', () => {
                     editor.insertContent(template.replace(/    /g, '').trim());
                 };
 
-                const openRelatorioAnaliseDialog = (editor) => {
-                    editor.windowManager.open({
-                        title: 'Gerar Relatório de Análise de Migração',
-                        body: {
-                            type: 'panel',
-                            items: [
-                                {
-                                    type: 'textarea',
-                                    name: 'rtfContent',
-                                    label: 'Cole o conteúdo do relatório (.rtf) abaixo:',
-                                    placeholder: 'Banco de dados analisado: ...\nData de coleta do Backup: ...',
-                                    maximized: true
-                                }
-                            ]
-                        },
-                        buttons: [ { text: 'Cancelar', type: 'cancel' }, { text: 'Gerar Protocolo', type: 'submit', primary: true } ],
-                        onSubmit: (dialog) => {
-                            const text = dialog.getData().rtfContent.trim();
-                            if (!text) {
-                                Swal.fire('Erro', 'O campo de conteúdo não pode estar vazio.', 'error');
-                                return;
+                 const openRelatorioAnaliseDialog = (editor) => {
+                    // 1. Define uma função na janela principal que o modal irá chamar.
+                    //    Esta função contém a lógica de formatação original.
+                    window.handleRelatorioData = (text) => {
+                        if (!text || text.trim() === '') {
+                            // Não faz nada se o texto estiver vazio
+                            return;
+                        }
+                        
+                        try {
+                            // TODA A LÓGICA DE FORMATAÇÃO ESTÁ AQUI AGORA
+                            const dbMatch = text.match(/Banco de dados analisado:\s*([^\n\r]+)/i);
+                            const dateMatch = text.match(/Data de coleta do Backup:\s*([^\n\r]+)/i);
+                            const prazoBlockMatch = text.match(/Prazo para desenvolvimento:[\s\S]*/i);
+                            let prazo = '[NÃO ENCONTRADO]';
+                            if (prazoBlockMatch) {
+                                prazo = prazoBlockMatch[0].replace(/Prazo para desenvolvimento:/i, '').replace(/[\r\n]+/g, ' ').trim();
                             }
-
-                            try {
-                                // 1. Extrair os dados usando Regex para maior robustez
-                                const dbMatch = text.match(/Banco de dados analisado:\s*([^\n\r]+)/i);
-                                const dateMatch = text.match(/Data de coleta do Backup:\s*([^\n\r]+)/i);
-                                
-                                const prazoBlockMatch = text.match(/Prazo para desenvolvimento:[\s\S]*/i);
-                                let prazo = '[NÃO ENCONTRADO]';
-                                if (prazoBlockMatch) {
-                                    prazo = prazoBlockMatch[0]
-                                        .replace(/Prazo para desenvolvimento:/i, '')
-                                        .replace(/[\r\n]+/g, ' ')
-                                        .trim();
+                            const dbName = dbMatch ? dbMatch[1].trim() : '[NÃO ENCONTRADO]';
+                            const backupDate = dateMatch ? dateMatch[1].trim() : '[NÃO ENCONTRADO]';
+                            const records = [];
+                            const recordRegex = /^\s*(?:•\s*)?([\w\s\/çãéóíúâêôûà`ü]+):\s*([\d\.]+|Não localizado)[\s\w]*$/gmi;
+                            let match;
+                            const textWithoutPrazo = prazoBlockMatch ? text.substring(0, prazoBlockMatch.index) : text;
+                            while ((match = recordRegex.exec(textWithoutPrazo)) !== null) {
+                                if (!/banco|data|prazo/i.test(match[1])) {
+                                    records.push({ key: match[1].trim(), value: match[2].trim() });
                                 }
-                                
-                                const dbName = dbMatch ? dbMatch[1].trim() : '[NÃO ENCONTRADO]';
-                                const backupDate = dateMatch ? dateMatch[1].trim() : '[NÃO ENCONTRADO]';
+                            }
+                            let summaryHtml = `<p>Banco de dados analisado: <strong>${dbName}</strong><br>Data de coleta do Backup: <strong>${backupDate}</strong>`;
+                            if (records.length > 0) {
+                                summaryHtml += `<br>`;
+                                records.forEach(record => {
+                                    const valueText = /não localizado/i.test(record.value) ? record.value : `${record.value} registros`;
+                                    summaryHtml += `&nbsp; &nbsp; &bull; ${record.key}: <strong>${valueText}</strong><br>`;
+                                });
+                                summaryHtml = summaryHtml.slice(0, -4);
+                            }
+                            summaryHtml += `</p>`;
+                            const prazoHtml = `<p>Prazo para desenvolvimento: <strong>${prazo}</strong></p>`;
+                            const finalHtml = [
+                                '<p>Realizada análise de migração.</p>',
+                                '<p>Segue relatório completo em anexo.</p>',
+                                '<p><strong>RESUMO</strong></p>',
+                                summaryHtml,
+                                prazoHtml,
+                                '<p>&nbsp;</p>',
+                                '<hr>',
+                                '<p><strong>INFORMAÇÕES INTERNAS</strong></p>',
+                                `<p>Projeto de migração ${dbName} <strong>desenvolvido</strong>.</p>`
+                            ].join('\n');
 
-                                // 2. Extrair a lista de registros
-                                const records = [];
-                                const recordRegex = /^\s*(?:•\s*)?([\w\sçãéóíúâêôûà`ü]+):\s*([\d\.]+|Não localizado)[\s\w]*$/gmi;
-                                let match;
+                            editor.insertContent(finalHtml);
 
-                                const textWithoutPrazo = prazoBlockMatch ? text.substring(0, prazoBlockMatch.index) : text;
+                        } catch (error) {
+                            console.error("Erro ao processar o texto do relatório:", error);
+                            Swal.fire('Erro', 'Não foi possível formatar o texto. Verifique se o conteúdo colado está no formato esperado.', 'error');
+                        } finally {
+                            // Limpa a função da janela para evitar lixo de memória
+                            delete window.handleRelatorioData;
+                        }
+                    };
 
-                                while ((match = recordRegex.exec(textWithoutPrazo)) !== null) {
-                                     // Ignorar as correspondências que já pegamos
-                                    if (!/banco|data|prazo/i.test(match[1])) {
-                                        records.push({ 
-                                            key: match[1].trim(), 
-                                            value: match[2].trim() 
-                                        });
-                                    }
-                                }
-                                
-                                // 3. Construir o HTML
-                                let summaryHtml = `<p>Banco de dados analisado: <strong>${dbName}</strong><br>Data de coleta do Backup: <strong>${backupDate}</strong><br>`;
-                                if (records.length > 0){
-                                    records.forEach(record => {
-                                        const valueText = /não localizado/i.test(record.value) ? record.value : `${record.value} registros`;
-                                        summaryHtml += `&nbsp; &nbsp; &bull; ${record.key}: <strong>${valueText}</strong><br>`;
-                                    });
-                                    summaryHtml = summaryHtml.slice(0, -4); // Remove o último <br>
-                                }
-                                summaryHtml += `</p>`;
-                                
-                                const prazoHtml = `<p>Prazo para desenvolvimento: <strong>${prazo}</strong></p>`;
-
-                                const finalHtml = `
-                                    <p>Realizada análise de migração.</p>
-                                    <p>Segue relatório completo em anexo.</p>
-                                    <p><strong>RESUMO</strong></p>
-                                    ${summaryHtml}
-                                    ${prazoHtml}
-                                    <hr>
-                                    <p><strong>INFORMAÇÕES INTERNAS</strong></p>
-                                    <p>Projeto de migração ${dbName} <strong>desenvolvido</strong>.</p>
-                                `;
-
-                                editor.insertContent(finalHtml.replace(/    /g, '').trim());
-                                dialog.close();
-
-                            } catch (error) {
-                                console.error("Erro ao processar o texto do relatório:", error);
-                                Swal.fire('Erro', 'Não foi possível formatar o texto. Verifique se o conteúdo colado está no formato esperado.', 'error');
+                    // 2. Abre o modal externo que irá chamar a função acima.
+                    editor.windowManager.openUrl({
+                        title: 'Inserir Dados do Relatório',
+                        url: 'site/relatorioanalise.html',
+                        width: 900,
+                        height: 700,
+                        onClose: () => {
+                            // Garante que a função seja limpa mesmo se o usuário fechar o modal manualmente
+                            if (window.handleRelatorioData) {
+                                delete window.handleRelatorioData;
                             }
                         }
                     });
