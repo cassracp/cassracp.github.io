@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Tópicos de Tarefa</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/style.css">
     <style>
         html, body {
             height: 100%;
@@ -165,6 +166,15 @@
                 document.execCommand('copy');
             }
         }
+
+        document.getElementById('btn-gerar-topico-tarefa').addEventListener('click', gerarTopicoTarefa);
+
+        function gerarTopicoTarefa() {
+            const numeroTarefa = document.getElementById('numero-tarefa').value;
+            const titulo = document.getElementById('titulo-tarefa').value;
+            const resultado = `[TAREFA-${numeroTarefa}] ${titulo}`;
+            document.getElementById('resultado-topico-tarefa').value = resultado;
+  }
     </script>
 </body>
 </html>

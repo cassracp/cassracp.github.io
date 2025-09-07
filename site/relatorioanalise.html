@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inserir Dados do Relatório</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/style.css">
     <style>
         html, body { height: 100%; margin: 0; padding: 0; }
         body { padding: 20px; background-color: #f8f9fa; display: flex; flex-direction: column; }
@@ -51,6 +52,16 @@
             } else {
                 alert('Erro: Não foi possível comunicar com o editor principal. A janela pode ter sido fechada.');
             }
+        }
+
+        document.getElementById('btn-gerar-relatorio').addEventListener('click', gerarRelatorioAnalise);
+
+        function gerarRelatorioAnalise() {
+            const tipo = document.getElementById('tipo').value;
+            const url = document.getElementById('url').value;
+            const motivo = document.getElementById('motivo').value;
+            const resultado = `Prezados, boa tarde! Segue o resultado da análise de ${tipo} com a URL/ID ${url}. Motivo: ${motivo}.`;
+            document.getElementById('resultado-relatorio').value = resultado;
         }
     </script>
 </body>

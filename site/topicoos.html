@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Tópicos de OS</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/style.css">
     <style>
         html, body {
             height: 100%;
@@ -209,6 +210,15 @@
                 textArea.select();
                 document.execCommand('copy');
             }
+        }
+
+        document.getElementById('btn-gerar-topico-os').addEventListener('click', gerarTopicoOS);
+
+        function gerarTopicoOS() {
+            const numeroOS = document.getElementById('numero-os').value;
+            const titulo = document.getElementById('titulo-os').value;
+            const resultado = `[OS${numeroOS}] ${titulo}`;
+            document.getElementById('resultado-topico-os').value = resultado;
         }
     </script>
 </body>

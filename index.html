@@ -58,25 +58,23 @@
     <input type='text' id="custom" style="display: none;"/>
 
     <!-- Scripts -->
-
-    <script type="application/javascript" src="site/editorhtml/editorhtml.js?v=1.0"></script>
+    <script src="scripts/app.js"></script>
      <!-- FontAwasome-->
     <script src="https://kit.fontawesome.com/da97544b74.js" crossorigin="anonymous"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <!-- TinyMCE -->
-    <script type="application/javascript" src="site/tinymce/tinymce.min.js?v=1.1"></script>
-    <!-- Configuração do TinyMCE (agora com lógica de abas) -->
-    <script type="application/javascript" src="site/tinymce/my-tinymce-config.js?v=2.0.1"></script>
+    <script src="https://cdn.tiny.cloud/1/0aae4i0e29mkxjjo8x8ekd6nnmrfgcdtjh7efl4ba8qwazaq/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="scripts/my-tinymce-config.js?v=2.0.1"></script>
 
     <!-- Funções globais que podem ser chamadas pelo editor -->
     <script>
         // Funções que precisam estar no escopo global para serem acessadas pelo editor
         function InserirLinkOS(nOS) {
-            return `<a href="https://app.pipefy.com/pipes/1576343301#cards/${nOS}" target="_blank" rel="noopener">OS ${nOS}</a>`;
+            return `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${nOS}" target="_blank" rel="noopener">OS ${nOS}</a>`;
         }
         function InserirLinkTarefa(nTarefa) {
-            return `<a href="https://app.pipefy.com/pipes/1576343301#cards/${nTarefa}" target="_blank" rel="noopener">Tarefa ${nTarefa}</a>`;
+            return `<a href="https://www.demaria.com.br/intranet/v3/tarefa/detalhe.php?tarefa_id=${nTarefa}" target="_blank" rel="noopener">Tarefa ${nTarefa}</a>`;
         }
         function SomenteNumeros(texto) {
             return /^\d+$/.test(texto);
