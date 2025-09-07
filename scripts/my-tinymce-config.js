@@ -220,9 +220,13 @@ document.addEventListener('DOMContentLoaded', () => {
             init_instance_callback: (editor) => {
                 editor.setContent(content);
             },
+             license_key: 'gpl',
             height: '100%',
             resize: false,
             placeholder: 'Digite aqui...',
+            //skin_url: 'scripts/my_tinymce_app/skins/ui/oxide-dark',
+            //content_css: 'dark',
+            promotion: false,
             language_url: 'scripts/my_tinymce_app/langs/pt_BR.js',
             language: 'pt_BR',
             plugins: [
@@ -239,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 {text: 'C#', value: 'csharp'}
             ],
             menu: {
-                file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print' },
+                file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print | skins' },
                 view: { title: 'Exibir', items: 'visualblocks visualchars | modofoco preview' },
                 insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
