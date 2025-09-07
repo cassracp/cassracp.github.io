@@ -1,0 +1,71 @@
+/* Estilos estruturais que não mudam com o tema */
+body {
+    padding: 10px;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.editor-container-main {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 20px); /* Altura total da viewport menos o padding do body */
+    padding: 0;
+}
+
+/* --- ESTRUTURA DAS ABAS --- */
+.tab-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px 5px 0 5px;
+    border-bottom: 1px solid #dee2e6; /* Cor padrão, pode ser sobrescrita pelo tema */
+}
+
+.tab-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    cursor: pointer;
+    border: 1px solid #dee2e6; /* Cor padrão */
+    border-bottom: none;
+    margin-right: 2px;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.tab-item.active {
+    font-weight: 500;
+    margin-bottom: -1px; /* Faz a aba ativa sobrepor a borda do container */
+}
+
+.tab-title {
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.tab-close-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 0 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+/* --- ESTRUTURA E COMPORTAMENTO DA ÁREA DO EDITOR --- */
+/* ESTA É A PARTE MAIS IMPORTANTE QUE ESTAVA FALTANDO */
+.editor-area-container {
+    flex-grow: 1;
+    position: relative;
+}
+
+.editor-wrapper {
+    width: 100%;
+    height: 100%;
+    display: none; /* Esconde todos os editores por padrão */
+}
+
+.editor-wrapper.active {
+    display: block; /* Mostra APENAS o editor da aba ativa */
+}

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Tópicos de OS</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../stylesheets/style.css">
+    <link rel="stylesheet" href="../stylesheets/base.css?v=1.0.0">
+    <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
     <style>
         html, body {
             height: 100%;
@@ -128,7 +129,7 @@
         <button onclick="cancelarAcao()" class="btn btn-secondary">Cancelar</button>
         <button onclick="FormatarTopicoOS()" class="btn btn-primary">Formatar e Copiar</button>
     </div>
-    
+    <script src="../scripts/app.js"></script>
     <script>
         document.getElementById("assuntoTopicoSelect").addEventListener("change", function() {
             const select = this;
@@ -220,6 +221,10 @@
             const resultado = `[OS${numeroOS}] ${titulo}`;
             document.getElementById('resultado-topico-os').value = resultado;
         }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', applyModalTheme);
     </script>
 </body>
 </html>

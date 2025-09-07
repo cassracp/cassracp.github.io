@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formatador de Telefone para Discagem</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../stylesheets/style.css">
+    <link rel="stylesheet" href="../stylesheets/base.css?v=1.0.0">
+    <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
     <style>
         body { padding: 20px; background-color: #f8f9fa; display: flex; flex-direction: column; height: 100vh; }
         .container-fluid { display: flex; flex-direction: column; flex-grow: 1; }
@@ -78,6 +79,7 @@
              <button onclick="formatarEcopiar()" class="btn btn-primary">Formatar e Copiar</button>
         </div>
     </div>
+    <script src="../scripts/app.js"></script>
     <script>
         function closeDialog() {
             if (window.parent && window.parent.tinymce) {
@@ -171,6 +173,10 @@
             showCustomAlert('Por favor, insira um DDD válido com pelo menos 2 dígitos.');
             }
         }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', applyModalTheme);
     </script>
 </body>
 </html>

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inserir Dados do Relatório</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../stylesheets/style.css">
+    <link rel="stylesheet" href="../stylesheets/base.css?v=1.0.0">
+    <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
     <style>
         html, body { height: 100%; margin: 0; padding: 0; }
         body { padding: 20px; background-color: #f8f9fa; display: flex; flex-direction: column; }
@@ -27,7 +28,7 @@
         <button onclick="closeDialog()" class="btn btn-secondary">Cancelar</button>
         <button onclick="inserirTextoNoEditor()" class="btn btn-primary">Inserir no Editor</button>
     </div>
-
+    <script src="../scripts/app.js"></script>
     <script>
         function closeDialog() {
             // Acessa o window manager do editor ativo na janela pai e fecha o diálogo atual (o topo da pilha)
@@ -63,6 +64,10 @@
             const resultado = `Prezados, boa tarde! Segue o resultado da análise de ${tipo} com a URL/ID ${url}. Motivo: ${motivo}.`;
             document.getElementById('resultado-relatorio').value = resultado;
         }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', applyModalTheme);
     </script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+body[data-theme='tinymce-5'] {
+    background-color: #f0f2f5;
+    color: #212529;
+}
+
+body[data-theme='tinymce-5'] .tab-container {
+    background-color: #e9ecef;
+    border-bottom-color: #dee2e6;
+}
+
+body[data-theme='tinymce-5'] .tab-item {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #495057;
+}
+
+body[data-theme='tinymce-5'] .tab-item:hover {
+    background-color: #e2e6ea;
+}
+
+body[data-theme='tinymce-5'] .tab-item.active {
+    background-color: #ffffff;
+    color: #007bff;
+    border-bottom: 1px solid #ffffff;
+}
+
+body[data-theme='tinymce-5'] .tab-close-btn {
+    color: #6c757d;
+}
+
+body[data-theme='tinymce-5'] .tab-close-btn:hover {
+    color: #dc3545;
+    background-color: #e9ecef;
+}
+
+body[data-theme='tinymce-5'] .editor-area-container {
+    background-color: white;
+}

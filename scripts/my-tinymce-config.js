@@ -8,6 +8,46 @@ document.addEventListener('DOMContentLoaded', () => {
     document.head.appendChild(style);
 
     // ===================================================================================
+    // == GERENCIAMENTO DE TEMA (SKIN) ===================================================
+    // ===================================================================================
+    
+    // NOVO: Defina os temas disponíveis aqui. 'value' deve ser o nome da pasta em /skins/ui/
+    const AVAILABLE_THEMES = [
+        { name: 'Clássico (Claro)', value: 'tinymce-5' },
+        { name: 'Clássico (Escuro)', value: 'tinymce-5-dark' },
+        { name: 'Oxide (Claro)', value: 'oxide' },
+        { name: 'Oxide (Escuro)', value: 'oxide-dark' },
+        // Adicione outros temas que você tenha aqui, ex:
+        // { name: 'Material Design', value: 'tinymce-material' },
+    ];
+
+    function getActiveTheme() {
+        return localStorage.getItem('tinymceActiveTheme') || AVAILABLE_THEMES[0].value;
+    }
+
+    function saveActiveTheme(themeName) {
+        localStorage.setItem('tinymceActiveTheme', themeName);
+    }
+
+    function applyPageTheme(themeName) {
+        // Define o atributo no body para que o CSS funcione
+        document.body.dataset.theme = themeName;
+
+        // Remove o CSS do tema antigo, se existir
+        const oldThemeLink = document.getElementById('dynamic-theme-style');
+        if (oldThemeLink) {
+            oldThemeLink.remove();
+        }
+        
+        // Adiciona o novo CSS do tema
+        const newThemeLink = document.createElement('link');
+        newThemeLink.id = 'dynamic-theme-style';
+        newThemeLink.rel = 'stylesheet';
+        newThemeLink.href = `stylesheets/themes/${themeName}.css`;
+        document.head.appendChild(newThemeLink);
+    }
+
+    // ===================================================================================
     // == GERENCIAMENTO DE ESTADO DAS ABAS E EDITORES =====================================
     // ===================================================================================
     let editors = {}; // Armazena as instâncias do TinyMCE
@@ -15,6 +55,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const tabContainer = document.getElementById('tab-container');
     const editorAreaContainer = document.getElementById('editor-area-container');
+
+    // ===================================================================================
+    // == FUNÇÃO PARA TROCAR O TEMA ======================================================
+    // ===================================================================================
+
+    // NOVO: Função central para trocar o tema
+    async function switchTheme(themeName) {
+        if (getActiveTheme() === themeName) return;
+
+        Swal.fire({
+            title: 'Alterando tema...',
+            text: 'Aguarde um momento.',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        
+        saveActiveTheme(themeName);
+        applyPageTheme(themeName);
+        
+        // Salva o conteúdo de todas as abas antes de destruí-las
+        const allTabsContent = Object.keys(editors).map(id => ({
+            id: id,
+            content: tinymce.get(id) ? tinymce.get(id).getContent() : ''
+        }));
+        
+        const previouslyActiveTabId = activeTabId;
+
+        // Destrói todas as instâncias do editor
+        for (const id in editors) {
+            const editorInstance = tinymce.get(id);
+            if (editorInstance) {
+                editorInstance.destroy();
+            }
+        }
+        
+        // Limpa a estrutura
+        editors = {};
+        tabContainer.innerHTML = '';
+        editorAreaContainer.innerHTML = '';
+
+        // Recria todas as abas com o novo tema
+        if (allTabsContent.length > 0) {
+            for (const tabData of allTabsContent) {
+                await createTab(tabData.id, tabData.content);
+            }
+            switchTab(previouslyActiveTabId);
+        } else {
+            await createTab();
+        }
+
+        // Aguarda um pequeno delay para garantir a renderização
+        setTimeout(() => {
+            Swal.close();
+            if (previouslyActiveTabId && tinymce.get(previouslyActiveTabId)) {
+                tinymce.get(previouslyActiveTabId).focus();
+            }
+        }, 500);
+    }
 
     // ===================================================================================
     // == FUNÇÕES PRINCIPAIS DAS ABAS =====================================================
@@ -59,6 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tabId || !editors[tabId]) return;
 
         activeTabId = tabId;
+
+        localStorage.setItem('tinymceActiveTabId', tabId);
 
         document.querySelectorAll('.tab-item').forEach(tab => {
             tab.classList.toggle('active', tab.dataset.tabId === tabId);
@@ -127,49 +227,52 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Cria uma nova aba e um novo editor TinyMCE.
      */
-    function createTab(tabIdToCreate = null, initialContent = '') {
-        let newTabNumber;
-        let tabId;
+    async function createTab(tabIdToCreate = null, initialContent = '') {
+        return new Promise((resolve) => {
+            let newTabNumber;
+            let tabId;
 
-        if (tabIdToCreate) {
-            tabId = tabIdToCreate;
-            newTabNumber = parseInt(tabIdToCreate.split('-')[1], 10);
-        } else {
-            newTabNumber = findNextTabNumber();
-            tabId = `editor-${newTabNumber}`;
-        }
-        
-        const tabTitle = `Documento ${newTabNumber}`;
-
-        const tabElement = document.createElement('div');
-        tabElement.className = 'tab-item';
-        tabElement.dataset.tabId = tabId;
-        tabElement.innerHTML = `
-            <span class="tab-title">${tabTitle}</span>
-            <button class="tab-close-btn">&times;</button>
-        `;
-        tabContainer.appendChild(tabElement);
-
-        const editorWrapper = document.createElement('div');
-        editorWrapper.id = `wrapper-${tabId}`;
-        editorWrapper.className = 'editor-wrapper';
-        const textarea = document.createElement('textarea');
-        textarea.id = tabId;
-        editorWrapper.appendChild(textarea);
-        editorAreaContainer.appendChild(editorWrapper);
-
-        tabElement.addEventListener('click', () => switchTab(tabId));
-        tabElement.querySelector('.tab-close-btn').addEventListener('click', (e) => closeTab(e, tabId));
-        
-        const config = getTinyMceConfig(`#${tabId}`, initialContent);
-        tinymce.init(config).then(initedEditors => {
-            const newEditor = initedEditors[0];
-            editors[tabId] = newEditor;
+            if (tabIdToCreate) {
+                tabId = tabIdToCreate;
+                newTabNumber = parseInt(tabIdToCreate.split('-')[1], 10);
+            } else {
+                newTabNumber = findNextTabNumber();
+                tabId = `editor-${newTabNumber}`;
+            }
             
-            newEditor.on('input change', saveAllTabs);
+            const tabTitle = `Documento ${newTabNumber}`;
+
+            const tabElement = document.createElement('div');
+            tabElement.className = 'tab-item';
+            tabElement.dataset.tabId = tabId;
+            tabElement.innerHTML = `
+                <span class="tab-title">${tabTitle}</span>
+                <button class="tab-close-btn">&times;</button>
+            `;
+            tabContainer.appendChild(tabElement);
+
+            const editorWrapper = document.createElement('div');
+            editorWrapper.id = `wrapper-${tabId}`;
+            editorWrapper.className = 'editor-wrapper';
+            const textarea = document.createElement('textarea');
+            textarea.id = tabId;
+            editorWrapper.appendChild(textarea);
+            editorAreaContainer.appendChild(editorWrapper);
+
+            tabElement.addEventListener('click', () => switchTab(tabId));
+            tabElement.querySelector('.tab-close-btn').addEventListener('click', (e) => closeTab(e, tabId));
             
-            switchTab(tabId);
-            updateTabContainerVisibility();
+            const config = getTinyMceConfig(`#${tabId}`, initialContent);
+            tinymce.init(config).then(initedEditors => {
+                const newEditor = initedEditors[0];
+                editors[tabId] = newEditor;
+                
+                newEditor.on('input change', saveAllTabs);
+                
+                updateTabContainerVisibility();
+                // Avisa que o processo terminou com sucesso
+                resolve();
+            });
         });
     }
 
@@ -188,21 +291,34 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('All tabs saved to localStorage.');
     }
 
-    function loadTabs() {
+    async function loadTabs() {
         const savedTabs = localStorage.getItem('tinymceTabsContent');
         if (savedTabs) {
             const tabsData = JSON.parse(savedTabs);
             const tabIds = Object.keys(tabsData);
+
             if (tabIds.length > 0) {
-                tabIds.forEach(id => {
+                // Usa um loop for...of para funcionar com await
+                for (const id of tabIds) {
                     const content = tabsData[id];
-                    createTab(id, content);
-                });
+                    await createTab(id, content);
+                }
+
+                // Restaura a aba que estava ativa anteriormente
+                const savedActiveTab = localStorage.getItem('tinymceActiveTabId');
+                if (savedActiveTab && tabsData[savedActiveTab]) {
+                    switchTab(savedActiveTab);
+                } else {
+                    switchTab(tabIds[0]); // Se não encontrar, ativa a primeira
+                }
+
             } else {
-                createTab();
+                // Se não há abas salvas, cria uma e a ativa
+                await createTab().then(() => switchTab(Object.keys(editors)[0]));
             }
         } else {
-            createTab();
+            // Se nunca houve abas, cria uma e a ativa
+            await createTab().then(() => switchTab(Object.keys(editors)[0]));
         }
         updateTabContainerVisibility();
     }
@@ -215,6 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
      * Retorna o objeto de configuração completo para uma instância do TinyMCE.
      */
     function getTinyMceConfig(selector, content) {
+        const activeTheme = getActiveTheme();
+        const isDarkTheme = activeTheme.includes('dark');
         return {
             selector: selector,
             init_instance_callback: (editor) => {
@@ -224,8 +342,8 @@ document.addEventListener('DOMContentLoaded', () => {
             height: '100%',
             resize: false,
             placeholder: 'Digite aqui...',
-            skin_url: 'scripts/my_tinymce_app/skins/ui/tinymce-5',
-            content_css: 'default',
+            skin_url: `scripts/my_tinymce_app/skins/ui/${activeTheme}`,
+            content_css: isDarkTheme ? 'dark' : 'default',
             promotion: false,
             language_url: 'scripts/my_tinymce_app/langs/pt_BR.js',
             language: 'pt_BR',
@@ -243,8 +361,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 {text: 'C#', value: 'csharp'}
             ],
             menu: {
-                file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print | skins' },
-                view: { title: 'Exibir', items: 'visualblocks visualchars | modofoco preview' },
+                file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print' },
+                view: { title: 'Exibir', items: 'visualblocks visualchars | modofoco preview | skins' },
                 insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
                     title: 'Formatar', 
@@ -272,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
             forced_root_block: 'p',
             setup: function (editor) {
+
                 // ===================================================================================
                 // == ÍCONES PERSONALIZADOS ==========================================================
                 // ===================================================================================
@@ -301,8 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 //editor.ui.registry.addIcon('modo-foco-max', '<i class="fa-solid fa-maximize"></i>');
                 editor.ui.registry.addIcon('modo-foco-max', '<svg width="25px" height="25px" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <path d="M7 2H2v5l1.8-1.8L6.5 8 8 6.5 5.2 3.8 7 2zm6 0l1.8 1.8L12 6.5 13.5 8l2.7-2.7L18 7V2h-5zm.5 10L12 13.5l2.7 2.7L13 18h5v-5l-1.8 1.8-2.7-2.8zm-7 0l-2.7 2.7L2 13v5h5l-1.8-1.8L8 13.5 6.5 12z"></path> </g> </g></svg>');
                 editor.ui.registry.addIcon('modo-foco-min', '<svg width="25px" height="25px" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <path d="M3.4 2L2 3.4l2.8 2.8L3 8h5V3L6.2 4.8 3.4 2zm11.8 4.2L18 3.4 16.6 2l-2.8 2.8L12 3v5h5l-1.8-1.8zM4.8 13.8L2 16.6 3.4 18l2.8-2.8L8 17v-5H3l1.8 1.8zM17 12h-5v5l1.8-1.8 2.8 2.8 1.4-1.4-2.8-2.8L17 12z"></path> </g> </g></svg>');
-
-
+                editor.ui.registry.addIcon('temas', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>2</title><g id="Layer_90" data-name="Layer 90"><path d="M61.41,31.24,32.76,2.59a2,2,0,0,0-2.83,0L13.27,19.25A6.25,6.25,0,0,0,9.06,29.91l5.78,5.78a2.25,2.25,0,0,1,0,3.19L4.13,49.59A7.27,7.27,0,1,0,14.41,59.87L25.12,49.16a2.31,2.31,0,0,1,3.19,0l5.78,5.78a6.25,6.25,0,0,0,8.84,0h0a6.23,6.23,0,0,0,1.82-4.21L61.41,34.06A2,2,0,0,0,61.41,31.24ZM40.11,52.11a2.26,2.26,0,0,1-3.19,0l-5.78-5.78a6.25,6.25,0,0,0-8.85,0L11.58,57A3.35,3.35,0,0,1,7,57a3.27,3.27,0,0,1,0-4.62L17.67,41.71a6.25,6.25,0,0,0,0-8.85l-5.78-5.78a2.25,2.25,0,0,1,3.16-3.21L40.13,48.95A2.26,2.26,0,0,1,40.11,52.11Zm3.22-5.62L43,46.14l0-.05-25-25-.05,0-.35-.35L31.35,6.83l2.83,2.83-6,8.64,8.64-6,4.86,4.86-3.1,5.57,5.57-3.1,7.55,7.55-6,8.64,8.64-6,2.89,2.89Z"></path></g></svg>');
 
                 editor.ui.registry.addIcon('em-construcao', '<i class="fa-solid fa-person-digging"></i>');
 
@@ -310,6 +428,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ===================================================================================
                 // == FUNÇÕES DE BOTÕES E AUXILIARES =================================================
                 // ===================================================================================
+
+                editor.ui.registry.addNestedMenuItem('skins', {
+                    text: 'Temas',
+                    icon: 'temas',
+                    getSubmenuItems: () => {
+                        return AVAILABLE_THEMES.map(theme => ({
+                            type: 'togglemenuitem',
+                            text: theme.name,
+                            active: getActiveTheme() === theme.value,
+                            onAction: () => {
+                                switchTheme(theme.value);
+                            }
+                        }));
+                    }
+                });                
+
                 editor.on('contextmenu', function (event) {
                     if (event.ctrlKey) {
                         return;
@@ -1016,8 +1150,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
     // ===================================================================================
-    // == INICIALIZAÇÃO DA APLICAÇÃO =======================================================
+    // == INICIALIZAÇÃO DA APLICAÇÃO =====================================================
     // ===================================================================================
+    applyPageTheme(getActiveTheme());
     loadTabs();
 });
 

@@ -122,3 +122,21 @@ function TitleCase(str) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }
+
+/**
+ * Aplica o tema (claro/escuro) em um modal lendo a configuração do localStorage da janela principal.
+ * Deve ser chamado no evento DOMContentLoaded do modal.
+ */
+function applyModalTheme() {
+    try {
+        // Acessa o localStorage da janela pai, que é a aplicação principal do TinyMCE
+        const activeTheme = window.parent.localStorage.getItem('tinymceActiveTheme');
+
+        // Se o tema ativo for um tema escuro, adiciona o atributo 'data-theme' ao body do modal
+        if (activeTheme && activeTheme.includes('dark')) {
+            document.body.setAttribute('data-theme', 'dark');
+        }
+    } catch (e) {
+        console.error("Não foi possível aplicar o tema do modal a partir do localStorage.", e);
+    }
+}

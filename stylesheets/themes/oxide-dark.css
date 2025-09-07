@@ -1,0 +1,39 @@
+/* Conteúdo para stylesheets/themes/oxide-dark.css */
+body[data-theme='oxide-dark'] {
+    background-color: #333333; /* Fundo cinza escuro */
+    color: #dddddd;
+}
+
+body[data-theme='oxide-dark'] .tab-container {
+    background-color: #444444;
+    border-bottom-color: #2d2d2d;
+}
+
+body[data-theme='oxide-dark'] .tab-item {
+    background-color: #444444;
+    border-color: #2d2d2d;
+    color: #cccccc;
+}
+
+body[data-theme='oxide-dark'] .tab-item:hover {
+    background-color: #555555;
+}
+
+body[data-theme='oxide-dark'] .tab-item.active {
+    background-color: #2d2d2d; /* Área do editor mais escura */
+    color: #59bfff;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+body[data-theme='oxide-dark'] .tab-close-btn {
+    color: #bbbbbb;
+}
+
+body[data-theme='oxide-dark'] .tab-close-btn:hover {
+    color: #ff6666;
+    background-color: #555555;
+}
+
+body[data-theme='oxide-dark'] .editor-area-container {
+    background-color: #444444;
+}

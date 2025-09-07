@@ -1,0 +1,39 @@
+/* Conteúdo para stylesheets/themes/oxide.css */
+body[data-theme='oxide'] {
+    background-color: #e3e3e3; /* Um cinza um pouco mais escuro */
+    color: #222;
+}
+
+body[data-theme='oxide'] .tab-container {
+    background-color: #f0f0f0;
+    border-bottom-color: #cccccc;
+}
+
+body[data-theme='oxide'] .tab-item {
+    background-color: #e8e8e8;
+    border-color: #cccccc;
+    color: #333333;
+}
+
+body[data-theme='oxide'] .tab-item:hover {
+    background-color: #f0f0f0;
+}
+
+body[data-theme='oxide'] .tab-item.active {
+    background-color: #ffffff;
+    color: #2f81b7;
+    border-bottom: 1px solid #ffffff;
+}
+
+body[data-theme='oxide'] .tab-close-btn {
+    color: #666;
+}
+
+body[data-theme='oxide'] .tab-close-btn:hover {
+    color: #dc3545;
+    background-color: #e0e0e0;
+}
+
+body[data-theme='oxide'] .editor-area-container {
+    background-color: #ffffff;
+}

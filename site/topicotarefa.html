@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Tópicos de Tarefa</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../stylesheets/style.css">
+    <link rel="stylesheet" href="../stylesheets/base.css?v=1.0.0">
+    <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
     <style>
         html, body {
             height: 100%;
@@ -102,7 +103,7 @@
         <button onclick="cancelarAcao()" class="btn btn-secondary">Cancelar</button>
         <button onclick="FormatarTopicoTarefa()" class="btn btn-primary">Formatar e Copiar</button>
     </div>
-    
+    <script src="../scripts/app.js"></script>
     <script>
         function TemNumeroOS() {
             const checkbox = document.getElementById("osAssociada");
@@ -174,7 +175,11 @@
             const titulo = document.getElementById('titulo-tarefa').value;
             const resultado = `[TAREFA-${numeroTarefa}] ${titulo}`;
             document.getElementById('resultado-topico-tarefa').value = resultado;
-  }
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', applyModalTheme);
     </script>
 </body>
 </html>
