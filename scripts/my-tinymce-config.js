@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================================
     let editors = {}; // Armazena as instâncias do TinyMCE
     let activeTabId = null; // ID da aba atualmente ativa
+    let cachedProtocolosItems = null;
 
     const tabContainer = document.getElementById('tab-container');
     const editorAreaContainer = document.getElementById('editor-area-container');
@@ -345,8 +346,9 @@ document.addEventListener('DOMContentLoaded', () => {
             selector: selector,
             init_instance_callback: (editor) => {
                 editor.setContent(content);
+                editor.focus();
             },
-             license_key: 'gpl',
+            license_key: 'gpl',
             height: '100%',
             resize: false,
             placeholder: 'Digite aqui...',
@@ -398,7 +400,34 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
             forced_root_block: 'p',
             setup: function (editor) {
-                let cachedProtocolosItems = null;
+                // ===================================================================================
+                // ---- LÓGICA DE CARREGAMENTO CENTRALIZADA AQUI ----
+                // Esta função só executará o fetch na primeira vez que um editor for carregado.
+                const loadProtocolsIfNeeded = () => {
+                    if (cachedProtocolosItems !== null) {
+                        return; // Se já tem dados (ou está carregando), não faz nada.
+                    }
+
+                    // Define um estado inicial de "carregando" para o cache
+                    cachedProtocolosItems = [{ text: 'Carregando...', enabled: false }];
+
+                    fetch('data/protocolos.json')
+                        .then(response => {
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                            return response.json();
+                        })
+                        .then(data => {
+                            cachedProtocolosItems = buildMenuFromJson(data, editor, actionFunctions);
+                        })
+                        .catch(error => {
+                            console.error('Falha ao carregar e construir menu de protocolos:', error);
+                            cachedProtocolosItems = [{ type: 'menuitem', text: 'Erro ao carregar', enabled: false }];
+                        });
+                };
+                
+                // Dispara o carregamento dos protocolos
+                loadProtocolsIfNeeded();
+
                 // ===================================================================================
                 // == ÍCONES PERSONALIZADOS ==========================================================
                 // ===================================================================================
@@ -946,6 +975,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
+                // Mapa de funções para o menu dinâmico
+                const actionFunctions = {
+                    openRelatorioAnaliseDialog: openRelatorioAnaliseDialog,
+                    inserirScriptValidacaoAnexo: inserirScriptValidacaoAnexo,
+                    inserirScriptValidacaoRede: inserirScriptValidacaoRede
+                };
+
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
@@ -1071,53 +1107,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         callback(items);
                     }
                 });
-
-                 // Crie o mapa de funções que o menu dinâmico precisa chamar
-                const actionFunctions = {
-                    openRelatorioAnaliseDialog: openRelatorioAnaliseDialog,
-                    inserirScriptValidacaoAnexo: inserirScriptValidacaoAnexo,
-                    inserirScriptValidacaoRede: inserirScriptValidacaoRede
-                    // Adicione outras funções aqui se precisar no futuro
-                };
                 
-                // Variável para armazenar os itens do menu em cache
+                // REGISTRO PARA O MENU "FERRAMENTAS"
                 editor.ui.registry.addNestedMenuItem('protocolosDeMariaMenu', {
                     text: 'Protocolos DeMaria',
                     icon: 'protocolo',
-                    // Esta função é SÍNCRONA. Ela retorna o que estiver no cache.
-                    getSubmenuItems: () => {
-                        // Se o cache não estiver pronto, mostra "Carregando...".
-                        // Se estiver pronto, retorna os itens.
-                        return cachedProtocolosItems || [{ text: 'Carregando...', enabled: false }];
-                    }
+                    getSubmenuItems: () => cachedProtocolosItems || [] // Retorna o cache ou um array vazio
                 });
 
+                // REGISTRO PARA O BOTÃO DA BARRA DE FERRAMENTAS
                 editor.ui.registry.addMenuButton('protocolosDeMaria', {
                     icon: 'protocolo',
                     tooltip: 'Protocolos DeMaria',
                     fetch: (callback) => {
-                        // Se os itens já estiverem no cache, usa-os imediatamente.
-                        if (cachedProtocolosItems) {
-                            callback(cachedProtocolosItems);
-                            return;
-                        }
-
-                        // Se não, busca o JSON, preenche o cache e então usa o callback.
-                        fetch('data/protocolos.json')
-                            .then(response => response.ok ? response.json() : Promise.reject('Erro de rede'))
-                            .then(data => {
-                                const menuItems = buildMenuFromJson(data, editor, actionFunctions);
-                                // Preenche o cache para o NestedMenuItem poder usar
-                                cachedProtocolosItems = menuItems; 
-                                callback(menuItems);
-                            })
-                            .catch(error => {
-                                console.error('Falha ao construir menu de protocolos:', error);
-                                const errorMenu = [{ type: 'menuitem', text: 'Erro ao carregar', enabled: false }];
-                                // Salva o estado de erro no cache também
-                                cachedProtocolosItems = errorMenu;
-                                callback(errorMenu);
-                            });
+                        // Simplesmente entrega o que estiver no cache.
+                        callback(cachedProtocolosItems || []);
                     }
                 });
 
