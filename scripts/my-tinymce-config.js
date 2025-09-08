@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Cria uma nova aba e um novo editor TinyMCE.
      */
-    async function createTab(tabIdToCreate = null, initialContent = '') {
+     async function createTab(tabIdToCreate = null, initialContent = '') {
         return new Promise((resolve) => {
             let newTabNumber;
             let tabId;
@@ -276,9 +276,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 newEditor.on('input change', saveAllTabs);
                 
-                //updateTabContainerVisibility();
-                // Avisa que o processo terminou com sucesso
-                resolve();
+                // A linha que chamava updateTabContainerVisibility() foi removida daqui
+                
+                // A Promise agora retorna o ID da aba criada
+                resolve(tabId);
             });
         });
     }
@@ -458,9 +459,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     event.preventDefault();
                 });
         
-                const novodocumentoAction = () => {
-                        createTab();
-                    };
+                const novodocumentoAction = async () => {
+                        // Aguarda a criação da aba e recebe seu ID
+                        const newTabId = await createTab();
+                        // Ativa a nova aba
+                        switchTab(newTabId);
+                };
 
                 const limpardocumentoAction = function () {
                     confirmacao("Limpar Editor?", "Todo o conteúdo não salvo será perdido.", () => editor.setContent(''));
