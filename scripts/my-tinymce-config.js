@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
             forced_root_block: 'p',
             setup: function (editor) {
-
+                let cachedProtocolosItems = null;
                 // ===================================================================================
                 // == ÍCONES PERSONALIZADOS ==========================================================
                 // ===================================================================================
@@ -1080,47 +1080,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Adicione outras funções aqui se precisar no futuro
                 };
                 
-                // Lógica para buscar o JSON e construir o menu de protocolos
-                const fetchAndBuildProtocolosMenu = (callback) => {
-                    fetch('../data/protocolos.json')
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Erro ao carregar protocolos.json');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            // Constrói o menu a partir do JSON usando nossa nova função
-                             const menuItems = buildMenuFromJson(data, editor, actionFunctions);
-                            // Envolve os itens em um menu principal "Tipos de Protocolo"
-                            const finalMenu = [{
-                                type: 'nestedmenuitem',
-                                text: 'Tipos de Protocolo',
-                                icon: 'menu-protocolos-de-maria',
-                                getSubmenuItems: () => menuItems
-                            }];
-                            callback(finalMenu);
-
-                        })
-                        .catch(error => {
-                            console.error('Falha ao construir menu de protocolos:', error);
-                            // Em caso de erro, exibe um item de menu informando o problema
-                            callback([{ type: 'menuitem', text: 'Erro ao carregar protocolos', enabled: false }]);
-                        });
-                };
-
+                // Variável para armazenar os itens do menu em cache
                 editor.ui.registry.addNestedMenuItem('protocolosDeMariaMenu', {
                     text: 'Protocolos DeMaria',
                     icon: 'protocolo',
-                    // A função getSubmenuItems agora é assíncrona para buscar os dados
-                    getSubmenuItems: fetchAndBuildProtocolosMenu
+                    // Esta função é SÍNCRONA. Ela retorna o que estiver no cache.
+                    getSubmenuItems: () => {
+                        // Se o cache não estiver pronto, mostra "Carregando...".
+                        // Se estiver pronto, retorna os itens.
+                        return cachedProtocolosItems || [{ text: 'Carregando...', enabled: false }];
+                    }
                 });
 
                 editor.ui.registry.addMenuButton('protocolosDeMaria', {
                     icon: 'protocolo',
                     tooltip: 'Protocolos DeMaria',
-                    // A propriedade fetch já é projetada para operações assíncronas
-                    fetch: fetchAndBuildProtocolosMenu
+                    fetch: (callback) => {
+                        // Se os itens já estiverem no cache, usa-os imediatamente.
+                        if (cachedProtocolosItems) {
+                            callback(cachedProtocolosItems);
+                            return;
+                        }
+
+                        // Se não, busca o JSON, preenche o cache e então usa o callback.
+                        fetch('data/protocolos.json')
+                            .then(response => response.ok ? response.json() : Promise.reject('Erro de rede'))
+                            .then(data => {
+                                const menuItems = buildMenuFromJson(data, editor, actionFunctions);
+                                // Preenche o cache para o NestedMenuItem poder usar
+                                cachedProtocolosItems = menuItems; 
+                                callback(menuItems);
+                            })
+                            .catch(error => {
+                                console.error('Falha ao construir menu de protocolos:', error);
+                                const errorMenu = [{ type: 'menuitem', text: 'Erro ao carregar', enabled: false }];
+                                // Salva o estado de erro no cache também
+                                cachedProtocolosItems = errorMenu;
+                                callback(errorMenu);
+                            });
+                    }
                 });
 
                 // ===================================================================================
@@ -1214,6 +1212,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }).filter(Boolean);
     }
+
+    
 
     // ===================================================================================
     // == INICIALIZAÇÃO DA APLICAÇÃO =====================================================
