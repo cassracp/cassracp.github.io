@@ -55,27 +55,6 @@
                 <div class="form-group col-md-9">
                     <label for="tituloTopicoSelect"><b>Título do Tópico:</b></label>
                     <select id="tituloTopicoSelect" class="form-control">
-                        <option value="ACOMPANHAMENTO IMP">ACOMPANHAMENTO IMP</option>
-                        <option value="ANÁLISE">ANÁLISE</option>
-                        <option value="ACERTO COMERCIAL">ACERTO COMERCIAL</option>
-                        <option value="BACKUP">BACKUP</option>
-                        <option value="CONFECÇÃO DE MINUTAS NOTAS">CONFECÇÃO DE MINUTAS NOTAS</option>
-                        <option value="CONFECÇÃO DE MINUTAS RCPN">CONFECÇÃO DE MINUTAS RCPN</option>
-                        <option value="CONFIGURAÇÃO">CONFIGURAÇÃO</option>
-                        <option value="CREDENCIAIS AWS">CREDENCIAIS AWS</option>
-                        <option value="DATA DA IMPLANTAÇÃO/ATIVAÇÃO">DATA DA IMPLANTAÇÃO/ATIVAÇÃO</option>
-                        <option value="DESENVOLVIMENTO E VALIDAÇÃO">DESENVOLVIMENTO E VALIDAÇÃO</option>
-                        <option value="GARANTIA">GARANTIA</option>
-                        <option value="INSTALAÇÃO">INSTALAÇÃO</option>
-                        <option value="INSTALAÇÃO/CONFIGURAÇÃO/TREINAMENTO">INSTALAÇÃO/CONFIGURAÇÃO/TREINAMENTO</option>
-                        <option value="KEY USER (USUÁRIO-CHAVE)">KEY USER (USUÁRIO-CHAVE)</option>
-                        <option value="LIBERAÇÃO AO SUPORTE TÉCNICO">LIBERAÇÃO AO SUPORTE TÉCNICO</option>
-                        <option value="MIGRAÇÃO">MIGRAÇÃO</option>
-                        <option value="OUTRAS INFORMAÇÕES">OUTRAS INFORMAÇÕES</option>
-                        <option value="RELATO VISITA TÉCNICA">RELATO VISITA TÉCNICA</option>
-                        <option value="TAXA DE SUCESSO">TAXA DE SUCESSO</option>
-                        <option value="TREINAMENTO">TREINAMENTO</option>
-                        <option value="TROCA P/ PLUG VIRTUAL">TROCA P/ PLUG VIRTUAL</option>
                     </select>
                 </div>
             </div>
@@ -179,7 +158,26 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', applyModalTheme);
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Aplica o tema do modal
+            applyModalTheme(); 
+            
+            // Popula dinamicamente os tópicos da tarefa
+            try {
+                const response = await fetch('../data/topicos-tarefa.json');
+                const topics = await response.json();
+                const selectElement = document.getElementById('tituloTopicoSelect');
+                
+                topics.forEach(topic => {
+                    const option = document.createElement('option');
+                    option.value = topic;
+                    option.textContent = topic;
+                    selectElement.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar os tópicos da tarefa:', error);
+            }
+        });
     </script>
 </body>
 </html>

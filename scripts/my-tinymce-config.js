@@ -508,11 +508,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     URL.revokeObjectURL(url);
                 }
 
-                const toggleModoFoco = () => {
+                 const toggleModoFoco = () => {
                     const header = document.getElementById('main-header');
                     if (header) {
-                        header.classList.toggle('hidden');
+                        const isHidden = header.classList.toggle('hidden');
                         window.dispatchEvent(new Event('resize'));
+                        // Emite um evento com o novo estado para que os botões possam ouvir
+                        editor.dispatch('focusModeToggled', { state: isHidden });
                     }
                 };
                 
@@ -954,32 +956,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     shortcut: 'Alt+A',
                     onAction: toggleModoFoco,
                     onSetup: function(api) {
-                         const interval = setInterval(() => {
-                            const header = document.getElementById('main-header');
-                            if (header) {
-                                const isFocoAtivo = header.classList.contains('hidden');
-                                api.setIcon(isFocoAtivo ? 'modo-foco-min' : 'modo-foco-max');
-                                api.setText(isFocoAtivo ? 'Sair do Modo Foco' : 'Modo Foco');
-                            }
-                        }, 250);
-                        return () => clearInterval(interval);
+                        const unbind = editor.on('focusModeToggled', (e) => {
+                            api.setIcon(e.state ? 'modo-foco-min' : 'modo-foco-max');
+                            api.setText(e.state ? 'Sair do Modo Foco' : 'Modo Foco');
+                        });
+                        return unbind;
                     }
                 });
                 
-                editor.ui.registry.addButton('modoFoco', {
+                editor.ui.registry.addToggleButton('modoFoco', {
                     icon: 'modo-foco-max',
-                    tooltip: 'Modo Foco (Ocultar Cabeçalho)',
-                    onAction: toggleModoFoco,
+                    // O tooltip agora é estático, descrevendo a ação de alternar
+                    tooltip: 'Alternar Modo Foco', 
+                    onAction: (api) => {
+                        // A ação de toggle agora é gerenciada aqui dentro
+                        toggleModoFoco();
+                    },
                     onSetup: function (api) {
-                        const interval = setInterval(() => {
-                            const header = document.getElementById('main-header');
-                            if (header) {
-                                const isFocoAtivo = header.classList.contains('hidden');
-                                api.setIcon(isFocoAtivo ? 'modo-foco-min' : 'modo-foco-max');
-                                api.setTooltip(isFocoAtivo ? 'Sair do Modo Foco' : 'Modo Foco (Ocultar Cabeçalho)');
-                            }
-                        }, 250);
-                        return () => clearInterval(interval);
+                        // Sincroniza o estado do botão com o estado real da aplicação
+                        const unbind = editor.on('focusModeToggled', (e) => {
+                            api.setActive(e.state);
+                            api.setIcon(e.state ? 'modo-foco-min' : 'modo-foco-max');
+                        });
+                        return unbind;
                     }
                 });
                 
@@ -1083,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Lógica para buscar o JSON e construir o menu de protocolos
                 const fetchAndBuildProtocolosMenu = (callback) => {
-                    fetch('protocolos.json')
+                    fetch('../data/protocolos.json')
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Erro ao carregar protocolos.json');

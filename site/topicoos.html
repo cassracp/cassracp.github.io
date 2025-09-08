@@ -90,25 +90,8 @@
 
         <div class="form-section">
             <h6>Módulos Contratados</h6>
-            <div class="checkbox-grid">
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkNascimento" value="N"><label class="form-check-label" for="chkNascimento">Nascimento</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkCasamento" value="C"><label class="form-check-label" for="chkCasamento">Casamento</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkObito" value="O"><label class="form-check-label" for="chkObito">Óbito</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkLivroE" value="E"><label class="form-check-label" for="chkLivroE">Livro E</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkComunica" value="A"><label class="form-check-label" for="chkComunica">Comunicações</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkAverba" value="V"><label class="form-check-label" for="chkAverba">Averbações</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkSelagem" value="S"><label class="form-check-label" for="chkSelagem">Selagem</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkFirmas" value="F"><label class="form-check-label" for="chkFirmas">Firmas</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkFinanceiro" value="U"><label class="form-check-label" for="chkFinanceiro">Financeiro</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkINotas" value="pr"><label class="form-check-label" for="chkINotas">i-Notas</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkEscrituras" value="R"><label class="form-check-label" for="chkEscrituras">Escrituras Plus</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkProc" value="P"><label class="form-check-label" for="chkProc">Procurações Plus</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkBkp" value="K"><label class="form-check-label" for="chkBkp">Backup em Nuvem</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkPol" value="X"><label class="form-check-label" for="chkPol">POL - Proclamas Online</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkUI" value="I"><label class="form-check-label" for="chkUI">UI - Unidade Interligada</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkAol" value=" AOL"><label class="form-check-label" for="chkAol">AOL - Atendimento Online</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkDOCFila" value="Q"><label class="form-check-label" for="chkDOCFila">DOC-Fila</label></div>
-                <div class="form-check"><input type="checkbox" class="form-check-input" id="chkDOCMultiscan" value="M"><label class="form-check-label" for="chkDOCMultiscan">DOC-Multiscan</label></div>
+            <div class="checkbox-grid" id="modules-grid-container">
+                <!-- Checkboxes dos módulos serão inseridos aqui dinamicamente -->
             </div>
         </div>
         
@@ -131,6 +114,33 @@
     </div>
     <script src="../scripts/app.js"></script>
     <script>
+        // Variável para guardar os dados dos módulos carregados do JSON
+        let osModulesData = [];
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            applyModalTheme();
+            
+            try {
+                const response = await fetch('../data/modulos-topico-os.json');
+                osModulesData = await response.json(); // Salva na variável global
+                const container = document.getElementById('modules-grid-container');
+                
+                // Gera o HTML dos checkboxes dinamicamente
+                osModulesData.forEach(module => {
+                    const checkboxHTML = `
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="${module.id}" value="${module.value}">
+                            <label class="form-check-label" for="${module.id}">${module.label}</label>
+                        </div>
+                    `;
+                    container.innerHTML += checkboxHTML;
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar os módulos de OS:', error);
+            }
+        });
+
         document.getElementById("assuntoTopicoSelect").addEventListener("change", function() {
             const select = this;
             const input = document.getElementById("assuntoTopicoInput");
@@ -182,11 +192,10 @@
                 return;
             }
             
-            const modulosIds = ['Nascimento', 'Casamento', 'Obito', 'LivroE', 'Comunica', 'Averba', 'Selagem', 'Firmas', 'Financeiro', 'INotas', 'Escrituras', 'Proc', 'Bkp', 'Pol', 'UI', 'Aol', 'DOCFila', 'DOCMultiscan'];
-            const modulos = modulosIds
-                .map(id => document.getElementById(`chk${id}`))
-                .filter(chk => chk.checked)
-                .map(chk => chk.value.trim());
+             const modulos = osModulesData
+                .map(module => document.getElementById(module.id)) // Pega cada elemento checkbox
+                .filter(chk => chk && chk.checked) // Filtra apenas os que estão marcados
+                .map(chk => chk.value.trim()); // Pega o valor de cada um ("N", "C", etc.)
 
             const sistemas = ['Windows', 'Web']
                 .map(id => document.getElementById(`chk${id}`))
@@ -221,10 +230,6 @@
             const resultado = `[OS${numeroOS}] ${titulo}`;
             document.getElementById('resultado-topico-os').value = resultado;
         }
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', applyModalTheme);
     </script>
 </body>
 </html>

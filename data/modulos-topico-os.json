@@ -1,0 +1,20 @@
+[
+    { "id": "chkNascimento", "label": "Nascimento", "value": "N" },
+    { "id": "chkCasamento", "label": "Casamento", "value": "C" },
+    { "id": "chkObito", "label": "Óbito", "value": "O" },
+    { "id": "chkLivroE", "label": "Livro E", "value": "E" },
+    { "id": "chkComunica", "label": "Comunicações", "value": "A" },
+    { "id": "chkAverba", "label": "Averbações", "value": "V" },
+    { "id": "chkSelagem", "label": "Selagem", "value": "S" },
+    { "id": "chkFirmas", "label": "Firmas", "value": "F" },
+    { "id": "chkFinanceiro", "label": "Financeiro", "value": "U" },
+    { "id": "chkINotas", "label": "i-Notas", "value": "pr" },
+    { "id": "chkEscrituras", "label": "Escrituras Plus", "value": "R" },
+    { "id": "chkProc", "label": "Procurações Plus", "value": "P" },
+    { "id": "chkBkp", "label": "Backup em Nuvem", "value": "K" },
+    { "id": "chkPol", "label": "POL - Proclamas Online", "value": "X" },
+    { "id": "chkUI", "label": "UI - Unidade Interligada", "value": "I" },
+    { "id": "chkAol", "label": "AOL - Atendimento Online", "value": " AOL" },
+    { "id": "chkDOCFila", "label": "DOC-Fila", "value": "Q" },
+    { "id": "chkDOCMultiscan", "label": "DOC-Multiscan", "value": "M" }
+]
