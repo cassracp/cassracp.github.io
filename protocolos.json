@@ -1,0 +1,56 @@
+[
+  {
+    "type": "nestedmenuitem",
+    "text": "Implantações",
+    "icon": "em-construcao",
+    "getSubmenuItems": []
+  },
+  {
+    "type": "nestedmenuitem",
+    "text": "Migrações",
+    "icon": "migration",
+    "getSubmenuItems": [
+      {
+        "type": "menuitem",
+        "text": "Relatório de Análise",
+        "icon": "analysis-report",
+        "actionType": "function",
+        "actionValue": "openRelatorioAnaliseDialog"
+      },
+      {
+        "type": "nestedmenuitem",
+        "text": "Scripts de Validação",
+        "icon": "new-document",
+        "getSubmenuItems": [
+          {
+            "type": "menuitem",
+            "text": "Com arquivo anexo",
+            "icon": "attachment",
+            "actionType": "insertContent",
+            "actionValue": [
+              "<p>Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong></p>",
+              "<p>Segue arquivo em anexo para <strong>validação externa.</strong></p>",
+              "<hr>",
+              "<p><strong>OBSERVAÇÕES AO VALIDADOR</strong></p>",
+              "<p>Nada consta.</p>"
+            ]
+          },
+          {
+            "type": "menuitem",
+            "text": "Com arquivo na rede",
+            "icon": "folder",
+            "actionType": "insertContent",
+            "actionValue": [
+              "<p>Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong></p>",
+              "<p>Arquivos estão no caminho de rede:</p>",
+              "<pre>\\\\192.168.1.179\\cpt-009\\CONVERTE\\CONCORRE\\[PASTA_DO_CLIENTE]</pre>",
+              "<hr>",
+              "<p><strong>OBSERVAÇÕES AO VALIDADOR</strong></p>",
+              "<p>Nada consta.</p>"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

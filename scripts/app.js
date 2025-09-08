@@ -140,3 +140,36 @@ function applyModalTheme() {
         console.error("Não foi possível aplicar o tema do modal a partir do localStorage.", e);
     }
 }
+
+function InserirLinkOS(nOS) {
+    return `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${nOS}" target="_blank" rel="noopener">OS ${nOS}</a>`;
+    }
+
+function InserirLinkTarefa(nTarefa) {
+    return `<a href="https://www.demaria.com.br/intranet/v3/tarefa/detalhe.php?tarefa_id=${nTarefa}" target="_blank" rel="noopener">Tarefa ${nTarefa}</a>`;
+}
+
+function SomenteNumeros(texto) {
+    return /^\d+$/.test(texto);
+}
+
+// Funções de Tópicos e Telefone (mantidas para compatibilidade)
+function ExibirFormatarTelefone() { console.log("Formatar Telefone chamado"); }
+function ExibirTopicoTarefa() { console.log("Tópico Tarefa chamado"); }
+function ExibirTopicoOS() { console.log("Tópico OS chamado"); }
+function confirmacao(titulo, mensagem, callbackConfirm, callbackCancel) {
+    Swal.fire({
+        title: titulo,
+        text: mensagem,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sim",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (callbackConfirm) callbackConfirm();
+        } else {
+            if (callbackCancel) callbackCancel();
+        }
+    });
+}

@@ -174,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Fecha uma aba, destrói o editor e remove os elementos do DOM.
+     * ALTERADO: Ação de fechar agora é async para aguardar a criação da nova aba.
      */
     function closeTab(e, tabId) {
         e.stopPropagation();
@@ -181,7 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const editorInstance = tinymce.get(tabId);
         if (!editorInstance) return;
 
-        const closeTabAction = () => {
+        // A função interna agora é async
+        const closeTabAction = async () => {
             const tabElement = document.querySelector(`.tab-item[data-tab-id="${tabId}"]`);
             const editorWrapper = document.getElementById(`wrapper-${tabId}`);
             
@@ -197,11 +199,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (remainingTabs.length > 0) {
                     switchTab(remainingTabs[0]);
                 } else {
-                    createTab();
+                    // CORREÇÃO: Aguarda a criação e depois ativa a nova aba
+                    await createTab();
+                    const newTabId = Object.keys(editors)[0];
+                    if (newTabId) {
+                        switchTab(newTabId);
+                    }
                 }
             }
             saveAllTabs();
-            updateTabContainerVisibility();
+            //updateTabContainerVisibility();
         };
 
         if (editorInstance.isDirty()) {
@@ -269,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 newEditor.on('input change', saveAllTabs);
                 
-                updateTabContainerVisibility();
+                //updateTabContainerVisibility();
                 // Avisa que o processo terminou com sucesso
                 resolve();
             });
@@ -320,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Se nunca houve abas, cria uma e a ativa
             await createTab().then(() => switchTab(Object.keys(editors)[0]));
         }
-        updateTabContainerVisibility();
+        //updateTabContainerVisibility();
     }
 
     // ===================================================================================
@@ -1062,49 +1069,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                const itensProtocolo = () => [
-                    {
-                        type: 'nestedmenuitem',
-                        text: 'Tipos de Protocolo',
-                        icon: 'menu-protocolos-de-maria',
-                        getSubmenuItems: () => [
-                            { type: 'nestedmenuitem', text: 'Implantações', icon: 'em-construcao', getSubmenuItems: () => [] },
-                            { type: 'nestedmenuitem', text: 'Migrações', icon: 'migration', getSubmenuItems: () => tiposProtocoloMigracao() }
-                        ]
-                    }
-                ];
+                 // Crie o mapa de funções que o menu dinâmico precisa chamar
+                const actionFunctions = {
+                    openRelatorioAnaliseDialog: openRelatorioAnaliseDialog,
+                    inserirScriptValidacaoAnexo: inserirScriptValidacaoAnexo,
+                    inserirScriptValidacaoRede: inserirScriptValidacaoRede
+                    // Adicione outras funções aqui se precisar no futuro
+                };
+                
+                // Lógica para buscar o JSON e construir o menu de protocolos
+                const fetchAndBuildProtocolosMenu = (callback) => {
+                    fetch('protocolos.json')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Erro ao carregar protocolos.json');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Constrói o menu a partir do JSON usando nossa nova função
+                             const menuItems = buildMenuFromJson(data, editor, actionFunctions);
+                            // Envolve os itens em um menu principal "Tipos de Protocolo"
+                            const finalMenu = [{
+                                type: 'nestedmenuitem',
+                                text: 'Tipos de Protocolo',
+                                icon: 'menu-protocolos-de-maria',
+                                getSubmenuItems: () => menuItems
+                            }];
+                            callback(finalMenu);
 
-
-                const tiposProtocoloMigracao = () => [
-                     {
-                        type: 'menuitem',
-                        text: 'Relatório de Análise',
-                        icon: 'analysis-report',
-                        onAction: () => openRelatorioAnaliseDialog(editor)
-                    },
-                    {
-                        type: 'nestedmenuitem',
-                        text: 'Scripts de Validação',
-                        icon: 'new-document',
-                        getSubmenuItems: () => [
-                            { type: 'menuitem', text: 'Com arquivo anexo', icon: 'attachment', onAction: () => inserirScriptValidacaoAnexo(editor) },
-                            { type: 'menuitem', text: 'Com arquivo na rede', icon: 'folder', onAction: () => inserirScriptValidacaoRede(editor) }
-                        ]
-                    }
-                ];
+                        })
+                        .catch(error => {
+                            console.error('Falha ao construir menu de protocolos:', error);
+                            // Em caso de erro, exibe um item de menu informando o problema
+                            callback([{ type: 'menuitem', text: 'Erro ao carregar protocolos', enabled: false }]);
+                        });
+                };
 
                 editor.ui.registry.addNestedMenuItem('protocolosDeMariaMenu', {
                     text: 'Protocolos DeMaria',
                     icon: 'protocolo',
-                    getSubmenuItems: itensProtocolo
+                    // A função getSubmenuItems agora é assíncrona para buscar os dados
+                    getSubmenuItems: fetchAndBuildProtocolosMenu
                 });
 
                 editor.ui.registry.addMenuButton('protocolosDeMaria', {
                     icon: 'protocolo',
                     tooltip: 'Protocolos DeMaria',
-                    fetch: (callback) => {
-                        callback(itensProtocolo());
-                    }
+                    // A propriedade fetch já é projetada para operações assíncronas
+                    fetch: fetchAndBuildProtocolosMenu
                 });
 
                 // ===================================================================================
@@ -1149,10 +1162,62 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
     }
+
+    // ===================================================================================
+    // == FUNÇÃO PARA CONSTRUIR MENUS DINAMICAMENTE A PARTIR DE UM JSON ===================
+    // ===================================================================================
+
+    /**
+     * Constrói recursivamente itens de menu para o TinyMCE a partir de um array de objetos JSON.
+     * @param {Array} items - O array de itens do nosso arquivo JSON.
+     * @param {Editor} editor - A instância do editor TinyMCE.
+     * @returns {Array} - Um array de itens de menu formatados para o TinyMCE.
+     */
+    function buildMenuFromJson(items, editor, actionFunctions) {
+        return items.map(item => {
+            if (item.type === 'nestedmenuitem') {
+                return {
+                    type: 'nestedmenuitem',
+                    text: item.text,
+                    icon: item.icon,
+                    getSubmenuItems: () => buildMenuFromJson(item.getSubmenuItems || [], editor, actionFunctions)
+                };
+            }
+            
+            if (item.type === 'menuitem') {
+                return {
+                    type: 'menuitem',
+                    text: item.text,
+                    icon: item.icon,
+                    onAction: () => {
+                        if (item.actionType === 'insertContent') {
+                            const content = Array.isArray(item.actionValue) 
+                                        ? item.actionValue.join('\n') 
+                                        : item.actionValue;
+                            editor.insertContent(content);
+                        } 
+                        else if (item.actionType === 'function') {
+                            // AGORA ELE PROCURA NO MAPA DE FUNÇÕES
+                            const func = actionFunctions[item.actionValue];
+                            if (typeof func === 'function') {
+                                func(editor);
+                            } else {
+                                console.error(`Função ${item.actionValue} não encontrada.`);
+                            }
+                        }
+                    }
+                };
+            }
+            return null;
+        }).filter(Boolean);
+    }
+
     // ===================================================================================
     // == INICIALIZAÇÃO DA APLICAÇÃO =====================================================
     // ===================================================================================
     applyPageTheme(getActiveTheme());
     loadTabs();
+
+
 });
 
