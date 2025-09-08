@@ -385,7 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
                 help: { title: 'Ajuda', items: 'help' }
             },
-            toolbar: 'undo redo novodocumento closetab copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini code modofoco preview',
+            toolbar: 'undo redo novodocumento copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini code modofoco preview',
             font_family_formats: 'Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Consolas=Consolas,monospace;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;',
             font_size_formats: '6pt 8pt 10pt 12pt 14pt 16pt 18pt 24pt 26pt 32pt 48pt',
             insertdatetime_timeformat: '%H:%M:%S',
