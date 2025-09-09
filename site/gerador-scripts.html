@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Script Unificado</title>
+    <title>Unificador de Scripts SQL</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
     <style>
@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <h4>Gerador de Script Unificado</h4>
+    <h4>Unificador de Scripts SQL</h4>
     <p class="text-muted">Selecione os scripts de atualização para combinar em um único arquivo.</p>
 
     <div id="scripts-container" class="main-content">
@@ -30,6 +30,32 @@
     <script src="../scripts/app.js"></script>
     <script>
         const VERCEL_API_URL = 'https://auxiliar-demaria.vercel.app/api';
+
+         let lastChecked = null;
+
+         function handleCheckboxClick(event) {
+            const clickedCheckbox = event.target;
+
+            // Verifica se o clique foi com a tecla Shift pressionada e se já existe um "último" checkbox
+            if (event.shiftKey && lastChecked) {
+                const container = document.getElementById('scripts-container');
+                const checkboxes = Array.from(container.querySelectorAll('input[type="checkbox"]'));
+                const startIndex = checkboxes.indexOf(lastChecked);
+                const endIndex = checkboxes.indexOf(clickedCheckbox);
+
+                // Determina o início e o fim do intervalo, não importa a ordem do clique
+                const start = Math.min(startIndex, endIndex);
+                const end = Math.max(startIndex, endIndex);
+
+                // Marca (ou desmarca) todos os checkboxes dentro do intervalo
+                for (let i = start; i <= end; i++) {
+                    checkboxes[i].checked = lastChecked.checked;
+                }
+            }
+            
+            // Atualiza o "último" checkbox clicado para o atual
+            lastChecked = clickedCheckbox;
+        }
 
         /**
          * Função de ordenação personalizada para nomes de arquivos com versão (ex: r4.57 vs r4.6)
@@ -64,6 +90,13 @@
 
         async function loadScripts() {
             const container = document.getElementById('scripts-container');
+
+            container.addEventListener('click', (event) => {
+                if (event.target.type === 'checkbox') {
+                    handleCheckboxClick(event);
+                }
+            });
+
             try {
                 const response = await fetch(`${VERCEL_API_URL}/list-scripts`);
                 if (!response.ok) throw new Error('Falha ao buscar a lista de scripts.');
