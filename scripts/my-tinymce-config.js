@@ -541,19 +541,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const salvarComoHTML = (editor) => {
-                    const editorContent = editor.getContent();
+                    const editorContent = editor.getContent(); // Pega o conteúdo HTML original
                     if (!editorContent) {
                         Swal.fire('Atenção', 'Não há conteúdo para salvar.', 'warning');
                         return;
                     }
 
-                    // Aplica a mesma transformação que usamos em "Copiar HTML" e "Visualizar Código"
-                    let processedContent = editorContent.replace(/<p[^>]*>/g, '');
-                    processedContent = processedContent.replace(/<\/p>/g, '');
-                    processedContent = processedContent.replace(/<br\s*\/?>/g, '');
-                    processedContent = processedContent.trim();
-
-                    const blob = new Blob([processedContent], { type: 'text/html;charset=utf-8' });
+                    // Nenhum processamento é feito. Usamos o conteúdo original com as tags <p>.
+                    const blob = new Blob([editorContent], { type: 'text/html;charset=utf-8' });
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
