@@ -175,6 +175,12 @@
                 const batchContent = `@echo off
 setlocal
 
+REM DEFINE O ENCODING DO CLIENTE PARA UTF-8
+SET PGCLIENTENCODING=UTF8
+
+REM Define a página de código para UTF-8
+chcp 65001 > nul
+
 REM Define a página de código para UTF-8
 chcp 65001 > nul
 
@@ -214,16 +220,16 @@ exit /b
 `.replace(/\n/g, '\r\n');
 
 
-                if (window.parent.salvarTextoComEncoding) {
-                    // Salva o arquivo .sql com encoding windows-1252
-                    window.parent.salvarTextoComEncoding(finalSqlString, 'ScriptsUnificados.sql', 'windows-1252');
+                if (window.parent.salvarTexto) {
+                    // Salva o arquivo .sql no padrão web (UTF-8)
+                    window.parent.salvarTexto(finalSqlString, 'ScriptsUnificados.sql');
                     
-                    // Salva o arquivo .bat também com encoding windows-1252 (padrão do cmd)
-                    window.parent.salvarTextoComEncoding(batchContent, 'RodarScripts.bat', 'windows-1252');
+                    // Salva o arquivo .bat também em UTF-8
+                    window.parent.salvarTexto(batchContent, 'RodarScripts.bat');
 
                     Swal.fire('Sucesso!', 'Os arquivos ScriptsUnificados.sql e RodarScripts.bat foram gerados e baixados.', 'success');
                 } else {
-                    throw new Error('A função salvarTextoComEncoding não foi encontrada.');
+                    throw new Error('A função salvarTexto não foi encontrada.');
                 }
 
             } catch (error) {

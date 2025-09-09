@@ -173,37 +173,3 @@ function confirmacao(titulo, mensagem, callbackConfirm, callbackCancel) {
         }
     });
 }
-
-/**
- * Salva o conteúdo de um elemento de texto em um arquivo com uma codificação específica.
- * Requer a biblioteca 'text-encoding'.
- * @param {string} content - O conteúdo a ser salvo.
- * @param {string} filename - O nome do arquivo a ser criado.
- * @param {string} encoding - A codificação do arquivo (ex: 'windows-1252').
- */
-function salvarTextoComEncoding(content, filename, encoding) {
-    if (!content) {
-        showCustomAlert('Não há conteúdo para salvar!');
-        return;
-    }
-
-    try {
-        // Usa o TextEncoder da biblioteca que incluímos para codificar a string
-        const encoder = new TextEncoder(encoding, { NONSTANDARD_allowLegacyEncoding: true });
-        const encodedData = encoder.encode(content); // Gera um array de bytes na codificação correta
-
-        // Cria o Blob a partir dos bytes codificados
-        const blob = new Blob([encodedData], { type: 'text/plain;charset=' + encoding });
-        
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-    } catch (ex) {
-        console.error("Erro ao salvar com encoding:", ex);
-        showCustomAlert('Ocorreu um erro ao gerar o arquivo com a codificação específica.');
-    }
-}
