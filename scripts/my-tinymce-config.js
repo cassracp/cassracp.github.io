@@ -547,10 +547,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                     // Aplica a mesma transformação aqui
-                    let processedContent = editorContent.replace(/<p[^>]*>/g, '').replace(/<\/p>/g, '').trim;
-                    processedContent = processedContent.replace(/(<br\s*\/?>\s*){2,}$/, '<br>');
-
+                    // Aplica a mesma transformação que usamos em "Copiar HTML" e "Visualizar Código"
+                    let processedContent = editorContent.replace(/<p[^>]*>/g, '');
+                    processedContent = processedContent.replace(/<\/p>/g, '');
+                    processedContent = processedContent.replace(/<br\s*\/?>/g, '');
+                    processedContent = processedContent.trim();
 
                     const blob = new Blob([processedContent], { type: 'text/html;charset=utf-8' });
                     const url = URL.createObjectURL(blob);
@@ -561,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     link.click();
                     document.body.removeChild(link);
                     URL.revokeObjectURL(url);
-                }
+                };
 
                 const toggleModoFoco = () => {
                     const header = document.getElementById('main-header');
