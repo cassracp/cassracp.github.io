@@ -159,11 +159,12 @@
                 unifiedSqlContent.push('\\set ON_ERROR_STOP on\r\n\r\n');
                 unifiedSqlContent.push('BEGIN;\r\n\r\n');
 
-                scriptContents.forEach((content, index) => {
+               scriptContents.forEach((content, index) => {
                     const fileName = filesToFetch[index].name;
                     unifiedSqlContent.push(`/*=====${fileName}=====*/`);
-                    unifiedSqlContent.push(content);
-                    unifiedSqlContent.push(''); // Linha em branco
+                    // Adiciona o conteúdo do arquivo e garante que termine com um ponto e vírgula
+                    // e uma quebra de linha para separar do próximo script.
+                    unifiedSqlContent.push(content.trim() + ';\r\n'); 
                 });
 
                 unifiedSqlContent.push('\r\n\r\nCOMMIT;');
