@@ -4,17 +4,17 @@
   "description": "Um editor de texto HTML e outros recursos para protocolos na DeMaria",
   "icons": [
     {
-      "src": "icons/icon_base32.png",
+      "src": "site/icons/icon_base32.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "icons/icon_base16.png",
+      "src": "site/icons/icon_base16.png",
       "sizes": "16x16",
       "type": "image/png"
     },
     {
-      "src": "icons/icon_base96.png",
+      "src": "site/icons/icon_base96.png",
       "sizes": "96x96",
       "type": "image/png"
     }
