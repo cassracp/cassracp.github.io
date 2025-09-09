@@ -377,6 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             license_key: 'gpl',
             newline_behavior: 'linebreak',
+            placeholder: 'Digite aqui...',
             height: '100%',
             resize: false,
             skin_url: `scripts/my_tinymce_app/skins/ui/${activeTheme}`,
