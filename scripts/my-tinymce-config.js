@@ -47,6 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(newThemeLink);
     }
 
+    function applyInitialFocusMode() {
+        // Lê o valor salvo e converte para booleano
+        const focusModeActive = localStorage.getItem('focusModeActive') === 'true';
+        
+        if (focusModeActive) {
+            const header = document.getElementById('main-header');
+            if (header) {
+                header.classList.add('hidden');
+            }
+        }
+    }
+
     // ===================================================================================
     // == GERENCIAMENTO DE ESTADO DAS ABAS E EDITORES =====================================
     // ===================================================================================
@@ -530,13 +542,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     URL.revokeObjectURL(url);
                 }
 
-                 const toggleModoFoco = () => {
+                const toggleModoFoco = () => {
                     const header = document.getElementById('main-header');
                     if (header) {
                         const isHidden = header.classList.toggle('hidden');
                         window.dispatchEvent(new Event('resize'));
-                        // Emite um evento com o novo estado para que os botões possam ouvir
                         editor.dispatch('focusModeToggled', { state: isHidden });
+                        
+                        localStorage.setItem('focusModeActive', isHidden);
                     }
                 };
                 
@@ -1352,6 +1365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // == INICIALIZAÇÃO DA APLICAÇÃO =====================================================
     // ===================================================================================
     applyPageTheme(getActiveTheme());
+    applyInitialFocusMode();
     loadTabs();
 
 
