@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
             codesample_languages: formatsData.code_languages,
             menu: {
                 file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print' },
-                view: { title: 'Exibir', items: 'visualblocks visualchars | customcodeview  modofoco preview | skins' },
+                view: { title: 'Exibir', items: 'visualblocks visualchars | code customcodeview  modofoco preview | skins' },
                 insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
                     title: 'Formatar', 
