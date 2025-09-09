@@ -129,12 +129,12 @@ function TitleCase(str) {
  */
 function applyModalTheme() {
     try {
-        // Acessa o localStorage da janela pai, que é a aplicação principal do TinyMCE
+        // Acessa o localStorage da janela pai para pegar o nome EXATO do tema
         const activeTheme = window.parent.localStorage.getItem('tinymceActiveTheme');
 
-        // Se o tema ativo for um tema escuro, adiciona o atributo 'data-theme' ao body do modal
-        if (activeTheme && activeTheme.includes('dark')) {
-            document.body.setAttribute('data-theme', 'dark');
+        // Se um tema foi encontrado, aplica o nome dele diretamente como o atributo data-theme
+        if (activeTheme) {
+            document.body.setAttribute('data-theme', activeTheme);
         }
     } catch (e) {
         console.error("Não foi possível aplicar o tema do modal a partir do localStorage.", e);

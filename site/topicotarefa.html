@@ -98,7 +98,7 @@
         
         function FormatarTopicoTarefa() {
             const numeroTarefa = document.getElementById("numeroTarefa").value;
-            const tituloTopico = document.getElementById("tituloTopicoSelect").value;
+            let tituloTopico = document.getElementById("tituloTopicoSelect").value;
             const osAssociada = document.getElementById("osAssociada").checked;
             const numeroOS = document.getElementById("numeroOS").value.trim();
             const today = new Date();
@@ -119,11 +119,15 @@
             let codigoHTML = '';
             if (osAssociada) {
                 const osLink = `<a href="https://www.sacdemaria.com.br/adm/os/consulta_os.php?id=${numeroOS}" target="_blank"><u>OS ${numeroOS}</u></a>`;
-                const titlePart = tituloTopico === "DATA DA IMPLANTAÇÃO/ATIVAÇÃO" ? `: ${formattedDate}` : "";
-                codigoHTML = `<p><big><b>${numeroTarefa}) ${tituloTopico}${titlePart}</b> - Ver ${osLink}</big></p>`;
+                if (tituloTopico.includes(": DD/MM/AAAA")) 
+                    tituloTopico = tituloTopico.replace(": DD/MM/AAAA", `: ${formattedDate}`);
+
+                codigoHTML = `<big><b>${numeroTarefa}) ${tituloTopico}</b> - Ver ${osLink}</big>`;
             } else {
-                if (tituloTopico === "DATA DA IMPLANTAÇÃO/ATIVAÇÃO") {
-                    codigoHTML = `<p><big><b>${numeroTarefa}) ${tituloTopico}:</b> ${formattedDate}</big></p>`;
+                if (tituloTopico.includes(": DD/MM/AAAA")){
+                    tituloTopico = tituloTopico.replace(": DD/MM/AAAA", `: ${formattedDate}`);
+                
+                codigoHTML = `<big><b>${numeroTarefa}) ${tituloTopico}</b></big>`;
                 } else if (tituloTopico === "GARANTIA") {
                     const dataGarantia = new Date();
                     dataGarantia.setDate(dataGarantia.getDate() + 90);
@@ -131,9 +135,9 @@
                     const mmGarantia = String(dataGarantia.getMonth() + 1).padStart(2, '0');
                     const yyyyGarantia = dataGarantia.getFullYear();
                     const formattedGarantia = ddGarantia + '/' + mmGarantia + '/' + yyyyGarantia;
-                    codigoHTML = `<p><big><b>${numeroTarefa}) ${tituloTopico}</b> - Até ${formattedGarantia}</big></p>`;
+                    codigoHTML = `<big><b>${numeroTarefa}) ${tituloTopico}</b> - Até ${formattedGarantia}</big>`;
                 } else {
-                    codigoHTML = `<p><big><b>${numeroTarefa}) ${tituloTopico}</b></big></p>`;
+                    codigoHTML = `<big><b>${numeroTarefa}) ${tituloTopico}</b></big>`;
                 }
             }
             

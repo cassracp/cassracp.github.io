@@ -1,50 +1,72 @@
-/* Dark Theme Overrides for Modals */
-body[data-theme='dark'] {
+/* Dark Theme Overrides para Modals*/
+
+/* Estilos gerais para o corpo do modal nos temas escuros */
+body[data-theme='tinymce-5-dark'],
+body[data-theme='oxide-dark'] {
     background-color: #2c3e50; /* Fundo principal do modal (tom mais claro) */
     color: #f0f2f5;
 }
-body[data-theme='dark'] .form-section,
-body[data-theme='dark'] .form-content {
+
+/* Estilos para as seções de conteúdo (a correção principal está aqui) */
+body[data-theme='tinymce-5-dark'] .form-section,
+body[data-theme='tinymce-5-dark'] .form-content,
+body[data-theme='tinymce-5-dark'] .main-content, /* CORREÇÃO APLICADA */
+body[data-theme='oxide-dark'] .form-section,
+body[data-theme='oxide-dark'] .form-content,
+body[data-theme='oxide-dark'] .main-content { /* CORREÇÃO APLICADA */
     background-color: #222f3e; /* Fundo das seções (tom mais escuro) */
     border-color: #34495e;
+    padding: 15px;
 }
-body[data-theme='dark'] .form-control {
+
+/* Estilos para campos de formulário */
+body[data-theme='tinymce-5-dark'] .form-control,
+body[data-theme='oxide-dark'] .form-control {
     background-color: #34495e;
     border-color: #4a617a;
     color: #ecf0f1;
 }
-body[data-theme='dark'] .form-control:focus {
+
+body[data-theme='tinymce-5-dark'] .form-control:focus,
+body[data-theme='oxide-dark'] .form-control:focus {
     background-color: #4a617a;
     border-color: #3498db;
     color: #ecf0f1;
 }
-body[data-theme='dark'] .form-control::placeholder {
+
+body[data-theme='tinymce-5-dark'] .form-control::placeholder,
+body[data-theme='oxide-dark'] .form-control::placeholder {
     color: #95a5a6;
 }
-body[data-theme='dark'] .form-control:read-only {
+
+body[data-theme='tinymce-5-dark'] .form-control:read-only,
+body[data-theme='oxide-dark'] .form-control:read-only {
     background-color: #2c3e50;
 }
-body[data-theme='dark'] .text-muted {
+
+/* Estilos para textos e bordas */
+body[data-theme='tinymce-5-dark'] .text-muted,
+body[data-theme='oxide-dark'] .text-muted {
     color: #bdc3c7 !important;
 }
-body[data-theme='dark'] .footer-content,
-body[data-theme='dark'] .btn-container {
+
+body[data-theme='tinymce-5-dark'] .footer-content,
+body[data-theme='tinymce-5-dark'] .btn-container,
+body[data-theme='oxide-dark'] .footer-content,
+body[data-theme='oxide-dark'] .btn-container {
     border-top-color: #34495e;
 }
+
 /* Ajuste no botão secundário para melhor contraste */
-body[data-theme='dark'] .btn-secondary {
+body[data-theme='tinymce-5-dark'] .btn-secondary,
+body[data-theme='oxide-dark'] .btn-secondary {
     color: #fff;
     background-color: #6c757d;
     border-color: #6c757d;
 }
-body[data-theme='dark'] .btn-secondary:hover {
+
+body[data-theme='tinymce-5-dark'] .btn-secondary:hover,
+body[data-theme='oxide-dark'] .btn-secondary:hover {
     background-color: #5a6268;
     border-color: #545b62;
-}
-
-body[data-theme='dark'] .form-section,
-body[data-theme='dark'] .form-content {
-    background-color: #222f3e; 
-    border-color: #34495e;
-    padding: 15px; /* Adicione esta linha */
 }
