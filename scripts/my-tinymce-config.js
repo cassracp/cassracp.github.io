@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
             codesample_languages: formatsData.code_languages,
             menu: {
                 file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print' },
-                view: { title: 'Exibir', items: 'visualblocks visualchars | code customcodeview  modofoco preview | skins' },
+                view: { title: 'Exibir', items: 'visualblocks visualchars | customcodeview  modofoco preview | skins' },
                 insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
                     title: 'Formatar', 
@@ -441,16 +441,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const openCustomCodeView = (editor) => {
                     let rawContent = editor.getContent();
                     
-                    // Aplica exatamente as mesmas regras de limpeza da função copiarHTML
+                    // Lógica de limpeza (Editor -> Modal)
                     let processedContent = rawContent.replace(/<p[^>]*>/g, '');
                     processedContent = processedContent.replace(/<\/p>/g, '\n');
-                    processedContent = processedContent.replace(/<br\s*\/?>/g, '\n');
+                    // Adicionei uma limpeza extra de <br> caso elas existam
+                    processedContent = processedContent.replace(/<br\s*\/?>/g, '\n'); 
                     processedContent = processedContent.trim();
 
-                    // Abre um modal do TinyMCE para exibir o conteúdo
                     editor.windowManager.open({
-                        title: 'Visualizar Código Fonte (Limpo)',
-                        // --- ADICIONADO AQUI: Definindo o tamanho da janela ---
+                        title: 'Código Fonte (HTML)',
                         size: 'large',
                         body: {
                             type: 'panel',
@@ -458,19 +457,41 @@ document.addEventListener('DOMContentLoaded', () => {
                                 {
                                     type: 'textarea',
                                     name: 'codeview',
-                                    readonly: true, 
-                                    maximized: true // Esta linha agora funcionará como esperado!
+                                    // 1. A área de texto agora é editável (readonly foi removido)
+                                    maximized: true
                                 }
                             ]
                         },
+                        // 2. Novos botões de Salvar e Cancelar
                         buttons: [
                             {
                                 type: 'cancel',
-                                text: 'Fechar'
+                                text: 'Cancelar'
+                            },
+                            {
+                                type: 'submit',
+                                text: 'Salvar',
+                                primary: true
                             }
                         ],
                         initialData: {
-                            codeview: processedContent 
+                            codeview: processedContent
+                        },
+                        // 3. Nova função onSubmit para processar e salvar as alterações
+                        onSubmit: (dialog) => {
+                            const data = dialog.getData();
+                            const modifiedText = data.codeview;
+
+                            // Lógica de "tradução reversa" (Modal -> Editor)
+                            // Converte cada linha de texto de volta para uma tag <p>
+                            const newHtmlContent = modifiedText
+                                .trim()
+                                .split('\n') // Divide o texto em um array de linhas
+                                .map(line => `<p>${line || '&nbsp;'}</p>`) // Envolve cada linha em <p>
+                                .join(''); // Junta tudo em uma string HTML
+
+                            editor.setContent(newHtmlContent);
+                            dialog.close();
                         }
                     });
                 };
@@ -1058,12 +1079,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 editor.ui.registry.addButton('customcodeview', {
                     icon: 'sourcecode', // Podemos reutilizar o ícone do botão 'code'
-                    tooltip: 'Visualizar Código Limpo',
+                    tooltip: 'Código Fonte (HTML)',
                     onAction: () => openCustomCodeView(editor)
                 });
 
                 editor.ui.registry.addMenuItem('customcodeview', {
-                    text: 'Visualizar Código Limpo',
+                    text: 'Código Fonte (HTML)',
                     icon: 'sourcecode',
                     onAction: () => openCustomCodeView(editor)
                 });
