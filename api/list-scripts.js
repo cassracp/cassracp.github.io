@@ -40,7 +40,11 @@ export default async function handler(request, response) {
 
     // Filtra os resultados para pegar apenas os arquivos .sql
     const scripts = data
-      .filter(item => item.type === 'file' && item.name.endsWith('.sql'))
+      .filter(item => 
+        item.type === 'file' && 
+        item.name.toUpperCase().startsWith('UPDATE_') && 
+        item.name.endsWith('.sql')
+      )
       .map(item => ({
         // Extrai apenas as informações que nossa ferramenta precisa
         name: item.name,
