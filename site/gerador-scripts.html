@@ -214,12 +214,16 @@ exit /b
 `.replace(/\n/g, '\r\n');
 
 
-                if (window.parent.salvarTexto) {
-                    window.parent.salvarTexto(finalSqlString, 'ScriptsUnificados.sql');
-                    window.parent.salvarTexto(batchContent, 'RodarScripts.bat');
-                    Swal.fire('Sucesso!', 'Os arquivos foram gerados e baixados.', 'success');
+                if (window.parent.salvarTextoComEncoding) {
+                    // Salva o arquivo .sql com encoding windows-1252
+                    window.parent.salvarTextoComEncoding(finalSqlString, 'ScriptsUnificados.sql', 'windows-1252');
+                    
+                    // Salva o arquivo .bat também com encoding windows-1252 (padrão do cmd)
+                    window.parent.salvarTextoComEncoding(batchContent, 'RodarScripts.bat', 'windows-1252');
+
+                    Swal.fire('Sucesso!', 'Os arquivos ScriptsUnificados.sql e RodarScripts.bat foram gerados e baixados.', 'success');
                 } else {
-                    throw new Error('Função salvarTexto não encontrada.');
+                    throw new Error('A função salvarTextoComEncoding não foi encontrada.');
                 }
 
             } catch (error) {
