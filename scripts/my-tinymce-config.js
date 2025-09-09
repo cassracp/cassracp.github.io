@@ -388,12 +388,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'spellchecker charmap emoticons | protocolosDeMariaMenu | formatarTelefone topicoTarefa topicoOS | gerarTextoGemini | responderMensagem' 
+                    items: 'spellchecker charmap emoticons | protocolosDeMariaMenu | formatarTelefone topicoTarefa topicoOS | gerarTextoGemini geradorscripts | responderMensagem' 
                 },
                 table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
                 help: { title: 'Ajuda', items: 'help' }
             },
-            toolbar: 'undo redo novodocumento copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini customcodeview modofoco preview',
+            toolbar: 'undo redo novodocumento copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini geradorscripts customcodeview modofoco preview',
             font_family_formats: fontFamilyFormats,
             font_size_formats: fontSizeFormats,
             insertdatetime_timeformat: '%H:%M:%S',
@@ -968,6 +968,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
+                const ExibirGeradorScripts = () => {
+                const idealWidth = Math.min(600, window.innerWidth * 0.8);
+                const idealHeight = Math.min(700, window.innerHeight * 0.9);
+
+                tinymce.activeEditor.windowManager.openUrl({
+                    title: 'Gerador de Script Unificado',
+                    url: 'site/gerador-scripts.html',
+                    width: idealWidth,
+                    height: idealHeight
+                });
+            };
+
                 const actionFunctions = {
                     openRelatorioAnaliseDialog: openRelatorioAnaliseDialog,
                     inserirScriptValidacaoAnexo: inserirScriptValidacaoAnexo,
@@ -1024,6 +1036,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('modo-foco-max', '<svg width="25px" height="25px" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <path d="M7 2H2v5l1.8-1.8L6.5 8 8 6.5 5.2 3.8 7 2zm6 0l1.8 1.8L12 6.5 13.5 8l2.7-2.7L18 7V2h-5zm.5 10L12 13.5l2.7 2.7L13 18h5v-5l-1.8 1.8-2.7-2.8zm-7 0l-2.7 2.7L2 13v5h5l-1.8-1.8L8 13.5 6.5 12z"></path> </g> </g></svg>');
                 editor.ui.registry.addIcon('modo-foco-min', '<svg width="25px" height="25px" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <path d="M3.4 2L2 3.4l2.8 2.8L3 8h5V3L6.2 4.8 3.4 2zm11.8 4.2L18 3.4 16.6 2l-2.8 2.8L12 3v5h5l-1.8-1.8zM4.8 13.8L2 16.6 3.4 18l2.8-2.8L8 17v-5H3l1.8 1.8zM17 12h-5v5l1.8-1.8 2.8 2.8 1.4-1.4-2.8-2.8L17 12z"></path> </g> </g></svg>');
                 editor.ui.registry.addIcon('temas', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>2</title><g id="Layer_90" data-name="Layer 90"><path d="M61.41,31.24,32.76,2.59a2,2,0,0,0-2.83,0L13.27,19.25A6.25,6.25,0,0,0,9.06,29.91l5.78,5.78a2.25,2.25,0,0,1,0,3.19L4.13,49.59A7.27,7.27,0,1,0,14.41,59.87L25.12,49.16a2.31,2.31,0,0,1,3.19,0l5.78,5.78a6.25,6.25,0,0,0,8.84,0h0a6.23,6.23,0,0,0,1.82-4.21L61.41,34.06A2,2,0,0,0,61.41,31.24ZM40.11,52.11a2.26,2.26,0,0,1-3.19,0l-5.78-5.78a6.25,6.25,0,0,0-8.85,0L11.58,57A3.35,3.35,0,0,1,7,57a3.27,3.27,0,0,1,0-4.62L17.67,41.71a6.25,6.25,0,0,0,0-8.85l-5.78-5.78a2.25,2.25,0,0,1,3.16-3.21L40.13,48.95A2.26,2.26,0,0,1,40.11,52.11Zm3.22-5.62L43,46.14l0-.05-25-25-.05,0-.35-.35L31.35,6.83l2.83,2.83-6,8.64,8.64-6,4.86,4.86-3.1,5.57,5.57-3.1,7.55,7.55-6,8.64,8.64-6,2.89,2.89Z"></path></g></svg>');
+                editor.ui.registry.addIcon('script-sql', '<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><title>icon 24 file sql</title><desc>Created with Sketch.</desc><defs></defs><g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage"><g id="icon-24-file-sql" sketch:type="MSArtboardGroup" fill="#000000"><path d="M17.6756443,19.8827511 C17.463169,19.9587282 17.2340236,20 16.9951185,20 L16.0048815,20 C14.8938998,20 14,19.1019194 14,17.9940809 L14,15.0059191 C14,13.8865548 14.897616,13 16.0048815,13 L16.9951185,13 C18.1061002,13 19,13.8980806 19,15.0059191 L19,17.9940809 C19,18.4993595 18.8171018,18.9572008 18.5145823,19.3074755 L19.267767,20.0606602 L18.5606602,20.767767 L17.6756443,19.8827511 L17.6756443,19.8827511 L17.6756443,19.8827511 Z M16.7928932,19 L15.9989566,19 C15.4426603,19 15,18.5523709 15,18.0001925 L15,14.9998075 C15,14.4437166 15.4472481,14 15.9989566,14 L17.0010434,14 C17.5573397,14 18,14.4476291 18,14.9998075 L18,18.0001925 C18,18.2246463 17.9271364,18.4307925 17.8039499,18.5968431 L16.4393398,17.232233 L15.732233,17.9393398 L16.7928932,19 L16.7928932,19 L16.7928932,19 Z M8.00684834,10 C6.34621185,10 5,11.3422643 5,12.9987856 L5,20.0012144 C5,21.6573979 6.33599155,23 8.00684834,23 L24.9931517,23 C26.6537881,23 28,21.6577357 28,20.0012144 L28,12.9987856 C28,11.3426021 26.6640085,10 24.9931517,10 L8.00684834,10 L8.00684834,10 Z M7.99456145,11 C6.89299558,11 6,11.9001762 6,12.992017 L6,20.007983 C6,21.1081436 6.90234375,22 7.99456145,22 L25.0054385,22 C26.1070044,22 27,21.0998238 27,20.007983 L27,12.992017 C27,11.8918564 26.0976562,11 25.0054385,11 L7.99456145,11 L7.99456145,11 Z M10.0048815,13 C8.89761602,13 8,13.8877296 8,15 C8,16.1045695 8.88772964,17 10,17 L10.9906311,17 C11.5480902,17 12,17.4438648 12,18 C12,18.5522847 11.5573397,19 11.0010434,19 L9.99895656,19 C9.44724809,19 9,18.543716 9,18.0044713 L9,17.9931641 L8,17.9931641 L8,17.998921 C8,19.1040864 8.8938998,20 10.0048815,20 L10.9951185,20 C12.102384,20 13,19.1122704 13,18 C13,16.8954305 12.1122704,16 11,16 L10.0093689,16 C9.45190985,16 9,15.5561352 9,15 C9,14.4477153 9.44266033,14 9.99895656,14 L11.0010434,14 C11.5527519,14 12,14.453186 12,15 L13,15 C13,13.8954305 12.1061002,13 10.9951185,13 L10.0048815,13 L10.0048815,13 Z M25,19 L25,20 L20,20 L20,13 L21,13 L21,19 L25,19 L25,19 Z" id="file-sql" sketch:type="MSShapeGroup"></path></g></g></svg>')
 
                 editor.ui.registry.addIcon('em-construcao', '<i class="fa-solid fa-person-digging"></i>');
                 
@@ -1220,6 +1233,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             callback([{ text: cachedProtocolsData === 'loading' ? 'Carregando...' : 'Erro ao carregar', enabled: false }]);
                         }
                     }
+                });
+
+                editor.ui.registry.addButton('geradorscripts', {
+                    icon: 'script-sql', // Reutilizando um ícone existente
+                    tooltip: 'Gerar Script de Atualização',
+                    onAction: () => ExibirGeradorScripts()
+                });
+
+                editor.ui.registry.addMenuItem('geradorscripts', {
+                    text: 'Gerar Script de Atualização',
+                    icon: 'script-sql',
+                    onAction: () => ExibirGeradorScripts()
                 });
 
                 editor.on('contextmenu', function (event) {

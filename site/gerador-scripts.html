@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Script Unificado</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
+    <style>
+        body { display: flex; flex-direction: column; height: 100vh; padding: 20px; background-color: #f8f9fa; }
+        .main-content { flex-grow: 1; overflow-y: auto; border: 1px solid #dee2e6; padding: 15px; border-radius: 5px; background-color: #fff; }
+        .footer-content { flex-shrink: 0; padding-top: 15px; border-top: 1px solid #dee2e6; text-align: right; }
+        .script-item { display: block; } /* Garante que cada checkbox fique em uma linha */
+    </style>
+</head>
+<body>
+    <h4>Gerador de Script Unificado</h4>
+    <p class="text-muted">Selecione os scripts de atualização para combinar em um único arquivo.</p>
+
+    <div id="scripts-container" class="main-content">
+        <p>Carregando scripts...</p>
+    </div>
+
+    <div class="footer-content">
+        <button onclick="window.parent.tinymce.activeEditor.windowManager.close()" class="btn btn-secondary">Cancelar</button>
+        <button id="btn-gerar" onclick="generateUnifiedScript()" class="btn btn-primary">Gerar Script</button>
+    </div>
+
+    <script src="../scripts/app.js"></script>
+    <script>
+        // URL da sua API na Vercel (substitua pelo seu)
+        const VERCEL_API_URL = 'https://<seu-projeto>.vercel.app/api';
+
+        // Função para carregar e exibir a lista de scripts
+        async function loadScripts() {
+            const container = document.getElementById('scripts-container');
+            try {
+                const response = await fetch(`${VERCEL_API_URL}/list-scripts`);
+                if (!response.ok) {
+                    throw new Error('Falha ao buscar a lista de scripts.');
+                }
+                const scripts = await response.json();
+
+                if (scripts.length === 0) {
+                    container.innerHTML = '<p>Nenhum script .sql encontrado no repositório.</p>';
+                    return;
+                }
+
+                // Limpa o container e gera os checkboxes
+                container.innerHTML = '';
+                scripts.forEach(script => {
+                    const checkboxHTML = `
+                        <div class="form-check script-item">
+                            <input class="form-check-input" type="checkbox" value="${script.path}" id="chk-${script.name}">
+                            <label class="form-check-label" for="chk-${script.name}">
+                                ${script.name}
+                            </label>
+                        </div>
+                    `;
+                    container.innerHTML += checkboxHTML;
+                });
+
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<p class="text-danger">Erro ao carregar scripts. Verifique o console para mais detalhes.</p>';
+            }
+        }
+
+        // Função para gerar o script (será implementada a seguir)
+       async function generateUnifiedScript() {
+            const btn = document.getElementById('btn-gerar');
+            const checkedBoxes = document.querySelectorAll('#scripts-container input[type="checkbox"]:checked');
+
+            if (checkedBoxes.length === 0) {
+                Swal.fire('Atenção', 'Selecione pelo menos um script para gerar o arquivo.', 'warning');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Gerando...';
+
+            try {
+                const filePaths = Array.from(checkedBoxes).map(chk => chk.value);
+                
+                // Busca o conteúdo de todos os arquivos selecionados em paralelo
+                const scriptContents = await Promise.all(
+                    filePaths.map(path => 
+                        fetch(`${VERCEL_API_URL}/get-script-content?path=${encodeURIComponent(path)}`)
+                            .then(res => {
+                                if (!res.ok) throw new Error(`Falha ao baixar ${path}`);
+                                return res.text();
+                            })
+                    )
+                );
+
+                // Unifica o conteúdo com um separador
+                const unifiedContent = scriptContents.join('\n\n-- --------------------------------------------------\n\n');
+                
+                // Usa a função 'salvarTexto' do nosso app.js para forçar o download
+                if (window.parent.salvarTexto) {
+                    window.parent.salvarTexto(unifiedContent, 'script_unificado.sql');
+                } else {
+                    throw new Error('Função salvarTexto não encontrada.');
+                }
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire('Erro', 'Não foi possível gerar o script. Verifique o console.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Gerar Script';
+            }
+        }
+
+        // Inicia o carregamento dos scripts quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            applyModalTheme();
+            loadScripts();
+        });
+    </script>
+</body>
+</html>
