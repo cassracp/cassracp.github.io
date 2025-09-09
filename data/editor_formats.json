@@ -1,0 +1,30 @@
+{
+  "font_families": [
+    { "title": "Andale Mono", "value": "andale mono,times" },
+    { "title": "Arial", "value": "arial,helvetica,sans-serif" },
+    { "title": "Arial Black", "value": "arial black,avant garde" },
+    { "title": "Book Antiqua", "value": "book antiqua,palatino" },
+    { "title": "Comic Sans MS", "value": "comic sans ms,sans-serif" },
+    { "title": "Consolas", "value": "Consolas,monospace" },
+    { "title": "Courier New", "value": "courier new,courier" },
+    { "title": "Georgia", "value": "georgia,palatino" },
+    { "title": "Helvetica", "value": "helvetica" },
+    { "title": "Impact", "value": "impact,chicago" },
+    { "title": "Tahoma", "value": "tahoma,arial,helvetica,sans-serif" },
+    { "title": "Terminal", "value": "terminal,monaco" },
+    { "title": "Times New Roman", "value": "times new roman,times" },
+    { "title": "Trebuchet MS", "value": "trebuchet ms,geneva" },
+    { "title": "Verdana", "value": "verdana,geneva" }
+  ],
+  "font_sizes": [
+    "6pt", "8pt", "10pt", "12pt", "14pt", "16pt", "18pt", "24pt", "26pt", "32pt", "48pt"
+  ],
+  "code_languages": [
+    { "text": "SQL", "value": "sql" },
+    { "text": "HTML/XML", "value": "markup" },
+    { "text": "JavaScript", "value": "javascript" },
+    { "text": "Python", "value": "python" },
+    { "text": "Java", "value": "java" },
+    { "text": "C#", "value": "csharp" }
+  ]
+}

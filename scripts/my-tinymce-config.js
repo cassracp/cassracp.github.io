@@ -140,16 +140,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Gerencia a visibilidade da barra de abas.
+     * Gerencia a visibilidade da barra de abas. Se tiver apenas uma aba, esconde a barra.
+     * Não está sendo mais chamada automaticamente, pois a barra deve sempre estar visível.
      */
-    function updateTabContainerVisibility() {
+    /**function updateTabContainerVisibility() {
         const tabCount = Object.keys(editors).length;
         if (tabCount > 1) {
             tabContainer.style.display = 'flex';
         } else {
             tabContainer.style.display = 'none';
         }
-    }
+    }*/
 
     /**
      * Alterna para uma aba específica, mostrando seu editor e destacando a aba.
@@ -236,9 +237,10 @@ document.addEventListener('DOMContentLoaded', () => {
      * Cria uma nova aba e um novo editor TinyMCE.
      */
      async function createTab(tabIdToCreate = null, initialContent = '') {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             let newTabNumber;
             let tabId;
+            
 
             if (tabIdToCreate) {
                 tabId = tabIdToCreate;
@@ -270,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tabElement.addEventListener('click', () => switchTab(tabId));
             tabElement.querySelector('.tab-close-btn').addEventListener('click', (e) => closeTab(e, tabId));
             
-            const config = getTinyMceConfig(`#${tabId}`, initialContent);
+           const config = await getTinyMceConfig(`#${tabId}`, initialContent);
             tinymce.init(config).then(initedEditors => {
                 const newEditor = initedEditors[0];
                 editors[tabId] = newEditor;
@@ -339,9 +341,22 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Retorna o objeto de configuração completo para uma instância do TinyMCE.
      */
-    function getTinyMceConfig(selector, content) {
+    async function getTinyMceConfig(selector, content) {
+        // Carrega os formatos do nosso novo arquivo JSON
+        const response = await fetch('data/editor_formats.json');
+        const formatsData = await response.json();
+
+        // Converte os dados do JSON para o formato que o TinyMCE espera
+        const fontFamilyFormats = formatsData.font_families
+            .map(font => `${font.title}=${font.value}`)
+            .join(';');
+
+        const fontSizeFormats = formatsData.font_sizes.join(' ');
         const activeTheme = getActiveTheme();
-        const isDarkTheme = activeTheme.includes('dark');
+        let skinUrl;
+        let contentCss;
+    
+
         return {
             selector: selector,
             init_instance_callback: (editor) => {
@@ -349,11 +364,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.focus();
             },
             license_key: 'gpl',
+            newline_behavior: 'linebreak',
             height: '100%',
             resize: false,
-            placeholder: 'Digite aqui...',
             skin_url: `scripts/my_tinymce_app/skins/ui/${activeTheme}`,
-            content_css: isDarkTheme ? 'dark' : 'default',
+            content_css: activeTheme.includes('dark') ? 'dark' : 'default',
             promotion: false,
             language_url: 'scripts/my_tinymce_app/langs/pt_BR.js',
             language: 'pt_BR',
@@ -362,17 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 'code', 'insertdatetime', 'help', 'quickbars',
                 'visualchars', 'preview'
             ],
-            codesample_languages: [
-                {text: 'SQL', value: 'sql'},
-                {text: 'HTML/XML', value: 'markup'},
-                {text: 'JavaScript', value: 'javascript'},
-                {text: 'Python', value: 'python'},
-                {text: 'Java', value: 'java'},
-                {text: 'C#', value: 'csharp'}
-            ],
+            codesample_languages: formatsData.code_languages,
             menu: {
                 file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print' },
-                view: { title: 'Exibir', items: 'visualblocks visualchars | modofoco preview | skins' },
+                view: { title: 'Exibir', items: 'visualblocks visualchars | customcodeview  modofoco preview | skins' },
                 insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
                     title: 'Formatar', 
@@ -385,24 +393,75 @@ document.addEventListener('DOMContentLoaded', () => {
                 table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
                 help: { title: 'Ajuda', items: 'help' }
             },
-            toolbar: 'undo redo novodocumento copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini code modofoco preview',
-            font_family_formats: 'Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Consolas=Consolas,monospace;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;',
-            font_size_formats: '6pt 8pt 10pt 12pt 14pt 16pt 18pt 24pt 26pt 32pt 48pt',
+            toolbar: 'undo redo novodocumento copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini customcodeview modofoco preview',
+            font_family_formats: fontFamilyFormats,
+            font_size_formats: fontSizeFormats,
             insertdatetime_timeformat: '%H:%M:%S',
             insertdatetime_formats: ['%d/%m/%Y', '%d-%m-%Y', '%d/%m/%Y às %H:%M', '%d-%m-%Y às %H:%M', '%H:%M (Brasília, GMT -03:00)'],
             browser_spellcheck: true,
             contextmenu: "bold italic underline forecolor | lists | link openlink unlink | insertdatetime | imagemComLink image | table",
             link_default_target: '_blank',
             lineheight_formats: '1 1.2 1.4 1.5 1.6 1.8 2 2.5 3',
-            content_style: "body { line-height: 1.4; font-size: 10pt; } blockquote { font-family: 'Courier New', Courier, monospace; font-size: 8pt; }",
+            content_style: "body { line-height: 1.3; font-size: 10pt; } blockquote { font-family: 'Courier New', Courier, monospace; font-size: 8pt; }",
+            formats: {
+                // Sobrescreve o formato padrão do botão "Citação"
+                blockquote: { 
+                    block: 'blockquote', 
+                    // Define os estilos que serão aplicados diretamente na tag
+                    styles: { 
+                        'font-family': 'Courier New, Courier, monospace',
+                        'font-size': '8pt',
+                        'border-left': '4px solid #ccc',
+                        'padding-left': '15px',
+                        'margin': '1em 0'
+                    },
+                    wrapper: true
+                }
+            },
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
-            forced_root_block: 'p',
             setup: function (editor) {
-// ===================================================================================
+                // ===================================================================================
                 // == FUNÇÕES DE BOTÕES E AUXILIARES =================================================
                 // ===================================================================================
+
+                const openCustomCodeView = (editor) => {
+                    let rawContent = editor.getContent();
+                    
+                    // Aplica exatamente as mesmas regras de limpeza da função copiarHTML
+                    let processedContent = rawContent.replace(/<p[^>]*>/g, '');
+                    processedContent = processedContent.replace(/<\/p>/g, '\n');
+                    processedContent = processedContent.replace(/<br\s*\/?>/g, '\n');
+                    processedContent = processedContent.trim();
+
+                    // Abre um modal do TinyMCE para exibir o conteúdo
+                    editor.windowManager.open({
+                        title: 'Visualizar Código Fonte (Limpo)',
+                        // --- ADICIONADO AQUI: Definindo o tamanho da janela ---
+                        size: 'large',
+                        body: {
+                            type: 'panel',
+                            items: [
+                                {
+                                    type: 'textarea',
+                                    name: 'codeview',
+                                    readonly: true, 
+                                    maximized: true // Esta linha agora funcionará como esperado!
+                                }
+                            ]
+                        },
+                        buttons: [
+                            {
+                                type: 'cancel',
+                                text: 'Fechar'
+                            }
+                        ],
+                        initialData: {
+                            codeview: processedContent 
+                        }
+                    });
+                };
 
                 const novodocumentoAction = async () => {
                         // Aguarda a criação da aba e recebe seu ID
@@ -422,13 +481,26 @@ document.addEventListener('DOMContentLoaded', () => {
                  };
 
                 const copiarHTML = (editor) => {
-                    const htmlContent = editor.getContent();
+                    let htmlContent = editor.getContent();
+
                     if (!htmlContent) {
                         Swal.fire('Atenção', 'Não há conteúdo para copiar.', 'warning');
                         return;
                     }
-                    navigator.clipboard.writeText(htmlContent).then(() => {
-                        console.log('HTML copiado com sucesso!');
+
+                    // 1. Remove a tag de abertura <p> (e qualquer atributo)
+                    let processedHtml = htmlContent.replace(/<p[^>]*>/g, '');
+
+                    // 2. Substitui a tag de fechamento </p>
+                    processedHtml = processedHtml.replace(/<\/p>/g, '');
+                    processedHtml = processedHtml.replace(/<br\s*\/?>/g, '\n');
+
+                    // 3. Remove múltiplos espaços e quebras de linha do final
+                    processedHtml = processedHtml.trim();
+
+
+                    navigator.clipboard.writeText(processedHtml).then(() => {
+                        console.log('HTML processado e copiado com sucesso!');
                     }).catch(err => {
                         console.error('Erro ao copiar o HTML: ', err);
                         Swal.fire('Erro', 'Não foi possível copiar o conteúdo.', 'error');
@@ -442,7 +514,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    const blob = new Blob([editorContent], { type: 'text/html;charset=utf-8' });
+                     // Aplica a mesma transformação aqui
+                    let processedContent = editorContent.replace(/<p[^>]*>/g, '').replace(/<\/p>/g, '').trim;
+                    processedContent = processedContent.replace(/(<br\s*\/?>\s*){2,}$/, '<br>');
+
+
+                    const blob = new Blob([processedContent], { type: 'text/html;charset=utf-8' });
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
@@ -953,6 +1030,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
+
+                editor.ui.registry.addButton('customcodeview', {
+                    icon: 'sourcecode', // Podemos reutilizar o ícone do botão 'code'
+                    tooltip: 'Visualizar Código Limpo',
+                    onAction: () => openCustomCodeView(editor)
+                });
+
+                editor.ui.registry.addMenuItem('customcodeview', {
+                    text: 'Visualizar Código Limpo',
+                    icon: 'sourcecode',
+                    onAction: () => openCustomCodeView(editor)
+                });
 
                 editor.ui.registry.addNestedMenuItem('skins', {
                     text: 'Temas',
