@@ -29,11 +29,11 @@
             "actionType": "insertContent",
             "actionValue": [
               "Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong>",
-              "<br>",
+              "",
               "Segue arquivo em anexo para <strong>validação externa.</strong>",
               "<hr>",
               "<strong>OBSERVAÇÕES AO VALIDADOR</strong>",
-              "<br>",
+              "",
               "Nada consta."
             ]
           },
@@ -44,12 +44,12 @@
             "actionType": "insertContent",
             "actionValue": [
               "Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong>",
-              "<br>",
+              "",
               "Arquivos estão no caminho de rede:",
               "<pre>\\\\192.168.1.179\\cpt-009\\CONVERTE\\CONCORRE\\[PASTA_DO_CLIENTE]</pre>",
               "<hr>",
               "<strong>OBSERVAÇÕES AO VALIDADOR</strong>",
-              "<br>",
+              "",
               "Nada consta."
             ]
           }
