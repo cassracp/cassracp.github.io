@@ -28,11 +28,13 @@
             "icon": "attachment",
             "actionType": "insertContent",
             "actionValue": [
-              "<p>Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong></p>",
-              "<p>Segue arquivo em anexo para <strong>validação externa.</strong></p>",
+              "Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong>",
+              "<br>",
+              "Segue arquivo em anexo para <strong>validação externa.</strong>",
               "<hr>",
-              "<p><strong>OBSERVAÇÕES AO VALIDADOR</strong></p>",
-              "<p>Nada consta.</p>"
+              "<strong>OBSERVAÇÕES AO VALIDADOR</strong>",
+              "<br>",
+              "Nada consta."
             ]
           },
           {
@@ -41,12 +43,14 @@
             "icon": "folder",
             "actionType": "insertContent",
             "actionValue": [
-              "<p>Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong></p>",
-              "<p>Arquivos estão no caminho de rede:</p>",
+              "Gerada amostra de migração de <strong>[TIPO DA MIGRAÇÃO]</strong> e <strong>validado internamente.</strong>",
+              "<br>",
+              "Arquivos estão no caminho de rede:",
               "<pre>\\\\192.168.1.179\\cpt-009\\CONVERTE\\CONCORRE\\[PASTA_DO_CLIENTE]</pre>",
               "<hr>",
-              "<p><strong>OBSERVAÇÕES AO VALIDADOR</strong></p>",
-              "<p>Nada consta.</p>"
+              "<strong>OBSERVAÇÕES AO VALIDADOR</strong>",
+              "<br>",
+              "Nada consta."
             ]
           }
         ]
