@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let rawContent = editor.getContent();
                     
                     // Lógica de limpeza (Editor -> Modal)
-                    let processedContent = rawContent.replace(/<p[^>]*>/g, '');
+                    let processedContent = rawContent.replace(/<p\b[^>]*>/g, '');
                     processedContent = processedContent.replace(/<\/p>/g, '\n');
                     // Adicionei uma limpeza extra de <br> caso elas existam
                     processedContent = processedContent.replace(/<br\s*\/?>/g, '\n'); 
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     // 1. Remove a tag de abertura <p> (e qualquer atributo)
-                    let processedHtml = htmlContent.replace(/<p[^>]*>/g, '');
+                    let processedHtml = htmlContent.replace(/<p\b[^>]*>/g, '');
 
                     // 2. Substitui a tag de fechamento </p>
                     processedHtml = processedHtml.replace(/<\/p>/g, '');
