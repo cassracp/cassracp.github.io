@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.focus();
             },
             license_key: 'gpl',
-            newline_behavior: 'linebreak',
+            newline_behavior: 'invert',
             placeholder: 'Digite aqui...',
             height: '100%',
             resize: false,
