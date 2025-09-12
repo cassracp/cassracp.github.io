@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===================================================================================
     let editors = {}; // Armazena as instâncias do TinyMCE
     let activeTabId = null; // ID da aba atualmente ativa
-    let cachedProtocolosItems = null;
+    let cachedProtocolsData = null;
+    let cachedClickUpData = null;
 
     const tabContainer = document.getElementById('tab-container');
     const editorAreaContainer = document.getElementById('editor-area-container');
@@ -401,8 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'spellchecker charmap emoticons | protocolosDeMariaMenu | formatarTelefone topicoTarefa topicoOS | gerarTextoGemini geradorscripts | responderMensagem' 
-                },
+                    items: 'spellchecker charmap emoticons | protocolosDeMariaMenu clickupMenu | formatarTelefone topicoTarefa topicoOS | gerarTextoGemini geradorscripts datecalculator | responderMensagem'                 },
                 table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
                 help: { title: 'Ajuda', items: 'help' }
             },
@@ -534,7 +534,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                     navigator.clipboard.writeText(processedHtml).then(() => {
-                        console.log('HTML processado e copiado com sucesso!');
+                          Swal.fire({
+                            toast: true,
+                            position: 'top', // Posição no canto superior direito
+                            icon: 'success',
+                            title: 'HTML copiado com sucesso!',
+                            showConfirmButton: false,
+                            timer: 2000, // Fecha automaticamente após 2 segundos
+                            timerProgressBar: true
+                        });
                     }).catch(err => {
                         console.error('Erro ao copiar o HTML: ', err);
                         Swal.fire('Erro', 'Não foi possível copiar o conteúdo.', 'error');
@@ -799,39 +807,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 const abrirPainelImagemComLink = function(imgUrl = '', descrImagem = '') {
-                            editor.windowManager.open({
-                                title: 'Inserir Imagem com Link',
-                                body: {
-                                    type: 'panel',
-                                    items: [
-                                        { type: 'input', name: 'imgUrl', label: 'URL da Imagem', placeholder: 'https://exemplo.com/imagem.jpg', value: imgUrl },
-                                        { type: 'input', name: 'descr', label: 'Descrição da Imagem', placeholder: 'Imagem de exemplo', value: descrImagem }
-                                    ],
-                                },
-                                buttons: [
-                                    { text: 'Cancelar', type: 'cancel' },
-                                    { text: 'Inserir', type: 'submit', primary: true }
-                                ],
-                                onSubmit: function (dialog) {
-                                    var data = dialog.getData();
-                                    var imgUrl = data.imgUrl.trim();
-                                    var descrImagem = data.descr.trim();
-                                    
-                                    if (!imgUrl) {
-                                        Swal.fire({ icon: 'error', title: 'Erro', text: 'Preencha a URL da Imagem!'});
-                                        return;
-                                    }
-                                    
-                                    var html = `<a href="${imgUrl}" target="_blank" rel="noopener"><img src="${imgUrl}" style="max-width: 100%; height: auto;" alt="${descrImagem}" title="${descrImagem}"></a>`;
-                                    if (descrImagem) {
-                                        html += `<br><small style="color:gray;">(${descrImagem})</small>`;
-                                    }
-                                    
-                                    editor.insertContent(html);
-                                    dialog.close();
-                                }
-                            });
-                        };
+                    editor.windowManager.open({
+                        title: 'Inserir Imagem com Link',
+                        body: {
+                            type: 'panel',
+                            items: [
+                                { type: 'input', name: 'imgUrl', label: 'URL da Imagem', placeholder: 'https://exemplo.com/imagem.jpg', value: imgUrl },
+                                { type: 'input', name: 'descr', label: 'Descrição da Imagem', placeholder: 'Imagem de exemplo', value: descrImagem }
+                            ],
+                        },
+                        buttons: [
+                            { text: 'Cancelar', type: 'cancel' },
+                            { text: 'Inserir', type: 'submit', primary: true }
+                        ],
+                        onSubmit: function (dialog) {
+                            var data = dialog.getData();
+                            var imgUrl = data.imgUrl.trim();
+                            var descrImagem = data.descr.trim();
+                            
+                            if (!imgUrl) {
+                                Swal.fire({ icon: 'error', title: 'Erro', text: 'Preencha a URL da Imagem!'});
+                                return;
+                            }
+                            
+                            var html = `<a href="${imgUrl}" target="_blank" rel="noopener"><img src="${imgUrl}" style="max-width: 100%; height: auto;" alt="${descrImagem}" title="${descrImagem}"></a>`;
+                            if (descrImagem) {
+                                html += `<br><small style="color:gray;">(${descrImagem})</small>`;
+                            }
+                            
+                            editor.insertContent(html);
+                            dialog.close();
+                        }
+                    });
+                };
+
+                const openDateCalculator = (editor) => {
+                    const idealWidth = Math.min(600, window.innerWidth * 0.8);
+                    const idealHeight = Math.min(680, window.innerHeight * 0.9);
+
+                    editor.windowManager.openUrl({
+                        title: 'Calculadora de Datas',
+                        url: 'site/calculadora-datas.html',
+                        width: idealWidth,
+                        height: idealHeight
+                    });
+                };
 
                 const responderMensagem = function () {
                     const selectedContent = editor.selection.getContent({ format: 'html' });
@@ -1018,8 +1038,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 const loadProtocolsIfNeeded = () => {
-                    if (cachedProtocolosItems !== null) return;
-                    cachedProtocolosItems = 'loading';
+                    if (cachedProtocolsData !== null) return;
+                    cachedProtocolsData = 'loading';
 
                     fetch('data/protocolos.json')
                         .then(response => {
@@ -1031,11 +1051,30 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                         .catch(error => {
                             console.error('Falha ao carregar protocolos.json:', error);
-                            cachedProtocolosItems= 'error';
+                            cachedProtocolsData= 'error';
                         });
                 };
 
+                const loadClickUpMenuIfNeeded = () => {
+                 if (cachedClickUpData !== null) return;
+                 cachedClickUpData = 'loading';
+
+                 fetch('data/clickup_menu.json')
+                     .then(response => {
+                         if (!response.ok) throw new Error('HTTP error!');
+                         return response.json();
+                     })
+                     .then(data => {
+                         cachedClickUpData = data; // Salva os dados brutos no cache
+                     })
+                     .catch(error => {
+                         console.error('Falha ao carregar clickup_menu.json:', error);
+                         cachedClickUpData = 'error';
+                     });
+             };
+
                 loadProtocolsIfNeeded();
+                loadClickUpMenuIfNeeded();
 
                 // ===================================================================================
                 // == ÍCONES PERSONALIZADOS ==========================================================
@@ -1069,10 +1108,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('script-sql', '<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"><title>icon 24 file sql</title><desc>Created with Sketch.</desc><defs></defs><g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd" sketch:type="MSPage"><g id="icon-24-file-sql" sketch:type="MSArtboardGroup" fill="currentColor"><path d="M17.6756443,19.8827511 C17.463169,19.9587282 17.2340236,20 16.9951185,20 L16.0048815,20 C14.8938998,20 14,19.1019194 14,17.9940809 L14,15.0059191 C14,13.8865548 14.897616,13 16.0048815,13 L16.9951185,13 C18.1061002,13 19,13.8980806 19,15.0059191 L19,17.9940809 C19,18.4993595 18.8171018,18.9572008 18.5145823,19.3074755 L19.267767,20.0606602 L18.5606602,20.767767 L17.6756443,19.8827511 L17.6756443,19.8827511 L17.6756443,19.8827511 Z M16.7928932,19 L15.9989566,19 C15.4426603,19 15,18.5523709 15,18.0001925 L15,14.9998075 C15,14.4437166 15.4472481,14 15.9989566,14 L17.0010434,14 C17.5573397,14 18,14.4476291 18,14.9998075 L18,18.0001925 C18,18.2246463 17.9271364,18.4307925 17.8039499,18.5968431 L16.4393398,17.232233 L15.732233,17.9393398 L16.7928932,19 L16.7928932,19 L16.7928932,19 Z M8.00684834,10 C6.34621185,10 5,11.3422643 5,12.9987856 L5,20.0012144 C5,21.6573979 6.33599155,23 8.00684834,23 L24.9931517,23 C26.6537881,23 28,21.6577357 28,20.0012144 L28,12.9987856 C28,11.3426021 26.6640085,10 24.9931517,10 L8.00684834,10 L8.00684834,10 Z M7.99456145,11 C6.89299558,11 6,11.9001762 6,12.992017 L6,20.007983 C6,21.1081436 6.90234375,22 7.99456145,22 L25.0054385,22 C26.1070044,22 27,21.0998238 27,20.007983 L27,12.992017 C27,11.8918564 26.0976562,11 25.0054385,11 L7.99456145,11 L7.99456145,11 Z M10.0048815,13 C8.89761602,13 8,13.8877296 8,15 C8,16.1045695 8.88772964,17 10,17 L10.9906311,17 C11.5480902,17 12,17.4438648 12,18 C12,18.5522847 11.5573397,19 11.0010434,19 L9.99895656,19 C9.44724809,19 9,18.543716 9,18.0044713 L9,17.9931641 L8,17.9931641 L8,17.998921 C8,19.1040864 8.8938998,20 10.0048815,20 L10.9951185,20 C12.102384,20 13,19.1122704 13,18 C13,16.8954305 12.1122704,16 11,16 L10.0093689,16 C9.45190985,16 9,15.5561352 9,15 C9,14.4477153 9.44266033,14 9.99895656,14 L11.0010434,14 C11.5527519,14 12,14.453186 12,15 L13,15 C13,13.8954305 12.1061002,13 10.9951185,13 L10.0048815,13 L10.0048815,13 Z M25,19 L25,20 L20,20 L20,13 L21,13 L21,19 L25,19 L25,19 Z" id="file-sql" sketch:type="MSShapeGroup"></path></g></g></svg>')
                 editor.ui.registry.addIcon('unificador', '<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 512 512"><path d="M416,56V32H312a24.028,24.028,0,0,0-24,24V208h8a8,8,0,0,1,5.657,2.343l64,64A8,8,0,0,1,368,280v8h88a24.028,24.028,0,0,0,24-24V96H456A40.045,40.045,0,0,1,416,56ZM328,80h48a8,8,0,0,1,0,16H328a8,8,0,0,1,0-16Zm0,48h16a8,8,0,0,1,0,16H328a8,8,0,0,1,0-16Zm0,64a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm112,48H376a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm0-48H424a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16Zm0-48H376a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm-8-88V43.313L468.687,80H456A24.028,24.028,0,0,1,432,56ZM224,208V96H200a40.045,40.045,0,0,1-40-40V32H56A24.028,24.028,0,0,0,32,56V264a24.028,24.028,0,0,0,24,24h88V248a40.045,40.045,0,0,1,40-40ZM72,80h48a8,8,0,0,1,0,16H72a8,8,0,0,1,0-16Zm0,48H88a8,8,0,0,1,0,16H72a8,8,0,0,1,0-16Zm32,112H72a8,8,0,0,1,0-16h32a8,8,0,0,1,0,16Zm32-48H72a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm-16-48a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Zm40,40a8,8,0,0,1,8-8h16a8,8,0,0,1,0,16H168A8,8,0,0,1,160,184ZM176,56V43.313L212.687,80H200A24.028,24.028,0,0,1,176,56ZM288,248V224H184a24.028,24.028,0,0,0-24,24V456a24.028,24.028,0,0,0,24,24H328a24.028,24.028,0,0,0,24-24V288H328A40.045,40.045,0,0,1,288,248ZM224,360a8,8,0,1,1,8-8A8,8,0,0,1,224,360Zm32,0a8,8,0,1,1,8-8A8,8,0,0,1,256,360Zm32,0a8,8,0,1,1,8-8A8,8,0,0,1,288,360Zm40-88a24.028,24.028,0,0,1-24-24V235.313L340.687,272ZM64,344v40h40a8,8,0,0,1,0,16H56a8,8,0,0,1-8-8V344a8,8,0,0,1,16,0Zm344,56a8,8,0,0,1,0-16h40V344a8,8,0,0,1,16,0v48a8,8,0,0,1-8,8Z"/></svg>');
                 editor.ui.registry.addIcon('em-construcao', '<svg fill="currentColor" width="20px" height="20px" viewBox="0 -8 72 72" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><title>construction</title><path d="M27.69,34.62l-4.85-7.84.37-.36,1.6,1.37a1.5,1.5,0,0,0,.53,1.93,1.54,1.54,0,0,0,.81.23,1.49,1.49,0,0,0,.87-.27L37,38.2a.62.62,0,0,0,.44.18.64.64,0,0,0,.47-.21.65.65,0,0,0,0-.91L27.8,28.66l5-7.88a1.49,1.49,0,0,0,0-1.62,2.26,2.26,0,0,0-.25-.29L26.74,12a1.5,1.5,0,0,0-1.24-.66h0l-7.67.07a1.22,1.22,0,0,0-1.07.69l-2.37,5.09-.63-.54a.63.63,0,0,0-.9,0,.64.64,0,0,0,0,.91l.93.8-.24.53a1.52,1.52,0,0,0,.59,2,1.42,1.42,0,0,0,.74.2,1.51,1.51,0,0,0,1.27-.7l.78.67L13.4,24.87a2.37,2.37,0,0,0-.76,1.66l-.26,8.58L10.05,45.19A2.35,2.35,0,0,0,11.81,48a2.48,2.48,0,0,0,.54.06,2.35,2.35,0,0,0,2.29-1.83l2.44-10.53.23-7.63,1.4,1,4,6.49-4.38,9.15a2.35,2.35,0,1,0,4.25,2L27.76,36A1.37,1.37,0,0,0,27.69,34.62Z"></path><circle cx="33.46" cy="12.22" r="4.3"></circle><path d="M61.39,45.33c-1.44-2.1-8.34-15.16-10.12-17s-3.36-2.08-4.44-1.64a6.94,6.94,0,0,0-3,2.24c-1.27,1.73-3,6.91-4.44,9.23a11.08,11.08,0,0,0-.8,1l-.08.06c-1.06.64-4,1.19-5.19,2.4a15.63,15.63,0,0,0-1.92,2.6l-.18.25a8.22,8.22,0,0,1-3.93,3.27l0,.32H60.43C60.66,48.08,63.15,47.9,61.39,45.33Z"></path></g></svg>');
-                
+                editor.ui.registry.addIcon('clickup', '<svg fill="currentColor" width="20px" height="20px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="m2 18.439 3.69-2.828c1.961 2.56 4.044 3.739 6.363 3.739 2.307 0 4.33-1.166 6.203-3.704L22 18.405C19.298 22.065 15.941 24 12.053 24 8.178 24 4.788 22.078 2 18.439zM12.04 6.15l-6.568 5.66-3.036-3.52L12.055 0l9.543 8.296-3.05 3.509z"></path></g></svg>');                
+                editor.ui.registry.addIcon('formulario', '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H18C19.6569 23 21 21.6569 21 20V4C21 2.34315 19.6569 1 18 1H10ZM11 3H18C18.5523 3 19 3.44772 19 4V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3ZM9 7H6.41421L9 4.41421V7ZM16.7682 12.6402C17.1218 12.2159 17.0645 11.5853 16.6402 11.2318C16.2159 10.8782 15.5853 10.9355 15.2318 11.3598L10.9328 16.5186L8.70711 14.2929C8.31658 13.9024 7.68342 13.9024 7.29289 14.2929C6.90237 14.6834 6.90237 15.3166 7.29289 15.7071L10.2929 18.7071C10.4916 18.9058 10.7646 19.0117 11.0453 18.999C11.326 18.9862 11.5884 18.856 11.7682 18.6402L16.7682 12.6402Z" fill="currentView"></path> </g></svg>');
+                editor.ui.registry.addIcon('calculadora-data', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V3a1 1 0 0 0-2 0v1H8V3a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm1 15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1v1a1 1 0 0 0 2 0V6h8v1a1 1 0 0 0 2 0V6h1a1 1 0 0 1 1 1Zm-8-4a4 4 0 1 1-4-4,4 4 0 0 1 4 4Zm-1-2.5V14a1 1 0 0 0 2 0v-1.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5Z"/></svg>');
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
+
+                editor.ui.registry.addButton('datecalculator', {
+                    icon: 'calculadora-data',
+                    tooltip: 'Calculadora de Datas',
+                    onAction: () => openDateCalculator(editor)
+                });
+
+                editor.ui.registry.addMenuItem('datecalculator', {
+                    text: 'Calculadora de Datas',
+                    icon: 'calculadora-data',
+                    onAction: () => openDateCalculator(editor)
+                });
 
                 editor.ui.registry.addButton('customcodeview', {
                     icon: 'sourcecode', // Podemos reutilizar o ícone do botão 'code'
@@ -1284,6 +1337,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     event.preventDefault();
                 });
 
+                // REGISTRO PARA O NOVO MENU CLICKUP
+             editor.ui.registry.addNestedMenuItem('clickupMenu', {
+                 text: 'ClickUp',
+                 icon: 'clickup',
+                 getSubmenuItems: () => {
+                     // Constrói o menu a partir do cache no momento do clique
+                     if (Array.isArray(cachedClickUpData)) {
+                         return buildMenuFromJson(cachedClickUpData, tinymce.activeEditor, actionFunctions);
+                     }
+                     // Se ainda não carregou ou deu erro, mostra um estado
+                     return [{ text: cachedClickUpData === 'loading' ? 'Carregando...' : 'Erro ao carregar', enabled: false }];
+                 }
+             });
+
                 // ===================================================================================
                 // == ATALHOS E EVENTOS ==============================================================
                 // ===================================================================================
@@ -1361,13 +1428,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             editor.insertContent(content);
                         } 
                         else if (item.actionType === 'function') {
-                            // AGORA ELE PROCURA NO MAPA DE FUNÇÕES
                             const func = actionFunctions[item.actionValue];
                             if (typeof func === 'function') {
                                 func(editor);
                             } else {
                                 console.error(`Função ${item.actionValue} não encontrada.`);
                             }
+                        }
+                        else if (item.actionType === 'openUrl') {
+                            window.open(item.actionValue, '_blank', 'noopener,noreferrer');
                         }
                     }
                 };

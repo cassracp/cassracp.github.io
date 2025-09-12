@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Datas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
+    <style>
+        body { display: flex; flex-direction: column; height: 100vh; padding: 20px; background-color: #f8f9fa; }
+        .main-content { flex-grow: 1; overflow-y: auto; }
+        .footer-content { flex-shrink: 0; padding-top: 15px; border-top: 1px solid #dee2e6; text-align: right; }
+        .form-section { border: 1px solid #dee2e6; border-radius: 5px; padding: 20px; margin-bottom: 15px; background-color: #fff; }
+    </style>
+</head>
+<body>
+    <h4>Calculadora de Datas</h4>
+    <p class="text-muted">Calcule datas futuras ou passadas, considerando dias úteis e feriados nacionais.</p>
+
+    <div class="main-content">
+        <div class="form-section">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="baseDate"><b>Data Base:</b></label>
+                    <input type="date" id="baseDate" class="form-control">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="days"><b>Quantidade de Dias:</b></label>
+                    <input type="number" id="days" class="form-control" value="60">
+                </div>
+            </div>
+             <div class="form-group">
+                <label><b>Operação:</b></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="operator" id="op-add" value="add" checked>
+                    <label class="form-check-label" for="op-add">Adicionar (+)</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="operator" id="op-subtract" value="subtract">
+                    <label class="form-check-label" for="op-subtract">Subtrair (-)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="weekdaysOnly">
+                    <label class="form-check-label" for="weekdaysOnly">Contar apenas dias úteis (Seg-Sex)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="includeHolidays">
+                    <label class="form-check-label" for="includeHolidays">Considerar feriados nacionais (requer internet)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="resultDate"><b>Data Calculada:</b></label>
+            <input type="text" id="resultDate" class="form-control" readonly placeholder="Clique em 'Calcular' para ver o resultado">
+        </div>
+    </div> 
+
+    <div class="footer-content">
+        <button id="btn-cancel" class="btn btn-secondary">Fechar</button>
+        <button id="btn-calculate" class="btn btn-primary">Calcular e Copiar</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../scripts/app.js"></script>
+    <script>
+        // Cache para armazenar os feriados já buscados
+        const holidayCache = {};
+
+        /**
+         * Busca os feriados nacionais para um determinado ano na BrasilAPI.
+         * @param {number} year - O ano para buscar os feriados.
+         * @returns {Promise<string[]>} - Uma lista de datas de feriados no formato AAAA-MM-DD.
+         */
+        async function getHolidays(year) {
+            if (holidayCache[year]) {
+                return holidayCache[year]; // Retorna do cache se já tivermos os dados
+            }
+            try {
+                const response = await fetch(`https://brasilapi.com.br/api/feriados/v1/${year}`);
+                if (!response.ok) return [];
+                const data = await response.json();
+                const holidays = data.map(holiday => holiday.date);
+                holidayCache[year] = holidays; // Armazena no cache
+                return holidays;
+            } catch (error) {
+                console.error("Erro ao buscar feriados:", error);
+                return []; // Retorna vazio em caso de erro
+            }
+        }
+
+        async function calculateAndCopy() {
+            const baseDateInput = document.getElementById('baseDate');
+            const daysInput = document.getElementById('days');
+            
+            if (!baseDateInput.value || !daysInput.value) {
+                Swal.fire('Atenção', 'Preencha a Data Base e a Quantidade de Dias.', 'warning');
+                return;
+            }
+
+            const baseDate = new Date(baseDateInput.value + 'T00:00:00');
+            let days = parseInt(daysInput.value, 10);
+            const operator = document.querySelector('input[name="operator"]:checked').value === 'add' ? 1 : -1;
+            const weekdaysOnly = document.getElementById('weekdaysOnly').checked;
+            const includeHolidays = document.getElementById('includeHolidays').checked;
+
+            let holidays = [];
+            if (includeHolidays) {
+                const currentYear = baseDate.getFullYear();
+                // Busca os feriados do ano atual e do próximo/anterior para cobrir os cálculos
+                const holidayPromises = [getHolidays(currentYear)];
+                if (operator === 1) {
+                    holidayPromises.push(getHolidays(currentYear + 1));
+                } else {
+                    holidayPromises.push(getHolidays(currentYear - 1));
+                }
+                const holidayLists = await Promise.all(holidayPromises);
+                holidays = [].concat(...holidayLists);
+            }
+
+            if (weekdaysOnly || includeHolidays) {
+                let daysCounted = 0;
+                while (daysCounted < days) {
+                    baseDate.setDate(baseDate.getDate() + operator);
+                    const dayOfWeek = baseDate.getDay();
+                    const dateString = baseDate.toISOString().split('T')[0];
+
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    const isHoliday = includeHolidays && holidays.includes(dateString);
+
+                    if (weekdaysOnly && isWeekend) {
+                        // Pula o fim de semana se a opção de dias úteis estiver marcada
+                        continue;
+                    }
+                    if (isHoliday) {
+                        // Sempre pula feriados se a opção estiver marcada
+                        continue;
+                    }
+                    daysCounted++;
+                }
+            } else {
+                baseDate.setDate(baseDate.getDate() + (days * operator));
+            }
+
+            const result = baseDate.toLocaleDateString('pt-BR');
+            document.getElementById('resultDate').value = result;
+
+            // Copia para a área de transferência
+            navigator.clipboard.writeText(result);
+
+            // Exibe notificação de sucesso
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: `Data "${result}" copiada!`,
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+        // Verifica se está rodando dentro do TinyMCE para decidir a ação do botão "Fechar"
+        const isInsideTinyMCE = window.parent && window.parent.tinymce;
+        const cancelButton = document.getElementById('btn-cancel');
+        if (isInsideTinyMCE) {
+            cancelButton.onclick = () => window.parent.tinymce.activeEditor.windowManager.close();
+        } else {
+            // Se não estiver no TinyMCE, o botão não faz nada ou pode fechar a janela
+            cancelButton.textContent = "Voltar";
+            cancelButton.onclick = () => window.history.back();
+        }
+        
+        document.getElementById('btn-calculate').addEventListener('click', calculateAndCopy);
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Aplica o tema escuro se necessário
+            applyModalTheme();
+            
+            // Define a data de hoje como padrão, CORRIGIDO para usar o fuso horário local
+            const today = new Date();
+            const year = today.getFullYear();
+            // Adiciona +1 ao mês (pois ele é 0-indexado) e formata com 2 dígitos
+            const month = String(today.getMonth() + 1).padStart(2, '0'); 
+            const day = String(today.getDate()).padStart(2, '0');
+            
+            document.getElementById('baseDate').value = `${year}-${month}-${day}`;
+        });
+    </script>
+</body>
+</html>
