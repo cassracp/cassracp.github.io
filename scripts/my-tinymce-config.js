@@ -435,6 +435,38 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
             setup: function (editor) {
+
+                // ===================================================================================
+                // == FUNÇÃO DA API GEMINI ===========================================================
+                // ===================================================================================
+
+                const gerarTextoComGemini = async (prompt) => {
+                    const apiKey = 'AIzaSyA2OQvGwLMD2DJiES4k4uNyx1F4QP_JEsE'; 
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+
+                    const headers = { 'Content-Type': 'application/json' };
+                    const body = JSON.stringify({
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }]
+                    });
+
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: headers,
+                        body: body
+                    });
+
+                    if (!response.ok) {
+                        const errorBody = await response.text();
+                        throw new Error(`Erro na API: ${response.status} ${response.statusText} - ${errorBody}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates[0].content.parts[0].text;
+                };
+
+
                 // ===================================================================================
                 // == FUNÇÕES DE BOTÕES E AUXILIARES =================================================
                 // ===================================================================================
