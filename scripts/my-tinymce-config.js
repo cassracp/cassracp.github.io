@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const insertFormattedReply = (content) => {
                         // 1. Insere o conteúdo original e a linha de Resposta
-                        editor.execCommand('mceInsertContent', false, `<p id="__reply_target__">${content.trim()}</p><p><strong>Resposta:</strong></p>`);
+                        editor.execCommand('mceInsertContent', false, `<p id="__reply_target__">${content.trim()}</p><br><strong>Resposta:</strong><br>`);
                         
                         // 2. Encontra o parágrafo que acabamos de inserir
                         const targetNode = editor.dom.get('__reply_target__');
