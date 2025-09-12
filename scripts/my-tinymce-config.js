@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const gerarTextoComGemini = async (prompt) => {
                     const apiKey = 'AIzaSyA2OQvGwLMD2DJiES4k4uNyx1F4QP_JEsE'; 
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`;
                     const headers = { 'Content-Type': 'application/json' };
                     const body = JSON.stringify({
                         contents: [{
