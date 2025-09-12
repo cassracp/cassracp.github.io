@@ -853,11 +853,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 };
 
-                const responderMensagem = function () {
+              const responderMensagem = function () {
                     const selectedContent = editor.selection.getContent({ format: 'html' });
+                    
                     const insertFormattedReply = (content) => {
-                        const replyHtml = `<blockquote>${content.trim()}</blockquote><p><strong>Resposta:</strong></p><p>&nbsp;</p>`;
-                        editor.execCommand('mceInsertContent', false, replyHtml);
+                        // 1. Insere o conteúdo original e a linha de Resposta
+                        editor.execCommand('mceInsertContent', false, `<p id="__reply_target__">${content.trim()}</p><p><strong>Resposta:</strong></p>`);
+                        
+                        // 2. Encontra o parágrafo que acabamos de inserir
+                        const targetNode = editor.dom.get('__reply_target__');
+                        
+                        if (targetNode) {
+                            // 3. Seleciona o nó e aplica nosso formato customizado de blockquote
+                            editor.selection.select(targetNode);
+                            editor.formatter.apply('blockquote');
+                            
+                            // Remove o ID temporário
+                            editor.dom.setAttrib(targetNode, 'id', null);
+                        }
                         editor.focus();
                     };
                     if (selectedContent && selectedContent.trim().length > 0) {
