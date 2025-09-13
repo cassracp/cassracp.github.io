@@ -108,8 +108,17 @@ export default async function handler(request, response) {
         const htmlContent = getHtml(formData, assets);
 
         // A inicialização agora usa os valores padrão da biblioteca, que são otimizados para Vercel
+        const puppeteerArgs = [
+            ...chromium.args,
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu'
+        ];
+
         browser = await puppeteer.launch({
-            args: chromium.args,
+            args: puppeteerArgs,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
             headless: chromium.headless,
