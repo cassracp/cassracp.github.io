@@ -1,4 +1,4 @@
-const chromium = require('@sparticuz/chromium');
+const chromium = require('@sparticuz/chromium-min');
 const puppeteer = require('puppeteer-core'); // IMPORTANTE: Importar o puppeteer-core
 
 // A função getHtml para montar o layout do PDF permanece a mesma.
