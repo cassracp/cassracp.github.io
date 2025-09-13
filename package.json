@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.14.1",
-    "tinymce": "6.8.5",
     "@sparticuz/chromium-min": "123.0.1",
-    "puppeteer-core": "22.6.5"
-  }  
+    "discord.js": "^14.14.1",
+    "puppeteer-core": "^22.15.0",
+    "tinymce": "^8.0.2"
+  }
 }
