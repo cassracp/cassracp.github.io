@@ -411,11 +411,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'spellchecker charmap emoticons | clickupMenu | formatarTelefone | gerarTextoGemini geradorscripts datecalculator | responderMensagem'                 
+                    items: 'spellchecker charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
                 },
                 demaria: { 
                     title: 'DeMaria', 
-                    items: 'topicoTarefa topicoOS | protocolosDeMariaMenu'
+                    items: 'clickupMenu | formatarTelefone topicoTarefa topicoOS protocolosDeMariaMenu | geradorscripts'
                 },
                 table: { 
                     title: 'Tabela', 
