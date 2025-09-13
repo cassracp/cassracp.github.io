@@ -1,7 +1,7 @@
 const chromium = require('chrome-aws-lambda');
 
+// A função getHtml para montar o layout do PDF permanece a mesma.
 function getHtml(data) {
-    // Garante que os arrays existam, mesmo que vazios, para evitar erros.
     const modules = data.modules || [];
     const activities = data.activities || [];
 
@@ -67,22 +67,27 @@ function getHtml(data) {
     `;
 }
 
+// A função principal da API, agora com mais logs e segurança
 export default async function handler(request, response) {
+    console.log("API /api/generate-pdf foi chamada.");
+
     if (request.method !== 'POST') {
         return response.status(405).send('Method Not Allowed');
     }
 
     let browser = null;
     try {
-        // CORREÇÃO: O corpo pode precisar ser parseado se não for automático
-        const formData = typeof request.body === 'string' ? JSON.parse(request.body) : request.body;
+        const formData = request.body;
+        console.log("Dados recebidos do formulário:", JSON.stringify(formData, null, 2));
         
-        if (!formData) {
-            return response.status(400).json({ error: 'Corpo da requisição vazio ou inválido.' });
+        if (!formData || typeof formData !== 'object') {
+            console.error("Erro: Corpo da requisição vazio ou em formato inválido.");
+            return response.status(400).json({ error: 'Dados do formulário inválidos ou ausentes.' });
         }
         
         const htmlContent = getHtml(formData);
 
+        console.log("Iniciando o Puppeteer...");
         browser = await chromium.puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
@@ -90,15 +95,19 @@ export default async function handler(request, response) {
             headless: chromium.headless,
             ignoreHTTPSErrors: true,
         });
+        console.log("Navegador Puppeteer iniciado com sucesso.");
 
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+        console.log("Conteúdo HTML carregado na página do Puppeteer.");
 
+        console.log("Gerando o buffer do PDF...");
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
             margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
         });
+        console.log("Buffer do PDF gerado com sucesso.");
 
         response.setHeader('Content-Type', 'application/pdf');
         response.setHeader('Content-Disposition', `attachment; filename="Planejamento-${formData.clienteNome || 'documento'}.pdf"`);
@@ -106,13 +115,14 @@ export default async function handler(request, response) {
         return response.status(200).send(pdfBuffer);
 
     } catch (error) {
-        console.error("ERRO NA API:", error);
+        console.error("ERRO FATAL NA API:", error);
         return response.status(500).json({ 
             error: 'Ocorreu um erro interno no servidor ao gerar o PDF.', 
             details: error.message 
         });
     } finally {
         if (browser !== null) {
+            console.log("Fechando o navegador Puppeteer.");
             await browser.close();
         }
     }
