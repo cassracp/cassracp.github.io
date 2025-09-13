@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/**/*.js": {
-      "includeFiles": "node_modules/@sparticuz/chromium-min/bin/**"
+      "includeFiles": "node_modules/@sparticuz/chromium/bin/**"
     }
   }
 }
