@@ -1,8 +1,7 @@
 const chromium = require('chrome-aws-lambda');
 
-// Função auxiliar para montar o HTML do PDF
+// Função auxiliar para montar o HTML do PDF (sem alterações)
 function getHtml(data) {
-    // Aqui nós reconstruímos o layout do seu PDF de exemplo com os dados recebidos
     const modulesHtml = data.modules.map(mod => `
         <div class="module-item">
             <span class="checkbox">☑</span>
@@ -33,7 +32,7 @@ function getHtml(data) {
                 .info-table td:first-child { font-weight: bold; width: 30%; }
                 .module-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 15px; }
                 .module-item { display: flex; align-items: center; }
-                .checkbox { font-family: "DejaVu Sans", sans-serif; margin-right: 5px; } /* Usa uma fonte que tem o caractere de checkbox */
+                .checkbox { font-family: "DejaVu Sans", sans-serif; margin-right: 5px; }
                 .summary-box { border: 1px solid #ccc; padding: 10px; }
             </style>
         </head>
@@ -65,14 +64,23 @@ function getHtml(data) {
     `;
 }
 
+// A função principal da API, agora com correções
 export default async function handler(request, response) {
+    // CORREÇÃO: Vercel agora exige que o corpo da requisição seja lido explicitamente
     if (request.method !== 'POST') {
         return response.status(405).send('Method Not Allowed');
     }
 
     let browser = null;
     try {
+        // CORREÇÃO: Os dados do formulário agora estão no corpo da requisição
         const formData = request.body;
+        
+        // Validação simples para garantir que os dados chegaram
+        if (!formData || !formData.clienteNome) {
+            return response.status(400).json({ error: 'Dados do formulário inválidos ou ausentes.' });
+        }
+        
         const htmlContent = getHtml(formData);
 
         browser = await chromium.puppeteer.launch({
