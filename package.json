@@ -12,7 +12,7 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "tinymce": "6.8.5",
-    "chrome-aws-lambda": "^10.1.0",
-    "puppeteer-core": "^10.1.0"
+    "@sparticuz/chromium": "119.0.0",
+    "puppeteer-core": "19.7.2"
   }  
 }
