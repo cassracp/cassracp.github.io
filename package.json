@@ -1,8 +1,8 @@
 {
   "name": "cassracp.github.io",
   "version": "1.0.0",
-  "description": "[Clique aqui para abrir o meu programa](site/index.html)",
-  "main": "index.js",
+  "description": "[Clique aqui para abrir o meu programa](index.html)",
+  "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,7 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "tinymce": "6.8.5",
-    "@sparticuz/chromium": "119.0.0",
-    "puppeteer-core": "19.7.2"
+   "@sparticuz/chromium-min": "123.0.1",
+    "puppeteer-core": "22.6.5"
   }  
 }
