@@ -397,6 +397,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     title: 'Arquivo', 
                     items: 'novodocumento closetab | save saveasMenu | copyhtml | limpartexto | print' 
                 },                
+                view: {
+                    title: 'Exibir',
+                    items: ' code preview | modofoco fullscreen | showblocks visualchars visualblocks | spellchecker | wordcount | skins'
+                },
                 insert: { 
                     title: 'Inserir', 
                     items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' 
@@ -422,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     items: 'help' 
                 }
             },
-             menubar: 'file edit view insert format tools demaria table help',
+            menubar: 'file edit view insert format tools demaria table help',
             toolbar: 'undo redo novodocumento copyhtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini geradorscripts customcodeview modofoco preview',
             font_family_formats: fontFamilyFormats,
             font_size_formats: fontSizeFormats,
