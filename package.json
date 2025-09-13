@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sparticuz/chromium-min": "123.0.1",
+    "@sparticuz/chromium": "123.0.1",
     "discord.js": "^14.14.1",
     "puppeteer-core": "^22.15.0",
     "tinymce": "^8.0.2"

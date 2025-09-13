@@ -1,4 +1,4 @@
-const chromium = require('@sparticuz/chromium-min');
+const chromium = require('@sparticuz/chromium');
 const puppeteer = require('puppeteer-core'); // IMPORTANTE: Importar o puppeteer-core
 
 // A função getHtml para montar o layout do PDF permanece a mesma.
@@ -83,11 +83,14 @@ export default async function handler(request, response) {
         
         const htmlContent = getHtml(formData);
 
+        chromium.setHeadlessMode = true; 
+        
         browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
             headless: chromium.headless,
+            ignoreHTTPSErrors: true, // Adicionado para mais robustez
         });
 
         const page = await browser.newPage();
