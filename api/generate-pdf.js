@@ -26,7 +26,7 @@ function getAssets() {
 }
 
 // A função getHtml para montar o layout do PDF permanece a mesma.
-function getHtml(data) {
+function getHtml(data, assets) {
     const modules = data.modules || [];
     const activities = data.activities || [];
 
