@@ -1,5 +1,29 @@
 const chromium = require('@sparticuz/chromium');
 const puppeteer = require('puppeteer-core');
+const fs = require('fs');
+const path = require('path');
+
+let assetsCache = null;
+
+function getAssets() {
+    // Se já tivermos em cache, retorna imediatamente
+    if (assetsCache) {
+        return assetsCache;
+    }
+    try {
+        // Constrói o caminho para o arquivo data/assets.json a partir da raiz do projeto
+        const jsonPath = path.resolve(process.cwd(), 'data', 'assets.json');
+        // Lê o arquivo
+        const jsonText = fs.readFileSync(jsonPath, 'utf-8');
+        // Converte o texto para um objeto JSON e guarda no cache
+        assetsCache = JSON.parse(jsonText);
+        return assetsCache;
+    } catch (error) {
+        console.error("Erro ao carregar data/assets.json:", error);
+        // Em caso de erro, retorna um objeto padrão para não quebrar a aplicação
+        return { images: { logoPrincipal: '' } };
+    }
+}
 
 // A função getHtml para montar o layout do PDF permanece a mesma.
 function getHtml(data) {
@@ -43,7 +67,7 @@ function getHtml(data) {
         <body>
             <div class="container">
                 <div class="header">
-                    <img src="https://auxiliar-demaria.vercel.app/site/icons/icon_base96.png" alt="Logo">
+                    <img src="${assets.images.logoPrincipal}" alt="Logo">,0
                     <h4>PLANEJAMENTO DE IMPLANTAÇÃO REMOTA</h4>
                 </div>
                 <table class="info-table">
@@ -79,9 +103,9 @@ export default async function handler(request, response) {
         const formData = request.body;
         if (!formData) {
             return response.status(400).json({ error: 'Corpo da requisição vazio.' });
-        }
-        
-        const htmlContent = getHtml(formData);
+        }        
+        const assets = getAssets();
+        const htmlContent = getHtml(formData, assets);
 
         // A inicialização agora usa os valores padrão da biblioteca, que são otimizados para Vercel
         browser = await puppeteer.launch({
