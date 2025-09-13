@@ -393,8 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ],
             codesample_languages: formatsData.code_languages,
             menu: {
-                file: { title: 'Arquivo', items: 'novodocumento closetab | save saveas | copyhtml | limpartexto | print' },                view: { title: 'Exibir', items: 'visualblocks visualchars | customcodeview  modofoco preview | skins' },
-                insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
+            file: { title: 'Arquivo', items: 'novodocumento closetab | save saveasMenu | copyhtml | limpartexto | print' },                insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
                     title: 'Formatar', 
                     items: 'bold italic underline strikethrough superscript subscript codeformat | upperCaselowerCaseMenu | melhorarTextoIAMenu | blockformats align lineheight forecolor backcolor removeformat blockquote' 
@@ -1235,9 +1234,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('formulario', '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H18C19.6569 23 21 21.6569 21 20V4C21 2.34315 19.6569 1 18 1H10ZM11 3H18C18.5523 3 19 3.44772 19 4V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3ZM9 7H6.41421L9 4.41421V7ZM16.7682 12.6402C17.1218 12.2159 17.0645 11.5853 16.6402 11.2318C16.2159 10.8782 15.5853 10.9355 15.2318 11.3598L10.9328 16.5186L8.70711 14.2929C8.31658 13.9024 7.68342 13.9024 7.29289 14.2929C6.90237 14.6834 6.90237 15.3166 7.29289 15.7071L10.2929 18.7071C10.4916 18.9058 10.7646 19.0117 11.0453 18.999C11.326 18.9862 11.5884 18.856 11.7682 18.6402L16.7682 12.6402Z" fill="currentView"></path> </g></svg>');
                 editor.ui.registry.addIcon('calculadora-data', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V3a1 1 0 0 0-2 0v1H8V3a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm1 15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1v1a1 1 0 0 0 2 0V6h8v1a1 1 0 0 0 2 0V6h1a1 1 0 0 1 1 1Zm-8-4a4 4 0 1 1-4-4,4 4 0 0 1 4 4Zm-1-2.5V14a1 1 0 0 0 2 0v-1.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5Z"/></svg>');
 
-                editor.ui.registry.addIcon('pdf', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6zm3.5 6a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H8a.5.5 0 0 1 0-1h1.5v-1a.5.5 0 0 1 .5-.5zm-1.5 5.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm3-2.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h.5v-1.5h-1a.5.5 0 0 1 0-1h1V11a.5.5 0 0 1 .5-.5h1zm5-2.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1.5a.5.5 0 0 1 0-1H16v-1a.5.5 0 0 1 .5-.5h.5z"/></svg>');
                 editor.ui.registry.addIcon('save-as', '<svg width="20px" height="20px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="m 4.5 0 c -0.277344 0 -0.5 0.222656 -0.5 0.5 v 1 c 0 0.277344 0.222656 0.5 0.5 0.5 h 1 c 0.277344 0 0.5 -0.222656 0.5 -0.5 v -1 c 0 -0.277344 -0.222656 -0.5 -0.5 -0.5 z m 3 0 c -0.277344 0 -0.5 0.222656 -0.5 0.5 v 1 c 0 0.277344 0.222656 0.5 0.5 0.5 h 1 c 0.277344 0 0.5 -0.222656 0.5 -0.5 v -1 c 0 -0.277344 -0.222656 -0.5 -0.5 -0.5 z m 3 0 c -0.277344 0 -0.5 0.222656 -0.5 0.5 v 1 c 0 0.277344 0.222656 0.5 0.5 0.5 h 1 c 0.277344 0 0.5 -0.222656 0.5 -0.5 v -1 c 0 -0.277344 -0.222656 -0.5 -0.5 -0.5 z m -3.5 3 v 6.585938 l -1.292969 -1.292969 c -0.1875 -0.1875 -0.441406 -0.292969 -0.707031 -0.292969 s -0.519531 0.105469 -0.707031 0.292969 c -0.390625 0.390625 -0.390625 1.023437 0 1.414062 l 3 3 c 0.390625 0.390625 1.023437 0.390625 1.414062 0 l 3 -3 c 0.390625 -0.390625 0.390625 -1.023437 0 -1.414062 s -1.023437 -0.390625 -1.414062 0 l -1.292969 1.292969 v -6.585938 z m -6 11 v 2 h 14 v -2 z m 0 0" fill="currentColor"></path> </g></svg>')
                 editor.ui.registry.addIcon('save-alt', '<svg width="20px" height="20px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColer"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="m 8 0 c -0.550781 0 -1 0.449219 -1 1 v 8.585938 l -1.292969 -1.292969 c -0.1875 -0.1875 -0.441406 -0.292969 -0.707031 -0.292969 s -0.519531 0.105469 -0.707031 0.292969 c -0.390625 0.390625 -0.390625 1.023437 0 1.414062 l 3 3 c 0.390625 0.390625 1.023437 0.390625 1.414062 0 l 3 -3 c 0.390625 -0.390625 0.390625 -1.023437 0 -1.414062 s -1.023437 -0.390625 -1.414062 0 l -1.292969 1.292969 v -8.585938 c 0 -0.550781 -0.449219 -1 -1 -1 z m -7 14 v 2 h 14 v -2 z m 0 0" fill="currentColor"></path> </g></svg>');
+                editor.ui.registry.addIcon('pdf', '<svg width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <style>.st0{fill-rule:evenodd;clip-rule:evenodd;}</style> <path d="M5.8 14H5v1h.8c.3 0 .5-.2.5-.5s-.2-.5-.5-.5zM11 2H3v16h13V7l-5-5zM7.2 14.6c0 .8-.6 1.4-1.4 1.4H5v1H4v-4h1.8c.8 0 1.4.6 1.4 1.4v.2zm4.1.5c0 1-.8 1.9-1.9 1.9H8v-4h1.4c1 0 1.9.8 1.9 1.9v.2zM15 14h-2v1h1.5v1H13v1h-1v-4h3v1zm0-2H4V3h7v4h4v5zm-5.6 2H9v2h.4c.6 0 1-.4 1-1s-.5-1-1-1z"></path> </g> </g></svg>');
+                editor.ui.registry.addIcon('html', '<svg width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="20" height="20"></rect> <g> <path d="M4 16v-2H2v2H1v-5h1v2h2v-2h1v5H4zM7 16v-4H5.6v-1h3.7v1H8v4H7zM10 16v-5h1l1.4 3.4h.1L14 11h1v5h-1v-3.1h-.1l-1.1 2.5h-.6l-1.1-2.5H11V16h-1zM19 16h-3v-5h1v4h2v1zM9.4 4.2L7.1 6.5l2.3 2.3-.6 1.2-3.5-3.5L8.8 3l.6 1.2zm1.2 4.6l2.3-2.3-2.3-2.3.6-1.2 3.5 3.5-3.5 3.5-.6-1.2z"></path> </g> </g></svg>');
+
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
@@ -1259,8 +1260,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 editor.ui.registry.addMenuItem('saveas', {
                     text: 'Salvar como...',
-                    icon: 'save-as', // Ícone apropriado (se não tiver, use 'save' mesmo)
-                    shortcut: 'Ctrl+Shift+S',
+                    icon: 'save-as',
                     onAction: () => openSaveAsDialog(editor)
                 });
 
@@ -1500,12 +1500,37 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
              });
 
+              editor.ui.registry.addNestedMenuItem('saveasMenu', {
+                    text: 'Salvar como...',
+                    icon: 'save-as',
+                    getSubmenuItems: () => [
+                        {
+                            type: 'menuitem',
+                            text: 'Arquivo HTML (.html)',
+                            icon: 'html',
+                            onAction: () => {
+                                // Chama a função de salvar diretamente com um nome padrão
+                                salvarComoHTML(editor, 'documento');
+                            }
+                        },
+                        {
+                            type: 'menuitem',
+                            text: 'Documento PDF (.pdf)',
+                            icon: 'pdf',
+                            onAction: () => {
+                                // Chama a função de salvar diretamente com um nome padrão
+                                salvarComoPDF(editor, 'documento');
+                            }
+                        }
+                    ]
+                });
+
                 // ===================================================================================
                 // == ATALHOS E EVENTOS ==============================================================
                 // ===================================================================================
 
                 editor.addShortcut('ctrl+s', 'Salvar', () => salvarTextoComoLocalStorage());
-                editor.addShortcut('ctrl+shift+s', 'Salvar como...', () => openSaveAsDialog(editor));
+                editor.addShortcut('ctrl+shift+s', 'Salvar Como com diálogo', () => openSaveAsDialog(editor));
                 editor.addShortcut('ctrl+shift+c', 'Copiar HTML', () => copiarHTML(editor));
                 editor.addShortcut('alt+n', 'Novo documento', () => editor.ui.registry.getAll().buttons.novodocumento.onAction());
                 editor.addShortcut('alt+b', 'Limpar documento', () => editor.ui.registry.getAll().buttons.limpartexto.onAction());                
