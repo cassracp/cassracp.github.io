@@ -393,17 +393,36 @@ document.addEventListener('DOMContentLoaded', () => {
             ],
             codesample_languages: formatsData.code_languages,
             menu: {
-            file: { title: 'Arquivo', items: 'novodocumento closetab | save saveasMenu | copyhtml | limpartexto | print' },                insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
+                file: { 
+                    title: 'Arquivo', 
+                    items: 'novodocumento closetab | save saveasMenu | copyhtml | limpartexto | print' 
+                },                
+                insert: { 
+                    title: 'Inserir', 
+                    items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' 
+                },
                 format: { 
                     title: 'Formatar', 
                     items: 'bold italic underline strikethrough superscript subscript codeformat | upperCaselowerCaseMenu | melhorarTextoIAMenu | blockformats align lineheight forecolor backcolor removeformat blockquote' 
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'spellchecker charmap emoticons | protocolosDeMariaMenu clickupMenu | formatarTelefone topicoTarefa topicoOS | gerarTextoGemini geradorscripts datecalculator | responderMensagem'                 },
-                table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
-                help: { title: 'Ajuda', items: 'help' }
+                    items: 'spellchecker charmap emoticons | clickupMenu | formatarTelefone | gerarTextoGemini geradorscripts datecalculator | responderMensagem'                 
+                },
+                demaria: { 
+                    title: 'DeMaria', 
+                    items: 'topicoTarefa topicoOS | protocolosDeMariaMenu'
+                },
+                table: { 
+                    title: 'Tabela', 
+                    items: 'inserttable | cell row column | deletetable' 
+                },
+                help: { 
+                    title: 'Ajuda', 
+                    items: 'help' 
+                }
             },
+             menubar: 'file edit view insert format tools demaria table help',
             toolbar: 'undo redo novodocumento copyhtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini geradorscripts customcodeview modofoco preview',
             font_family_formats: fontFamilyFormats,
             font_size_formats: fontSizeFormats,
