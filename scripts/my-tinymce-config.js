@@ -393,8 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ],
             codesample_languages: formatsData.code_languages,
             menu: {
-                file: { title: 'Arquivo', items: 'novodocumento closetab | copyhtml savehtml limpartexto | print' },
-                view: { title: 'Exibir', items: 'visualblocks visualchars | customcodeview  modofoco preview | skins' },
+                file: { title: 'Arquivo', items: 'novodocumento closetab | save saveas | copyhtml | limpartexto | print' },                view: { title: 'Exibir', items: 'visualblocks visualchars | customcodeview  modofoco preview | skins' },
                 insert: { title: 'Inserir', items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' },
                 format: { 
                     title: 'Formatar', 
@@ -406,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 table: { title: 'Tabela', items: 'inserttable | cell row column | deletetable' },
                 help: { title: 'Ajuda', items: 'help' }
             },
-            toolbar: 'undo redo novodocumento copyhtml savehtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini geradorscripts customcodeview modofoco preview',
+            toolbar: 'undo redo novodocumento copyhtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini geradorscripts customcodeview modofoco preview',
             font_family_formats: fontFamilyFormats,
             font_size_formats: fontSizeFormats,
             insertdatetime_timeformat: '%H:%M:%S',
@@ -528,6 +527,52 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 };
 
+                const openSaveAsDialog = (editor) => {
+                    editor.windowManager.open({
+                        title: 'Salvar Como...',
+                        size: 'medium',
+                        body: {
+                            type: 'panel',
+                            items: [
+                                {
+                                    type: 'input',
+                                    name: 'filename',
+                                    label: 'Nome do Arquivo (sem extensão)',
+                                    placeholder: 'documento_novo'
+                                },
+                                {
+                                    type: 'selectbox',
+                                    name: 'filetype',
+                                    label: 'Formato do Arquivo',
+                                    items: [
+                                        { text: 'Arquivo HTML (.html)', value: 'html' },
+                                        { text: 'Documento PDF (.pdf)', value: 'pdf' }
+                                    ]
+                                }
+                            ]
+                        },
+                        buttons: [
+                            { type: 'cancel', text: 'Cancelar' },
+                            { type: 'submit', text: 'Salvar', primary: true }
+                        ],
+                        initialData: {
+                            filetype: 'html' // Começa com HTML pré-selecionado
+                        },
+                        onSubmit: (dialogApi) => {
+                            const data = dialogApi.getData();
+                            const filename = data.filename || 'documento'; // Nome padrão se vazio
+
+                            if (data.filetype === 'html') {
+                                salvarComoHTML(editor, filename);
+                            } else if (data.filetype === 'pdf') {
+                                salvarComoPDF(editor, filename);
+                            }
+                            
+                            dialogApi.close();
+                        }
+                    });
+                };
+
                 const novodocumentoAction = async () => {
                         // Aguarda a criação da aba e recebe seu ID
                         const newTabId = await createTab();
@@ -580,23 +625,57 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                const salvarComoHTML = (editor) => {
+                const salvarComoHTML = (editor, filename) => {
                     const editorContent = editor.getContent(); // Pega o conteúdo HTML original
                     if (!editorContent) {
                         Swal.fire('Atenção', 'Não há conteúdo para salvar.', 'warning');
                         return;
                     }
 
-                    // Nenhum processamento é feito. Usamos o conteúdo original com as tags <p>.
                     const blob = new Blob([editorContent], { type: 'text/html;charset=utf-8' });
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'conteudo_editado.html';
+                    // Usa o nome de arquivo recebido (ou um padrão se não for fornecido)
+                    link.download = filename ? `${filename}.html` : 'documento.html';
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                     URL.revokeObjectURL(url);
+                };
+
+                const salvarComoPDF = (editor, filename) => {
+                    const content = editor.getContent();
+                    if (!content) { 
+                        Swal.fire('Atenção', 'Não há conteúdo para salvar como PDF.', 'warning');
+                        return; 
+                    }
+
+                    const opt = {
+                        margin:       1,
+                        filename:     filename ? `${filename}.pdf` : 'documento.pdf', // Usa o nome de arquivo
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { scale: 2 },
+                        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    };
+
+                    // Para que a biblioteca processe o CSS do editor corretamente,
+                    // precisamos criar um elemento temporário com o conteúdo.
+                    const element = document.createElement('div');
+                    element.style.width = '210mm'; // Simula uma página A4
+                    element.innerHTML = content;
+                    
+                    // Adiciona as folhas de estilo do editor ao elemento para uma renderização fiel
+                    const contentCssLinks = editor.getParam('content_css', [], 'string[]');
+                    contentCssLinks.forEach(link => {
+                        const linkEl = document.createElement('link');
+                        linkEl.rel = 'stylesheet';
+                        linkEl.href = link;
+                        document.head.appendChild(linkEl);
+                    });
+
+                    // Chama a biblioteca para gerar o PDF a partir do nosso elemento
+                    html2pdf().set(opt).from(element).save();
                 };
 
                 const toggleModoFoco = () => {
@@ -1049,7 +1128,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         width: idealWidth,
                         height: idealHeight
                     });
-                }
+                };
 
                 const ExibirTopicoOS = function() {
                     const idealWidth = Math.min(1200, window.innerWidth * 0.9);
@@ -1061,19 +1140,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         width: idealWidth,
                         height: idealHeight
                     });
-                }
+                };
 
                 const ExibirGeradorScripts = () => {
-                const idealWidth = Math.min(600, window.innerWidth * 0.8);
-                const idealHeight = Math.min(700, window.innerHeight * 0.9);
+                    const idealWidth = Math.min(600, window.innerWidth * 0.8);
+                    const idealHeight = Math.min(700, window.innerHeight * 0.9);
 
-                tinymce.activeEditor.windowManager.openUrl({
-                    title: 'Gerador de Script Unificado',
-                    url: 'site/gerador-scripts.html',
-                    width: idealWidth,
-                    height: idealHeight
-                });
-            };
+                    tinymce.activeEditor.windowManager.openUrl({
+                        title: 'Gerador de Script Unificado',
+                        url: 'site/gerador-scripts.html',
+                        width: idealWidth,
+                        height: idealHeight
+                    });
+                };
 
                 const actionFunctions = {
                     openRelatorioAnaliseDialog: openRelatorioAnaliseDialog,
@@ -1135,7 +1214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('lowercase', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_iconCarrier"> <path d="M17 9L17 4M17 9L14.5 7M17 9L19.5 7" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M10.5861 19.1946C10.5203 18.9868 10.3274 18.8455 10.1094 18.8455H7.55474C7.33675 18.8455 7.14388 18.9868 7.07807 19.1946L6.65978 20.5154C6.59397 20.7233 6.4011 20.8645 6.18311 20.8645H4.72359C4.37391 20.8645 4.13223 20.5148 4.2559 20.1877L7.60741 11.3232C7.68095 11.1287 7.86717 11 8.0751 11H9.58987C9.7974 11 9.98336 11.1282 10.0572 11.3222L13.4308 20.1867C13.5553 20.5139 13.3136 20.8645 12.9635 20.8645H11.4811C11.2631 20.8645 11.0702 20.7233 11.0044 20.5154L10.5861 19.1946ZM7.79577 16.9252C7.75489 17.0541 7.85115 17.1856 7.98642 17.1856H9.66955C9.80482 17.1856 9.90108 17.0541 9.8602 16.9252L9.01863 14.2707C8.95964 14.0846 8.69633 14.0846 8.63734 14.2707L7.79577 16.9252Z" fill="currentColor"></path> <path d="M18.1268 20.8645C18.0402 20.8645 17.9763 20.8529 17.9413 20.7736C17.8621 20.5943 17.6066 20.4922 17.4472 20.6064C17.0811 20.8688 16.6326 21 16.1016 21C15.3584 21 14.7409 20.7967 14.2491 20.3902C13.7628 19.9837 13.5196 19.4575 13.5196 18.8117C13.5196 18.0438 13.8147 17.4499 14.4048 17.0298C15.0005 16.6098 15.8557 16.3952 16.9705 16.3862H17.1754C17.4516 16.3862 17.6754 16.1623 17.6754 15.8862V15.7967C17.6754 15.467 17.6071 15.2344 17.4705 15.0989C17.3339 14.9634 17.1344 14.8957 16.8721 14.8957C16.4947 14.8957 16.2402 15.0146 16.1087 15.2523C15.9751 15.494 15.7794 15.7358 15.5032 15.7358H14.1835C13.9074 15.7358 13.6755 15.5083 13.7433 15.2406C13.8596 14.7814 14.1457 14.3887 14.6016 14.0623C15.2191 13.6197 15.9978 13.3984 16.9377 13.3984C17.9104 13.3984 18.6618 13.6084 19.1918 14.0285C19.7274 14.444 19.9951 15.0402 19.9951 15.8171V19.2656C20.0061 19.8979 19.9951 20.3651 19.9951 20.7493C19.9951 20.8129 19.9436 20.8645 19.88 20.8645H18.1268ZM16.618 19.4959C16.8748 19.4959 17.0934 19.453 17.2738 19.3672C17.389 19.3124 17.4853 19.251 17.5626 19.1833C17.6435 19.1124 17.6754 19.0042 17.6754 18.8966V18.0379C17.6754 17.7618 17.4516 17.5379 17.1754 17.5379H17.118C16.7246 17.5379 16.4131 17.6418 16.1836 17.8496C15.9595 18.0574 15.8475 18.3351 15.8475 18.6829C15.8475 19.2249 16.1043 19.4959 16.618 19.4959Z" fill="currentColor"></path> </g></svg>');
                 editor.ui.registry.addIcon('upperlowercase', '<svg width="25px" height="25px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.495 9.052l.891 2.35h1.091L6.237 3h-1.02L2 11.402h1.095l.838-2.35h3.562zM5.811 4.453l.044.135 1.318 3.574H4.255l1.307-3.574.044-.135.038-.156.032-.152.021-.126h.023l.024.126.029.152.038.156zm7.984 6.011v.936h.96V7.498c0-.719-.18-1.272-.539-1.661-.359-.389-.889-.583-1.588-.583-.199 0-.401.019-.606.056a4.875 4.875 0 0 0-1.078.326 2.081 2.081 0 0 0-.343.188v.984c.266-.23.566-.411.904-.54a2.927 2.927 0 0 1 1.052-.193c.188 0 .358.028.513.085a.98.98 0 0 1 .396.267c.109.121.193.279.252.472.059.193.088.427.088.7l-1.811.252c-.344.047-.64.126-.888.237a1.947 1.947 0 0 0-.615.419 1.6 1.6 0 0 0-.36.58 2.134 2.134 0 0 0-.117.721c0 .246.042.475.124.688.082.213.203.397.363.551.16.154.36.276.598.366.238.09.513.135.826.135.402 0 .76-.092 1.075-.278.315-.186.572-.454.771-.806h.023zm-2.128-1.743c.176-.064.401-.114.674-.149l1.465-.205v.609c0 .246-.041.475-.123.688a1.727 1.727 0 0 1-.343.557 1.573 1.573 0 0 1-.524.372 1.63 1.63 0 0 1-.668.135c-.187 0-.353-.025-.495-.076a1.03 1.03 0 0 1-.357-.211.896.896 0 0 1-.22-.316A1.005 1.005 0 0 1 11 9.732a1.6 1.6 0 0 1 .055-.44.739.739 0 0 1 .202-.334 1.16 1.16 0 0 1 .41-.237z"></path></g></svg>');
                 editor.ui.registry.addIcon('calendar-days', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 11.993a.75.75 0 0 0-.75.75v.006c0 .414.336.75.75.75h.006a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75H12ZM12 16.494a.75.75 0 0 0-.75.75v.005c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H12ZM8.999 17.244a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.006ZM7.499 16.494a.75.75 0 0 0-.75.75v.005c0 .414.336.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H7.5ZM13.499 14.997a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.005a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.005ZM14.25 16.494a.75.75 0 0 0-.75.75v.006c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75h-.005ZM15.75 14.995a.75.75 0 0 1 .75-.75h.005a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75H16.5a.75.75 0 0 1-.75-.75v-.006ZM13.498 12.743a.75.75 0 0 1 .75-.75h2.25a.75.75 0 1 1 0 1.5h-2.25a.75.75 0 0 1-.75-.75ZM6.748 14.993a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z" /><path fill-rule="evenodd" d="M18 2.993a.75.75 0 0 0-1.5 0v1.5h-9V2.994a.75.75 0 1 0-1.5 0v1.497h-.752a3 3 0 0 0-3 3v11.252a3 3 0 0 0 3 3h13.5a3 3 0 0 0 3-3V7.492a3 3 0 0 0-3-3H18V2.993ZM3.748 18.743v-7.5a1.5 1.5 0 0 1 1.5-1.5h13.5a1.5 1.5 0 0 1 1.5 1.5v7.5a1.5 1.5 0 0 1-1.5 1.5h-13.5a1.5 1.5 0 0 1-1.5-1.5Z" clip-rule="evenodd" /></svg>');
-                editor.ui.registry.addIcon('linkos', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20 4L12 12M20 4V8.5M20 4H15.5M19 12.5V16.8C19 17.9201 19 18.4802 18.782 18.908C18.5903 19.2843 18.2843 19.5903 17.908 19.782C17.4802 20 16.9201 20 15.8 20H7.2C6.0799 20 5.51984 20 5.09202 19.782C4.71569 19.5903 4.40973 19.2843 4.21799 18.908C4 18.4802 4 17.9201 4 16.8V8.2C4 7.0799 4 6.51984 4.21799 6.09202C4.40973 5.71569 4.71569 5.40973 5.09202 5.21799C5.51984 5 6.07989 5 7.2 5H11.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>'); 
+                editor.ui.registry.addIcon('linkos', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20 4L12 12M20 4V8.5M20 4H15.5M19 12.5V16.8C19 17.9201 19 18.4802 18.782 18.908C18.5903 19.2843 18.2843 19.5903 17.908 19.782C17.4802 20 16.9201 20 15.8 20H7.2C6.0799 20 5.51984 20 5.09202 19.782C4.71569 19.5903 4.40973 19.2843 4.21799 18.908C4 18.4802 4 17.9201 4 16.8V8.2C4 7.0799 4 6.51984 4.21799 6.09202C4.40973 5.71569 4.71569 5.40973 5.09202 5.21799C5.51984 5 6.07989 5 7.2 5H11.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>'); 
                 editor.ui.registry.addIcon('linktarefa', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25007 2.38782C8.54878 2.0992 10.1243 2 12 2C13.8757 2 15.4512 2.0992 16.7499 2.38782C18.06 2.67897 19.1488 3.176 19.9864 4.01358C20.824 4.85116 21.321 5.94002 21.6122 7.25007C21.9008 8.54878 22 10.1243 22 12C22 13.8757 21.9008 15.4512 21.6122 16.7499C21.321 18.06 20.824 19.1488 19.9864 19.9864C19.1488 20.824 18.06 21.321 16.7499 21.6122C15.4512 21.9008 13.8757 22 12 22C10.1243 22 8.54878 21.9008 7.25007 21.6122C5.94002 21.321 4.85116 20.824 4.01358 19.9864C3.176 19.1488 2.67897 18.06 2.38782 16.7499C2.0992 15.4512 2 13.8757 2 12C2 10.1243 2.0992 8.54878 2.38782 7.25007C2.67897 5.94002 3.176 4.85116 4.01358 4.01358C4.85116 3.176 5.94002 2.67897 7.25007 2.38782ZM16 14C16 14.5523 15.5523 15 15 15C14.4477 15 14 14.5523 14 14V11.4142L9.70711 15.7071C9.31658 16.0976 8.68342 16.0976 8.29289 15.7071C7.90237 15.3166 7.90237 14.6834 8.29289 14.2929L12.5858 10H10C9.44772 10 9 9.55228 9 9C9 8.44772 9.44772 8 10 8H14.6717C15.4054 8 16 8.59489 16 9.32837V14Z" fill="currentColor"></path> </g></svg>');                editor.ui.registry.addIcon('protocolo', '<svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve" width="20px" height="20px" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .st0{fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;} </style> <g> <polygon points="20,2.6 20,8 25.4,8 "></polygon> </g> <path d="M23.5,10H19c-0.6,0-1-0.4-1-1V2H7C6.4,2,6,2.4,6,3v12h7.6l-2.3-2.3c-0.4-0.4-0.4-1,0-1.4s1-0.4,1.4,0l4,4 c0.1,0.1,0.2,0.2,0.2,0.3c0.1,0.2,0.1,0.5,0,0.8c-0.1,0.1-0.1,0.2-0.2,0.3l-4,4C12.5,20.9,12.3,21,12,21s-0.5-0.1-0.7-0.3 c-0.4-0.4-0.4-1,0-1.4l2.3-2.3H6v12c0,0.6,0.4,1,1,1h18c0.6,0,1-0.4,1-1V12.5C26,11.1,24.9,10,23.5,10z"></path> </g></svg>');  
                 editor.ui.registry.addIcon('attachment', '<svg version="1.1" id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docname="paper-clip.svg" inkscape:version="0.48.4 r9939" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px" viewBox="0 0 1200 1200" enable-background="new 0 0 1200 1200" xml:space="preserve" fill="currentColor" transform="matrix(-1, 0, 0, 1, 0, 0)rotate(270)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path id="path15389" inkscape:connector-curvature="0" d="M471.701,1111.207C677.774,906.278,838.97,742.464,1018.27,566.612 c59.195-61.825,96.687-122.337,112.472-181.532c27.626-111.707-14.849-208.44-88.793-284.137 C970.914,29.909,894.947-3.635,814.047,0.312s-160.812,44.726-239.74,122.337L71.146,627.78l82.874,80.899L657.18,205.521 c51.63-49.087,113.07-95.365,183.505-88.793c107.317,15.066,202.091,146.416,177.587,238.754 c-31.071,81.924-73.905,119.289-133.189,178.571c-180.341,179.88-320.956,318.983-496.253,494.279 c-65.88,60.199-108.486,76.498-169.692,19.732c-31.571-31.571-45.383-62.484-41.437-92.739 c4.379-35.301,24.363-59.717,47.355-82.873l459.748-459.75c21.003-21.04,68.836-61.425,88.793-43.409 c15.311,35.521-24.12,69.425-43.408,88.793l-422.26,422.259l80.899,82.874L813.06,540.961 c73.069-75.365,125.566-167.46,43.409-252.566c-90.862-77.988-186.583-25.923-254.539,41.437L142.182,789.58 c-47.355,47.355-74.323,98.658-80.899,153.908c-5.188,77.454,29.733,139.628,76.953,187.451 c44.385,44.143,92.336,68.594,151.936,69.061C361.828,1197.131,432.284,1149.934,471.701,1111.207L471.701,1111.207z"></path> </g></svg>');
                 editor.ui.registry.addIcon('folder', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M19 8.36864V9.8C19 12.2513 19 13.477 18.1799 14.2385C17.3598 15 16.0399 15 13.4 15H12.75V18C12.75 18.0479 12.7455 18.0947 12.7369 18.1401C13.2444 18.3414 13.6499 18.7443 13.8546 19.25H14H21.25C21.6642 19.25 22 19.5858 22 20C22 20.4142 21.6642 20.75 21.25 20.75H14H13.8546C13.5579 21.483 12.8394 22 12 22C11.1607 22 10.4421 21.483 10.1454 20.75H10H2.75C2.33579 20.75 2 20.4142 2 20C2 19.5858 2.33579 19.25 2.75 19.25H10H10.1454C10.3501 18.7443 10.7556 18.3414 11.2631 18.1401C11.2545 18.0947 11.25 18.0479 11.25 18V15H10.6C7.96015 15 6.64022 15 5.82012 14.2385C5.00002 13.477 5.00002 12.2513 5.00002 9.8V5.21734C5.00002 4.64369 5.00002 4.35687 5.04856 4.11795C5.26227 3.0662 6.14824 2.24352 7.28089 2.04508C7.53818 2 7.84707 2 8.46484 2C8.73552 2 8.87085 2 9.00092 2.01129C9.56167 2.05999 10.0936 2.26457 10.5272 2.59833C10.6277 2.67575 10.7234 2.76461 10.9148 2.94234L11.3 3.3C11.8711 3.83026 12.1566 4.09538 12.4985 4.27203C12.6863 4.36906 12.8856 4.44569 13.0923 4.5004C13.4685 4.6 13.8723 4.6 14.6799 4.6H14.9415C16.7841 4.6 17.7055 4.6 18.3043 5.10015C18.3594 5.14616 18.4118 5.19484 18.4614 5.24599C19 5.80208 19 6.6576 19 8.36864ZM12.75 7.5C12.75 7.08579 13.0858 6.75 13.5 6.75H16.5C16.9142 6.75 17.25 7.08579 17.25 7.5C17.25 7.91421 16.9142 8.25 16.5 8.25H13.5C13.0858 8.25 12.75 7.91421 12.75 7.5Z" fill="currentColor"></path> </g></svg>');
@@ -1155,9 +1234,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 editor.ui.registry.addIcon('clickup', '<svg fill="currentColor" width="20px" height="20px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="m2 18.439 3.69-2.828c1.961 2.56 4.044 3.739 6.363 3.739 2.307 0 4.33-1.166 6.203-3.704L22 18.405C19.298 22.065 15.941 24 12.053 24 8.178 24 4.788 22.078 2 18.439zM12.04 6.15l-6.568 5.66-3.036-3.52L12.055 0l9.543 8.296-3.05 3.509z"></path></g></svg>');                
                 editor.ui.registry.addIcon('formulario', '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 1C9.73478 1 9.48043 1.10536 9.29289 1.29289L3.29289 7.29289C3.10536 7.48043 3 7.73478 3 8V20C3 21.6569 4.34315 23 6 23H18C19.6569 23 21 21.6569 21 20V4C21 2.34315 19.6569 1 18 1H10ZM11 3H18C18.5523 3 19 3.44772 19 4V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V9H10C10.5523 9 11 8.55228 11 8V3ZM9 7H6.41421L9 4.41421V7ZM16.7682 12.6402C17.1218 12.2159 17.0645 11.5853 16.6402 11.2318C16.2159 10.8782 15.5853 10.9355 15.2318 11.3598L10.9328 16.5186L8.70711 14.2929C8.31658 13.9024 7.68342 13.9024 7.29289 14.2929C6.90237 14.6834 6.90237 15.3166 7.29289 15.7071L10.2929 18.7071C10.4916 18.9058 10.7646 19.0117 11.0453 18.999C11.326 18.9862 11.5884 18.856 11.7682 18.6402L16.7682 12.6402Z" fill="currentView"></path> </g></svg>');
                 editor.ui.registry.addIcon('calculadora-data', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19 4h-1V3a1 1 0 0 0-2 0v1H8V3a1 1 0 0 0-2 0v1H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm1 15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1v1a1 1 0 0 0 2 0V6h8v1a1 1 0 0 0 2 0V6h1a1 1 0 0 1 1 1Zm-8-4a4 4 0 1 1-4-4,4 4 0 0 1 4 4Zm-1-2.5V14a1 1 0 0 0 2 0v-1.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5Z"/></svg>');
+
+                editor.ui.registry.addIcon('pdf', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H6zm3.5 6a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H8a.5.5 0 0 1 0-1h1.5v-1a.5.5 0 0 1 .5-.5zm-1.5 5.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm3-2.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1 0-1h.5v-1.5h-1a.5.5 0 0 1 0-1h1V11a.5.5 0 0 1 .5-.5h1zm5-2.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1.5a.5.5 0 0 1 0-1H16v-1a.5.5 0 0 1 .5-.5h.5z"/></svg>');
+                editor.ui.registry.addIcon('save-as', '<svg width="20px" height="20px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="m 4.5 0 c -0.277344 0 -0.5 0.222656 -0.5 0.5 v 1 c 0 0.277344 0.222656 0.5 0.5 0.5 h 1 c 0.277344 0 0.5 -0.222656 0.5 -0.5 v -1 c 0 -0.277344 -0.222656 -0.5 -0.5 -0.5 z m 3 0 c -0.277344 0 -0.5 0.222656 -0.5 0.5 v 1 c 0 0.277344 0.222656 0.5 0.5 0.5 h 1 c 0.277344 0 0.5 -0.222656 0.5 -0.5 v -1 c 0 -0.277344 -0.222656 -0.5 -0.5 -0.5 z m 3 0 c -0.277344 0 -0.5 0.222656 -0.5 0.5 v 1 c 0 0.277344 0.222656 0.5 0.5 0.5 h 1 c 0.277344 0 0.5 -0.222656 0.5 -0.5 v -1 c 0 -0.277344 -0.222656 -0.5 -0.5 -0.5 z m -3.5 3 v 6.585938 l -1.292969 -1.292969 c -0.1875 -0.1875 -0.441406 -0.292969 -0.707031 -0.292969 s -0.519531 0.105469 -0.707031 0.292969 c -0.390625 0.390625 -0.390625 1.023437 0 1.414062 l 3 3 c 0.390625 0.390625 1.023437 0.390625 1.414062 0 l 3 -3 c 0.390625 -0.390625 0.390625 -1.023437 0 -1.414062 s -1.023437 -0.390625 -1.414062 0 l -1.292969 1.292969 v -6.585938 z m -6 11 v 2 h 14 v -2 z m 0 0" fill="currentColor"></path> </g></svg>')
+                editor.ui.registry.addIcon('save-alt', '<svg width="20px" height="20px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColer"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="m 8 0 c -0.550781 0 -1 0.449219 -1 1 v 8.585938 l -1.292969 -1.292969 c -0.1875 -0.1875 -0.441406 -0.292969 -0.707031 -0.292969 s -0.519531 0.105469 -0.707031 0.292969 c -0.390625 0.390625 -0.390625 1.023437 0 1.414062 l 3 3 c 0.390625 0.390625 1.023437 0.390625 1.414062 0 l 3 -3 c 0.390625 -0.390625 0.390625 -1.023437 0 -1.414062 s -1.023437 -0.390625 -1.414062 0 l -1.292969 1.292969 v -8.585938 c 0 -0.550781 -0.449219 -1 -1 -1 z m -7 14 v 2 h 14 v -2 z m 0 0" fill="currentColor"></path> </g></svg>');
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
+
+                editor.ui.registry.addMenuItem('save', {
+                    text: 'Salvar',
+                    icon: 'save-alt',
+                    shortcut: 'Ctrl+S',
+                    onAction: () => {
+                        // Chama a função de salvar no localStorage que já existe
+                        salvarTextoComoLocalStorage(); 
+                        editor.notificationManager.open({
+                            text: 'Conteúdo salvo no navegador!',
+                            type: 'success',
+                            timeout: 2000
+                        });
+                    }
+                });
+
+                editor.ui.registry.addMenuItem('saveas', {
+                    text: 'Salvar como...',
+                    icon: 'save-as', // Ícone apropriado (se não tiver, use 'save' mesmo)
+                    shortcut: 'Ctrl+Shift+S',
+                    onAction: () => openSaveAsDialog(editor)
+                });
 
                 editor.ui.registry.addButton('datecalculator', {
                     icon: 'calculadora-data',
@@ -1399,16 +1504,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 // == ATALHOS E EVENTOS ==============================================================
                 // ===================================================================================
 
-                editor.addShortcut('ctrl+s', 'Salvar HTML', () => salvarComoHTML(editor));
+                editor.addShortcut('ctrl+s', 'Salvar', () => salvarTextoComoLocalStorage());
+                editor.addShortcut('ctrl+shift+s', 'Salvar como...', () => openSaveAsDialog(editor));
                 editor.addShortcut('ctrl+shift+c', 'Copiar HTML', () => copiarHTML(editor));
                 editor.addShortcut('alt+n', 'Novo documento', () => editor.ui.registry.getAll().buttons.novodocumento.onAction());
                 editor.addShortcut('alt+b', 'Limpar documento', () => editor.ui.registry.getAll().buttons.limpartexto.onAction());                
                 editor.addShortcut('alt+x', 'Fechar aba atual', () => editor.ui.registry.getAll().buttons.closetab.onAction());
                 editor.addShortcut('alt+a', 'Modo Foco', toggleModoFoco);
+                
 
                 let timeoutId;
                 const salvarTextoComoLocalStorage = () => {
                     localStorage.setItem('textoSalvo', editor.getContent());
+                    console.log('Conteúdo salvo no localStorage.');
                 };
                 const carregarTextoDoLocalStorage = () => {
                     const textoSalvo = localStorage.getItem('textoSalvo');
