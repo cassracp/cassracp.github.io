@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "@sparticuz/chromium": "123.0.1",
-    "puppeteer-core": "22.6.5"
+    "puppeteer-core": "^22.15.0"
   }
 }
