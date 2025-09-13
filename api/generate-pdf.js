@@ -1,4 +1,5 @@
 const chromium = require('@sparticuz/chromium');
+const puppeteer = require('puppeteer-core'); // IMPORTANTE: Importar o puppeteer-core
 
 // A função getHtml para montar o layout do PDF permanece a mesma.
 function getHtml(data) {
@@ -67,49 +68,38 @@ function getHtml(data) {
     `;
 }
 
-// A função principal da API, agora com mais logs e segurança
-export default async function handler(request, response) {
-    console.log("[LOG VERCEL] Função /api/generate-pdf iniciada.");
 
+export default async function handler(request, response) {
     if (request.method !== 'POST') {
         return response.status(405).send('Method Not Allowed');
     }
 
-      let browser = null;
+    let browser = null;
     try {
-        console.log("[LOG VERCEL] Processando corpo da requisição...");
-        let formData;
-        if (request.body) {
-            formData = typeof request.body === 'string' ? JSON.parse(request.body) : request.body;
-        } else {
-             throw new Error("Corpo da requisição (request.body) está vazio.");
+        const formData = request.body;
+        if (!formData) {
+            return response.status(400).json({ error: 'Corpo da requisição vazio.' });
         }
-        console.log("[LOG VERCEL] Dados do formulário recebidos.");
         
         const htmlContent = getHtml(formData);
-        console.log("[LOG VERCEL] HTML para o PDF foi gerado.");
 
-        console.log("[LOG VERCEL] Iniciando o Puppeteer...");
-        browser = await chromium.puppeteer.launch({
+        // CORREÇÃO: Usamos o puppeteer importado e passamos o caminho do chromium
+        browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
             headless: chromium.headless,
             ignoreHTTPSErrors: true,
         });
-        console.log("[LOG VERCEL] Navegador Puppeteer iniciado.");
 
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-        console.log("[LOG VERCEL] Conteúdo carregado na página do Puppeteer.");
 
-        console.log("[LOG VERCEL] Gerando o buffer do PDF...");
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
             margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
         });
-        console.log("[LOG VERCEL] PDF gerado com sucesso.");
 
         response.setHeader('Content-Type', 'application/pdf');
         response.setHeader('Content-Disposition', `attachment; filename="Planejamento-${formData.clienteNome || 'documento'}.pdf"`);
@@ -117,14 +107,13 @@ export default async function handler(request, response) {
         return response.status(200).send(pdfBuffer);
 
     } catch (error) {
-        console.error("[LOG VERCEL] ERRO FATAL NA API:", error);
+        console.error("ERRO FATAL NA API:", error);
         return response.status(500).json({ 
             error: 'Ocorreu um erro interno no servidor ao gerar o PDF.', 
             details: error.message 
         });
     } finally {
         if (browser !== null) {
-            console.log("[LOG VERCEL] Fechando o navegador Puppeteer.");
             await browser.close();
         }
     }
