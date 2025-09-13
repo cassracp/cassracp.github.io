@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planejamento de Implantação</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { padding: 20px; background-color: #f8f9fa; }
+        #printable-area { background-color: #fff; padding: 25px; border: 1px solid #ddd; }
+        .header, .footer { text-align: center; margin-bottom: 20px; }
+        .header img { max-width: 150px; }
+        .footer { font-size: 0.8rem; color: #6c757d; margin-top: 20px; }
+        .section-title { font-weight: bold; background-color: #e9ecef; padding: 8px; margin-top: 20px; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+        .date-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center; }
+        .date-grid label { margin-bottom: 0; }
+        .summary-box { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 15px; border-radius: 5px; }
+        @media print { body, #printable-area { margin: 0; padding: 0; border: none; } .non-printable { display: none; } }
+    </style>
+</head>
+<body>
+    <div id="printable-area">
+        <div class="header">
+            <img src="../site/icons/icon_base96.png" alt="Logo DeMaria">
+            <h5>PLANEJAMENTO DE IMPLANTAÇÃO REMOTA</h5>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Cliente/Cartório:</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="cliente-nome" placeholder="Nome do Cliente/Cartório"></div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Oficial/Tabelião:</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="cliente-oficial" placeholder="Nome do Oficial/Tabelião"></div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Responsável:</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="cliente-responsavel" placeholder="Nome do Responsável"></div>
+        </div>
+
+        <div class="section-title">MÓDULOS CONTRATADOS</div>
+        <div id="modulos-container" class="module-grid mt-3"></div>
+
+        <div class="section-title">DATAS AGENDADAS</div>
+        <div id="atividades-container" class="date-grid mt-3"></div>
+        
+        <div class="section-title">RESUMO E OBSERVAÇÕES</div>
+        <div class="summary-box mt-3">
+            <p><strong>Total de agendamentos:</strong> <span id="total-agendamentos">0</span> dias úteis de implantação.</p>
+            <p><strong>Período total:</strong> <span id="periodo-corridos">0</span> dias corridos.</p>
+            <hr>
+            <h6>OBSERVAÇÕES E CONSIDERAÇÕES</h6>
+            <p>No agendamento de "Configurações Iniciais 1" será feita a instalação do Banco de Dados no Servidor do cartório e do sistema DOC-Windows nas Estações de Trabalho. Dependendo da quantidade de Estações de Trabalho a instalação poderá ser estendida para os agendamentos de "Configurações Iniciais 2 e 3".</p>
+            <p>Todos as datas e horários de agendamento estão baseadas no fuso horário de Brasília.</p>
+        </div>
+
+        <div class="footer">
+            <p>ADM Informática Ltda. | Av. Dr Sebastião Henrique da Cunha Pontes, 8000/8500 | SJC - SP | 0800 111-016 | www.demaria.com.br</p>
+        </div>
+    </div>
+
+    <div class="footer-content non-printable">
+        <button onclick="window.parent.tinymce?.activeEditor.windowManager.close()" class="btn btn-secondary">Fechar</button>
+        <button onclick="generatePDF()" class="btn btn-primary">Gerar PDF</button>
+    </div>
+    
+    <script src="../scripts/app.js"></script>
+    <script>
+        let formData = {}; // Variável global para guardar os dados do JSON
+
+            document.addEventListener('DOMContentLoaded', () => {
+                applyModalTheme();
+                loadFormData();
+            });
+
+            async function loadFormData() {
+                try {
+                    const response = await fetch('../data/planejamento-data.json');
+                    formData = await response.json();
+                            
+                    const modulosContainer = document.getElementById('modulos-container');
+                    formData.modulos.forEach(mod => {
+                        modulosContainer.innerHTML += `
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="${mod.id}" id="chk-${mod.id}">
+                                <label class="form-check-label" for="chk-${mod.id}">${mod.label}</label>
+                            </div>
+                        `;
+                    });
+
+                    const atividadesContainer = document.getElementById('atividades-container');
+                    formData.atividades.forEach(atv => {
+                    atividadesContainer.innerHTML += `
+                            <div class="form-group" id="row-${atv.id}" style="display: none;">
+                                <label for="date-${atv.id}">${atv.label}</label>
+                            </div>
+                            <div class="form-group" id="date-input-row-${atv.id}" style="display: none;">
+                                <input type="datetime-local" class="form-control" id="date-${atv.id}" data-activity-id="${atv.id}">
+                            </div>
+                        `;
+                    });
+
+                // Adiciona listeners aos checkboxes
+                modulosContainer.addEventListener('change', updateVisibleActivities);
+                atividadesContainer.addEventListener('change', calculateSummary);
+                updateVisibleActivities(); // Chamada inicial
+            } catch (e) {
+                console.error("Erro ao carregar dados do formulário:", e);
+            }
+        }
+
+        function updateVisibleActivities() {
+            const allActivities = document.querySelectorAll('#atividades-container [data-activity-id]');
+            const checkedModules = Array.from(document.querySelectorAll('#modulos-container input:checked')).map(chk => chk.value);
+
+            allActivities.forEach(input => {
+                const activityId = input.dataset.activityId;
+                const activityData = formData.atividades.find(atv => atv.id === activityId);
+                const moduloId = activityData.modulo_id;
+                
+                const row = document.getElementById(`row-${activityId}`);
+                const dateInputRow = document.getElementById(`date-input-row-${activityId}`);
+
+                if (!moduloId || checkedModules.includes(moduloId)) {
+                    row.style.display = 'block';
+                    dateInputRow.style.display = 'block';
+                } else {
+                    row.style.display = 'none';
+                    dateInputRow.style.display = 'none';
+                    input.value = ''; // Limpa a data se o módulo for desmarcado
+                }
+            });
+            calculateSummary();
+        }
+        
+        function calculateSummary() {
+            const dateInputs = Array.from(document.querySelectorAll('#atividades-container input[type="datetime-local"]'))
+                                    .filter(input => input.offsetParent !== null && input.value !== '');
+            
+            document.getElementById('total-agendamentos').textContent = dateInputs.length;
+            
+            if(dateInputs.length > 1) {
+                const dates = dateInputs.map(input => new Date(input.value));
+                const firstDate = new Date(Math.min(...dates));
+                const lastDate = new Date(Math.max(...dates));
+                const diffTime = Math.abs(lastDate - firstDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o dia inicial
+                document.getElementById('periodo-corridos').textContent = diffDays;
+            } else {
+                document.getElementById('periodo-corridos').textContent = dateInputs.length;
+            }
+        }
+
+        async function generatePDF() {
+            // Coleta todos os dados do formulário
+            const formData = {
+                clienteNome: document.getElementById('cliente-nome').value,
+                clienteOficial: document.getElementById('cliente-oficial').value,
+                clienteResponsavel: document.getElementById('cliente-responsavel').value,
+                totalAgendamentos: document.getElementById('total-agendamentos').textContent,
+                periodoCorridos: document.getElementById('periodo-corridos').textContent,
+                modules: Array.from(document.querySelectorAll('#modulos-container input:checked')).map(chk => ({
+                    label: chk.labels[0].textContent.trim()
+                })),
+                activities: Array.from(document.querySelectorAll('#atividades-container input[type="datetime-local"]'))
+                    .filter(input => input.offsetParent !== null && input.value !== '')
+                    .map(input => {
+                        const label = document.querySelector(`label[for="${input.id}"]`).textContent;
+                        const date = new Date(input.value);
+                        const formattedDate = date.toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' });
+                        return { label, date: formattedDate };
+                    })
+            };
+
+            try {
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('A resposta do servidor não foi OK');
+                }
+
+                // Cria um Blob a partir da resposta e força o download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `Planejamento - ${formData.clienteNome || 'documento'}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+            } catch (error) {
+                console.error("Erro ao gerar PDF:", error);
+                alert("Ocorreu um erro ao gerar o PDF. Tente novamente.");
+            }
+        }
+    </script>
+</body>
+</html>
