@@ -100,8 +100,21 @@ export default async function handler(request, response) {
             margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
         });
 
+        const originalFilename = `Planejamento-${formData.clienteNome || 'documento'}.pdf`;
+
+        // 1. Cria um nome de arquivo seguro (fallback) removendo acentos e caracteres especiais.
+        const asciiFilename = originalFilename
+            .normalize('NFD') // Separa os caracteres dos acentos (ex: 'ó' -> 'o' + '´')
+            .replace(/[\u0300-\u036f]/g, ''); // Remove os acentos
+
+        // 2. Cria o nome de arquivo codificado para navegadores modernos.
+        const encodedFilename = encodeURIComponent(originalFilename);
+
+        // 3. Monta o cabeçalho Content-Disposition com ambas as versões.
+        const contentDisposition = `attachment; filename="${asciiFilename}"; filename*=UTF-8''${encodedFilename}`;
+
         response.setHeader('Content-Type', 'application/pdf');
-        response.setHeader('Content-Disposition', `attachment; filename="Planejamento-${formData.clienteNome || 'documento'}.pdf"`);
+        response.setHeader('Content-Disposition', contentDisposition);
         
         return response.status(200).send(pdfBuffer);
 
