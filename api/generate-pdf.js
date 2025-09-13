@@ -32,7 +32,7 @@ function getHtml(data, assets) {
 
     const modulesHtml = modules.map(mod => `
         <div class="module-item">
-            <span class="checkbox">☑</span>
+            <span class="checkbox">[x]</span>
             <span class="label">${mod.label}</span>
         </div>
     `).join('');
