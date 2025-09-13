@@ -1,15 +1,18 @@
 const chromium = require('chrome-aws-lambda');
 
-// Função auxiliar para montar o HTML do PDF (sem alterações)
 function getHtml(data) {
-    const modulesHtml = data.modules.map(mod => `
+    // Garante que os arrays existam, mesmo que vazios, para evitar erros.
+    const modules = data.modules || [];
+    const activities = data.activities || [];
+
+    const modulesHtml = modules.map(mod => `
         <div class="module-item">
             <span class="checkbox">☑</span>
             <span class="label">${mod.label}</span>
         </div>
     `).join('');
 
-    const activitiesHtml = data.activities.map(act => `
+    const activitiesHtml = activities.map(act => `
         <tr>
             <td>${act.label}</td>
             <td>${act.date}</td>
@@ -43,9 +46,9 @@ function getHtml(data) {
                     <h4>PLANEJAMENTO DE IMPLANTAÇÃO REMOTA</h4>
                 </div>
                 <table class="info-table">
-                    <tr><td>Cliente/Cartório:</td><td>${data.clienteNome}</td></tr>
-                    <tr><td>Oficial/Tabelião:</td><td>${data.clienteOficial}</td></tr>
-                    <tr><td>Responsável:</td><td>${data.clienteResponsavel}</td></tr>
+                    <tr><td>Cliente/Cartório:</td><td>${data.clienteNome || ''}</td></tr>
+                    <tr><td>Oficial/Tabelião:</td><td>${data.clienteOficial || ''}</td></tr>
+                    <tr><td>Responsável:</td><td>${data.clienteResponsavel || ''}</td></tr>
                 </table>
                 <div class="section-title">MÓDULOS CONTRATADOS</div>
                 <div class="module-grid">${modulesHtml}</div>
@@ -64,21 +67,18 @@ function getHtml(data) {
     `;
 }
 
-// A função principal da API, agora com correções
 export default async function handler(request, response) {
-    // CORREÇÃO: Vercel agora exige que o corpo da requisição seja lido explicitamente
     if (request.method !== 'POST') {
         return response.status(405).send('Method Not Allowed');
     }
 
     let browser = null;
     try {
-        // CORREÇÃO: Os dados do formulário agora estão no corpo da requisição
-        const formData = request.body;
+        // CORREÇÃO: O corpo pode precisar ser parseado se não for automático
+        const formData = typeof request.body === 'string' ? JSON.parse(request.body) : request.body;
         
-        // Validação simples para garantir que os dados chegaram
-        if (!formData || !formData.clienteNome) {
-            return response.status(400).json({ error: 'Dados do formulário inválidos ou ausentes.' });
+        if (!formData) {
+            return response.status(400).json({ error: 'Corpo da requisição vazio ou inválido.' });
         }
         
         const htmlContent = getHtml(formData);
@@ -106,8 +106,11 @@ export default async function handler(request, response) {
         return response.status(200).send(pdfBuffer);
 
     } catch (error) {
-        console.error(error);
-        return response.status(500).json({ error: 'Erro ao gerar o PDF.', details: error.message });
+        console.error("ERRO NA API:", error);
+        return response.status(500).json({ 
+            error: 'Ocorreu um erro interno no servidor ao gerar o PDF.', 
+            details: error.message 
+        });
     } finally {
         if (browser !== null) {
             await browser.close();
