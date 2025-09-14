@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sparticuz/chromium": "138.0.2",
-    "puppeteer-core": "24.20.0"
+    "axios": "^1.12.2",
+    "html-to-rtf": "^2.1.0",
+    "html-to-rtf-browser": "^1.6.1"
   }
 }

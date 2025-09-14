@@ -6,6 +6,7 @@
     <title>Planejamento de Implantação</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
+    <script src="https://cdn.jsdelivr.net/npm/html-to-rtf@2.1.0/app/browser/bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { padding: 20px; background-color: #f8f9fa; }
@@ -64,90 +65,75 @@
 
     <div class="footer-content non-printable">
         <button onclick="window.parent.tinymce?.activeEditor.windowManager.close()" class="btn btn-secondary">Fechar</button>
-        <button onclick="generatePDF()" class="btn btn-primary">Gerar PDF</button>
+        <button onclick="generateRTF()" class="btn btn-success">Gerar RTF</button> <!--<button onclick="generatePDF()" class="btn btn-primary">Gerar PDF</button>-->
     </div>
-    
+
     <script src="../scripts/app.js"></script>
     <script>
-        let formData = {}; // Variável global para guardar os dados do JSON
+        let formDataJson = {};
+        let assetsData = {};
+        let htmlToRtf = window.htmlToRtf;
 
-            document.addEventListener('DOMContentLoaded', () => {
-                applyModalTheme();
-                loadFormData();
-            });
-
-            async function loadFormData() {
-                try {
-                    const response = await fetch('../data/planejamento-data.json');
-                    formData = await response.json();
-                            
-                    const modulosContainer = document.getElementById('modulos-container');
-                    formData.modulos.forEach(mod => {
-                        modulosContainer.innerHTML += `
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="${mod.id}" id="chk-${mod.id}">
-                                <label class="form-check-label" for="chk-${mod.id}">${mod.label}</label>
-                            </div>
-                        `;
-                    });
-
-                    const atividadesContainer = document.getElementById('atividades-container');
-                    formData.atividades.forEach(atv => {
-                    atividadesContainer.innerHTML += `
-                            <div class="form-group" id="row-${atv.id}" style="display: none;">
-                                <label for="date-${atv.id}">${atv.label}</label>
-                            </div>
-                            <div class="form-group" id="date-input-row-${atv.id}" style="display: none;">
-                                <input type="datetime-local" class="form-control" id="date-${atv.id}" data-activity-id="${atv.id}">
-                            </div>
-                        `;
-                    });
-
-                // Adiciona listeners aos checkboxes
+        document.addEventListener('DOMContentLoaded', () => {
+            applyModalTheme();
+        });
+        async function loadInitialData() {
+            try {
+                const [planejamentoResponse, assetsResponse] = await Promise.all([
+                    fetch('../data/planejamento-data.json'),
+                    fetch('../data/assets.json')
+                ]);
+                formDataJson = await planejamentoResponse.json();
+                assetsData = await assetsResponse.json();
+                
+                const modulosContainer = document.getElementById('modulos-container');
+                formDataJson.modulos.forEach(mod => {
+                    modulosContainer.innerHTML += `<div class="form-check"><input class="form-check-input" type="checkbox" value="${mod.id}" id="chk-${mod.id}"><label class="form-check-label" for="chk-${mod.id}">${mod.label}</label></div>`;
+                });
+                const atividadesContainer = document.getElementById('atividades-container');
+                formDataJson.atividades.forEach(atv => {
+                    atividadesContainer.innerHTML += `<div class="form-group mb-2" id="row-${atv.id}" style="display: none;"><label for="date-${atv.id}" class="mb-0">${atv.label}</label></div><div class="form-group" id="date-input-row-${atv.id}" style="display: none;"><input type="datetime-local" class="form-control" id="date-${atv.id}" data-activity-id="${atv.id}"></div>`;
+                });
                 modulosContainer.addEventListener('change', updateVisibleActivities);
                 atividadesContainer.addEventListener('change', calculateSummary);
-                updateVisibleActivities(); // Chamada inicial
+                updateVisibleActivities();
             } catch (e) {
-                console.error("Erro ao carregar dados do formulário:", e);
+                console.error("Erro ao carregar dados iniciais:", e);
+                alert('Falha ao carregar os dados de configuração.');
             }
         }
+        loadInitialData();
 
         function updateVisibleActivities() {
             const allActivities = document.querySelectorAll('#atividades-container [data-activity-id]');
             const checkedModules = Array.from(document.querySelectorAll('#modulos-container input:checked')).map(chk => chk.value);
-
             allActivities.forEach(input => {
                 const activityId = input.dataset.activityId;
-                const activityData = formData.atividades.find(atv => atv.id === activityId);
+                const activityData = formDataJson.atividades.find(atv => atv.id === activityId);
                 const moduloId = activityData.modulo_id;
-                
                 const row = document.getElementById(`row-${activityId}`);
                 const dateInputRow = document.getElementById(`date-input-row-${activityId}`);
-
                 if (!moduloId || checkedModules.includes(moduloId)) {
                     row.style.display = 'block';
                     dateInputRow.style.display = 'block';
                 } else {
                     row.style.display = 'none';
                     dateInputRow.style.display = 'none';
-                    input.value = ''; // Limpa a data se o módulo for desmarcado
+                    input.value = '';
                 }
             });
             calculateSummary();
         }
-        
+
         function calculateSummary() {
-            const dateInputs = Array.from(document.querySelectorAll('#atividades-container input[type="datetime-local"]'))
-                                    .filter(input => input.offsetParent !== null && input.value !== '');
-            
+            const dateInputs = Array.from(document.querySelectorAll('#atividades-container input[type="datetime-local"]')).filter(input => input.offsetParent !== null && input.value !== '');
             document.getElementById('total-agendamentos').textContent = dateInputs.length;
-            
-            if(dateInputs.length > 1) {
+            if (dateInputs.length > 1) {
                 const dates = dateInputs.map(input => new Date(input.value));
                 const firstDate = new Date(Math.min(...dates));
                 const lastDate = new Date(Math.max(...dates));
                 const diffTime = Math.abs(lastDate - firstDate);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o dia inicial
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
                 document.getElementById('periodo-corridos').textContent = diffDays;
             } else {
                 document.getElementById('periodo-corridos').textContent = dateInputs.length;
@@ -155,51 +141,152 @@
         }
 
         async function generatePDF() {
-            // Coleta todos os dados do formulário
-            const formData = {
-                clienteNome: document.getElementById('cliente-nome').value,
-                clienteOficial: document.getElementById('cliente-oficial').value,
-                clienteResponsavel: document.getElementById('cliente-responsavel').value,
+            const dadosParaPdf = {
+                clienteNome: document.getElementById('cliente-nome').value || 'Não informado',
+                clienteOficial: document.getElementById('cliente-oficial').value || 'Não informado',
+                clienteResponsavel: document.getElementById('cliente-responsavel').value || 'Não informado',
                 totalAgendamentos: document.getElementById('total-agendamentos').textContent,
                 periodoCorridos: document.getElementById('periodo-corridos').textContent,
-                modules: Array.from(document.querySelectorAll('#modulos-container input:checked')).map(chk => ({
-                    label: chk.labels[0].textContent.trim()
+                diaD: 'A definir',
+                observacoes: 'No agendamento de "Configurações Iniciais 1" será feita a instalação do Banco de Dados no Servidor do cartório e do sistema DOC-Windows nas Estações de Trabalho. Dependendo da quantidade de Estações de Trabalho a instalação poderá ser estendida para os agendamentos de "Configurações Iniciais 2 e 3".<br>Todos as datas e horários de agendamento estão baseadas no fuso horário de Brasília.',
+                modules: formDataJson.modulos.map(mod => ({
+                    label: mod.label,
+                    checked: document.getElementById(`chk-${mod.id}`).checked
                 })),
-                activities: Array.from(document.querySelectorAll('#atividades-container input[type="datetime-local"]'))
-                    .filter(input => input.offsetParent !== null && input.value !== '')
-                    .map(input => {
-                        const label = document.querySelector(`label[for="${input.id}"]`).textContent;
+                activities: formDataJson.atividades.filter(atv => {
+                    const el = document.getElementById(`date-input-row-${atv.id}`);
+                    return el && el.style.display !== 'none';
+                }).map(act => {
+                    const input = document.getElementById(`date-${act.id}`);
+                    let formattedDate = 'Não agendado';
+                    if (input.value) {
                         const date = new Date(input.value);
-                        const formattedDate = date.toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' });
-                        return { label, date: formattedDate };
-                    })
+                        formattedDate = date.toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' });
+                    }
+                    return { label: act.label, date: formattedDate };
+                })
             };
 
             try {
-                const response = await fetch('/api/generate-pdf', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
+                const response = await fetch('../references/template-planejamento-mig.html');
+                if (!response.ok) throw new Error(`Não foi possível carregar o template: ${response.statusText}`);
+                let templateHtml = await response.text();
 
-                if (!response.ok) {
-                    throw new Error('A resposta do servidor não foi OK');
-                }
+                const modulosHtml = dadosParaPdf.modules.map(mod => `
+                    <div class="module-item">
+                        <span class="checkbox">${mod.checked ? '☑' : '☐'}</span>
+                        <span>${mod.label}</span>
+                    </div>
+                `).join('');
 
-                // Cria um Blob a partir da resposta e força o download
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = `Planejamento - ${formData.clienteNome || 'documento'}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
+                const datasHtml = dadosParaPdf.activities.map(act => `
+                    <tr>
+                        <td>${act.label}</td>
+                        <td>${act.date}</td>
+                    </tr>
+                `).join('');
+
+                templateHtml = templateHtml.replace('', assetsData.images.logoPrincipal);
+                templateHtml = templateHtml.replace('', dadosParaPdf.clienteNome);
+                templateHtml = templateHtml.replace('', dadosParaPdf.clienteOficial);
+                templateHtml = templateHtml.replace('', dadosParaPdf.clienteResponsavel);
+                templateHtml = templateHtml.replace('', modulosHtml);
+                templateHtml = templateHtml.replace('', datasHtml);
+                templateHtml = templateHtml.replace('', dadosParaPdf.totalAgendamentos);
+                templateHtml = templateHtml.replace('', dadosParaPdf.periodoCorridos);
+                templateHtml = templateHtml.replace('', dadosParaPdf.diaD);
+                templateHtml = templateHtml.replace('', `<p>${dadosParaPdf.observacoes.replace(/\n/g, '<br>')}</p>`);
+
+                console.log("HTML final que será enviado para o PDF:", templateHtml);
                 
+                const opcoesPdf = {
+                    margin: 0,
+                    filename: `Planejamento - ${dadosParaPdf.clienteNome || 'documento'}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                
+                html2pdf().from(templateHtml).set(opcoesPdf).save();
+
             } catch (error) {
                 console.error("Erro ao gerar PDF:", error);
-                alert("Ocorreu um erro ao gerar o PDF. Tente novamente.");
+                alert("Ocorreu um erro ao gerar o PDF. Verifique o console para mais detalhes.");
+            }
+        }
+
+        async function generateRTF() {
+            const dadosParaRtf = {
+                clienteNome: document.getElementById('cliente-nome').value || 'Não informado',
+                clienteOficial: document.getElementById('cliente-oficial').value || 'Não informado',
+                clienteResponsavel: document.getElementById('cliente-responsavel').value || 'Não informado',
+                totalAgendamentos: document.getElementById('total-agendamentos').textContent,
+                periodoCorridos: document.getElementById('periodo-corridos').textContent,
+                diaD: 'A definir',
+                observacoes: 'No agendamento de "Configurações Iniciais 1" será feita a instalação do Banco de Dados no Servidor do cartório e do sistema DOC-Windows nas Estações de Trabalho. Dependendo da quantidade de Estações de Trabalho a instalação poderá ser estendida para os agendamentos de "Configurações Iniciais 2 e 3".<br>Todos as datas e horários de agendamento estão baseadas no fuso horário de Brasília.',
+                modules: formDataJson.modulos.map(mod => ({
+                    label: mod.label,
+                    checked: document.getElementById(`chk-${mod.id}`).checked
+                })),
+                activities: formDataJson.atividades.filter(atv => {
+                    const el = document.getElementById(`date-input-row-${atv.id}`);
+                    return el && el.style.display !== 'none';
+                }).map(act => {
+                    const input = document.getElementById(`date-${act.id}`);
+                    let formattedDate = 'Não agendado';
+                    if (input.value) {
+                        const date = new Date(input.value);
+                        formattedDate = date.toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' });
+                    }
+                    return { label: act.label, date: formattedDate };
+                })
+            };
+
+            try {
+                const response = await fetch('../references/template-planejamento-mig.html');
+                if (!response.ok) throw new Error(`Não foi possível carregar o template: ${response.statusText}`);
+                let templateHtml = await response.text();
+
+                const modulosHtml = dadosParaRtf.modules.map(mod => `
+                    <div class="module-item">
+                        <span class="checkbox">${mod.checked ? '☑' : '☐'}</span>
+                        <span>${mod.label}</span>
+                    </div>
+                `).join('');
+
+                const datasHtml = dadosParaRtf.activities.map(act => `
+                    <tr>
+                        <td>${act.label}</td>
+                        <td>${act.date}</td>
+                    </tr>
+                `).join('');
+
+                // LÓGICA DE SUBSTITUIÇÃO CORRIGIDA
+                templateHtml = templateHtml.replace('', assetsData.images.logoPrincipal);
+                templateHtml = templateHtml.replace('', dadosParaRtf.clienteNome);
+                templateHtml = templateHtml.replace('', dadosParaRtf.clienteOficial);
+                templateHtml = templateHtml.replace('', dadosParaRtf.clienteResponsavel);
+                templateHtml = templateHtml.replace('', modulosHtml);
+                templateHtml = templateHtml.replace('', datasHtml);
+                templateHtml = templateHtml.replace('', dadosParaRtf.totalAgendamentos);
+                templateHtml = templateHtml.replace('', dadosParaRtf.periodoCorridos);
+                templateHtml = templateHtml.replace('', dadosParaRtf.diaD);
+                templateHtml = templateHtml.replace('', `<p>${dadosParaRtf.observacoes.replace(/\n/g, '<br>')}</p>`);
+
+                console.log("HTML final que será enviado para o RTF:", templateHtml);
+
+                const rtfContent = htmlToRtf.convert(templateHtml);
+                const blob = new Blob([rtfContent], { type: 'application/rtf' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Planejamento - ${dadosParaRtf.clienteNome || 'documento'}.rtf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+            } catch (error) {
+                console.error("Erro ao gerar RTF:", error);
+                alert("Ocorreu um erro ao gerar o arquivo RTF.");
             }
         }
     </script>
