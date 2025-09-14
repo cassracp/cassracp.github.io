@@ -6,7 +6,6 @@
     <title>Planejamento de Implantação</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
-    <script src="https://cdn.jsdelivr.net/npm/html-to-rtf@2.1.0/app/browser/bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { padding: 20px; background-color: #f8f9fa; }
@@ -69,10 +68,10 @@
     </div>
 
     <script src="../scripts/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2rtf@0.2.1/index.min.js"></script>
     <script>
         let formDataJson = {};
         let assetsData = {};
-        let htmlToRtf = window.htmlToRtf;
 
         document.addEventListener('DOMContentLoaded', () => {
             applyModalTheme();
@@ -275,14 +274,22 @@
 
                 console.log("HTML final que será enviado para o RTF:", templateHtml);
 
-                const rtfContent = htmlToRtf.convert(templateHtml);
+                /*const rtfContent = htmlToRtf(templateHtml);
                 const blob = new Blob([rtfContent], { type: 'application/rtf' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = `Planejamento - ${dadosParaRtf.clienteNome || 'documento'}.rtf`;
                 document.body.appendChild(link);
                 link.click();
-                document.body.removeChild(link);
+                document.body.removeChild(link);*/
+
+                window.html2rtf.toFile(`Planejamento - ${dadosParaRtf.clienteNome || 'documento'}.rtf`, templateHtml)
+                .then(() => {
+                    console.log('Arquivo RTF criado com sucesso.');
+                })
+                .catch(e => {
+                    console.error('Erro ao criar arquivo RTF:', e);
+                });
 
             } catch (error) {
                 console.error("Erro ao gerar RTF:", error);
