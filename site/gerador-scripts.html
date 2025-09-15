@@ -222,8 +222,15 @@ exit /b
 
 
                 if (window.parent.salvarTexto) {
-                    // Salva o arquivo .sql no padrão web (UTF-8)
-                    window.parent.salvarTexto(finalSqlString, 'ScriptsUnificados.sql');
+                    // Converte a string para WIN-1252 usando TextEncoder
+                    const encoder = new TextEncoder('windows-1252', { NONSTANDARD_allowLegacyEncoding: true });
+                    const win1252ByteArray = encoder.encode(finalSqlString);
+
+                    // Converte o array de bytes para Blob
+                    const blob = new Blob([win1252ByteArray], { type: 'text/plain;charset=windows-1252' });
+
+                    // Usa a função salvarBlob para salvar o arquivo
+                    window.parent.salvarBlob(blob, 'ScriptsUnificados.sql');
                     
                     // Salva o arquivo .bat também em UTF-8
                     window.parent.salvarTexto(batchContent, 'RodarScripts.bat');
