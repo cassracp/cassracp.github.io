@@ -205,8 +205,8 @@ if not exist ScriptsUnificados.sql (
     exit /b
 )
 
-REM Executa o script SQL com o psql.exe
-"%psql%" -U suporte -d docwin -f "ScriptsUnificados.sql"
+REM Executa o script SQL com o psql.exe, especificando o encoding UTF8
+"%psql%" --encoding=UTF8 -U suporte -d docwin -f "ScriptsUnificados.sql"
 
 REM Verifica o código de saída do comando psql.exe
 if %errorlevel% neq 0 (
