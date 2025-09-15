@@ -458,32 +458,93 @@ document.addEventListener('DOMContentLoaded', () => {
             setup: function (editor) {
 
                 // ===================================================================================
-                // == FUNÇÃO DA API GEMINI ===========================================================
+                // == FUNÇÃO DA API GEMINI (COM RETRY, BACKOFF E FALLBACK) ===========================
                 // ===================================================================================
 
-                const gerarTextoComGemini = async (prompt) => {
-                    const apiKey = 'AIzaSyA2OQvGwLMD2DJiES4k4uNyx1F4QP_JEsE'; 
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                /**
+                 * NOVO: Função interna que executa a chamada fetch para um modelo específico.
+                 * @param {string} prompt - O prompt para a IA.
+                 * @param {string} model - O nome do modelo a ser usado (ex: 'gemini-1.5-flash-latest').
+                 * @returns {Promise<string>} O texto gerado.
+                 */
+                const _fazerRequisicaoGemini = async (prompt, model) => {
+                    const apiKey = 'AIzaSyA2OQvGwLMD2DJiES4k4uNyx1F4QP_JEsE'; // Mantenha sua chave de API aqui
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
                     const headers = { 'Content-Type': 'application/json' };
                     const body = JSON.stringify({
-                        contents: [{
-                            parts: [{ text: prompt }]
-                        }]
+                        contents: [{ parts: [{ text: prompt }] }]
                     });
 
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: headers,
-                        body: body
-                    });
+                    const response = await fetch(url, { method: 'POST', headers: headers, body: body });
 
                     if (!response.ok) {
                         const errorBody = await response.text();
-                        throw new Error(`Erro na API: ${response.status} ${response.statusText} - ${errorBody}`);
+                        // Cria um erro customizado que inclui o status para a lógica de retry
+                        const error = new Error(`Erro na API com o modelo ${model}: ${response.status} - ${errorBody}`);
+                        error.status = response.status;
+                        throw error;
                     }
 
                     const data = await response.json();
+                    if (!data.candidates || data.candidates.length === 0) {
+                        throw new Error('A API não retornou candidatos válidos.');
+                    }
                     return data.candidates[0].content.parts[0].text;
+                };
+
+                /**
+                 * NOVO: Função que tenta gerar texto com um modelo, implementando retry com backoff.
+                 * @param {string} prompt - O prompt para a IA.
+                 * @param {string} model - O nome do modelo.
+                 * @param {number} maxRetries - O número máximo de tentativas.
+                 * @returns {Promise<string>} O texto gerado.
+                 */
+                const _gerarTextoComRetry = async (prompt, model, maxRetries = 3) => {
+                    let delay = 1000; // Começa com 1 segundo de espera
+                    for (let i = 0; i < maxRetries; i++) {
+                        try {
+                            return await _fazerRequisicaoGemini(prompt, model); // Tenta a requisição
+                        } catch (error) {
+                            // Só tenta novamente se for um erro de servidor (5xx) e se ainda houver tentativas
+                            if (error.status >= 500 && i < maxRetries - 1) {
+                                console.warn(`Modelo ${model} sobrecarregado (tentativa ${i + 1}/${maxRetries}). Tentando novamente em ${delay / 1000}s...`);
+                                await new Promise(resolve => setTimeout(resolve, delay));
+                                delay *= 2; // Dobra o tempo de espera (backoff exponencial)
+                            } else {
+                                throw error; // Se for outro erro ou se acabaram as tentativas, desiste e joga o erro
+                            }
+                        }
+                    }
+                };
+
+                /**
+                 * NOVO: Função principal e resiliente para chamar a API Gemini.
+                 * Gerencia o fallback para outros modelos se o principal falhar.
+                 * @param {string} prompt - O prompt para a IA.
+                 * @returns {Promise<string>} O texto gerado.
+                 */
+                const gerarTextoComGemini = async (prompt) => {
+                    // Lista de modelos em ordem de preferência
+                    const MODELS_TO_TRY = [
+                        'gemini-1.5-flash-latest', // 1ª opção: rápido e eficiente
+                        'gemini-pro'               // 2ª opção: fallback robusto
+                    ];
+
+                    for (const model of MODELS_TO_TRY) {
+                        try {
+                            console.log(`Tentando usar o modelo: ${model}`);
+                            // Chama a função com a lógica de retry para o modelo atual
+                            const result = await _gerarTextoComRetry(prompt, model);
+                            console.log(`Sucesso com o modelo: ${model}`);
+                            return result; // Se tiver sucesso, retorna o resultado e para.
+                        } catch (error) {
+                            console.error(`Falha ao usar o modelo ${model} após todas as tentativas.`, error.message);
+                            // Se este não for o último modelo da lista, o loop continuará para o próximo.
+                        }
+                    }
+
+                    // Se o loop terminar e nenhum modelo tiver funcionado, joga um erro final.
+                    throw new Error('Todos os modelos da API Gemini falharam.');
                 };
 
 
@@ -883,10 +944,25 @@ document.addEventListener('DOMContentLoaded', () => {
                                 
                             } catch (error) {
                                 console.error("Erro ao chamar a API Gemini:", error);
+
+                                // Começamos com uma mensagem padrão
+                                let errorMessage = 'Não foi possível gerar o texto. A API parece estar instável. Tente novamente mais tarde.';
+
+                                // Verificamos a propriedade .status (que adicionamos na função aprimorada)
+                                if (error.status === 503) {
+                                    errorMessage = 'A API do Google está sobrecarregada no momento (erro 503). Por favor, tente novamente em alguns instantes.';
+                                } else if (error.status) {
+                                    // Para outros erros com status (400, 401, etc.), podemos mostrar uma mensagem mais genérica
+                                    errorMessage = `Ocorreu um erro na comunicação com a API (código: ${error.status}). Verifique o console para mais detalhes.`;
+                                } else {
+                                    // Se for um erro sem status (ex: problema de rede), usamos a mensagem do próprio erro
+                                    errorMessage = `Não foi possível gerar o texto. Erro: ${error.message}`;
+                                }
+
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Oops...',
-                                    text: 'Não foi possível gerar o texto. Tente novamente mais tarde.'
+                                    title: 'Oops... Algo deu errado',
+                                    text: errorMessage
                                 });
                             }
                         }
@@ -941,10 +1017,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         Swal.close();
                     } catch (error) {
                         console.error("Erro ao chamar a API Gemini:", error);
+
+                        // Começamos com uma mensagem padrão
+                        let errorMessage = 'Não foi possível gerar o texto. A API parece estar instável. Tente novamente mais tarde.';
+
+                        // Verificamos a propriedade .status (que adicionamos na função aprimorada)
+                        if (error.status === 503) {
+                            errorMessage = 'A API do Google está sobrecarregada no momento (erro 503). Por favor, tente novamente em alguns instantes.';
+                        } else if (error.status) {
+                            // Para outros erros com status (400, 401, etc.), podemos mostrar uma mensagem mais genérica
+                            errorMessage = `Ocorreu um erro na comunicação com a API (código: ${error.status}). Verifique o console para mais detalhes.`;
+                        } else {
+                            // Se for um erro sem status (ex: problema de rede), usamos a mensagem do próprio erro
+                            errorMessage = `Não foi possível gerar o texto. Erro: ${error.message}`;
+                        }
+
                         Swal.fire({
                             icon: 'error',
-                            title: 'Oops...',
-                            text: 'Não foi possível processar o texto. Tente novamente mais tarde.'
+                            title: 'Oops... Algo deu errado',
+                            text: errorMessage
                         });
                     }
                 };
