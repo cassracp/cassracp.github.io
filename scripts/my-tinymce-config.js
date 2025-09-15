@@ -692,15 +692,32 @@ document.addEventListener('DOMContentLoaded', () => {
                         return;
                     }
 
-                    // 1. Remove a tag de abertura <p> (e qualquer atributo)
+                    // =================================================================================
+                    // == NOVO: Lógica para remover quebras de linha APENAS dentro de tabelas ========
+                    // =================================================================================
+                    // Esta expressão regular encontra todos os blocos de <table>...</table> no conteúdo.
+                    // O modificador 'g' garante que todas as tabelas sejam encontradas, não apenas a primeira.
+                    // O [\s\S]*? permite que a regex capture conteúdo que tenha quebras de linha.
+                    htmlContent = htmlContent.replace(/<table[\s\S]*?<\/table>/gi, (tableHtml) => {
+                        // Para cada tabela encontrada, executamos uma segunda substituição.
+                        // Esta regex remove todos os espaços em branco (incluindo \n, \r, \t) 
+                        // que estão entre o fechamento de uma tag (>) e a abertura de outra (<).
+                        return tableHtml.replace(/>\s+</g, '><');
+                    });
+                    // =================================================================================
+
+                    // 1. Remove a tag de abertura <p> (e qualquer atributo) - Lógica original mantida
                     let processedHtml = htmlContent.replace(/<p\b[^>]*>/g, '');
 
-                    // 2. Substitui a tag de fechamento </p>
+                    // 2. Substitui a tag de fechamento </p> - Lógica original mantida
                     processedHtml = processedHtml.replace(/<\/p>/g, '');
                     processedHtml = processedHtml.replace(/<br\s*\/?>/g, '\n');
 
-                    // 3. Remove múltiplos espaços e quebras de linha do final
-                    processedHtml = processedHtml.trim();
+                    // 3. Remove múltiplos espaços e quebras de linha do final - Lógica original mantida
+                    // ANTIGO: processedHtml = processedHtml.trim();
+                    // NOVO: Remove espaços E &nbsp; do início e do fim da string.
+                    processedHtml = processedHtml.replace(/(^(&nbsp;|\s)+|(&nbsp;|\s)+$)/g, '');
+
 
 
                     navigator.clipboard.writeText(processedHtml).then(() => {
