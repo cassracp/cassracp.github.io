@@ -162,7 +162,6 @@
 
                 // CORREÇÃO: Usa \r\n para quebras de linha do Windows
                 let unifiedSqlContent = [];
-                unifiedSqlContent.push("\\encoding 'UTF8'\r\n"); 
                 unifiedSqlContent.push('\\set ON_ERROR_STOP on\r\n\r\n');
                 unifiedSqlContent.push('BEGIN;\r\n\r\n');
 
@@ -182,14 +181,9 @@
                 const batchContent = `@echo off
 setlocal
 
-REM DEFINE O ENCODING DO CLIENTE PARA UTF-8
-SET PGCLIENTENCODING=UTF8
-
 REM Define a página de código para UTF-8
 chcp 65001 > nul
 
-REM Define a página de código para UTF-8
-chcp 65001 > nul
 
 REM Verifica se a variável de ambiente %SERVIDORDOC% está definida
 if not defined SERVIDORDOC (
