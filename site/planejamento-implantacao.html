@@ -6,7 +6,6 @@
     <title>Planejamento de Implantação</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../stylesheets/themes/dark-theme-modal.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { padding: 20px; background-color: #f8f9fa; }
         #printable-area { background-color: #fff; padding: 25px; border: 1px solid #ddd; }
@@ -64,17 +63,17 @@
 
     <div class="footer-content non-printable">
         <button onclick="window.parent.tinymce?.activeEditor.windowManager.close()" class="btn btn-secondary">Fechar</button>
-        <button onclick="generateRTF()" class="btn btn-success">Gerar RTF</button> <!--<button onclick="generatePDF()" class="btn btn-primary">Gerar PDF</button>-->
+        <button onclick="generateRTF()" class="btn btn-success">Gerar RTF</button>
     </div>
 
     <script src="../scripts/app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2rtf@0.2.1/index.min.js"></script>
     <script>
         let formDataJson = {};
         let assetsData = {};
 
         document.addEventListener('DOMContentLoaded', () => {
             applyModalTheme();
+            loadInitialData();
         });
         async function loadInitialData() {
             try {
@@ -101,7 +100,6 @@
                 alert('Falha ao carregar os dados de configuração.');
             }
         }
-        loadInitialData();
 
         function updateVisibleActivities() {
             const allActivities = document.querySelectorAll('#atividades-container [data-activity-id]');
@@ -138,164 +136,102 @@
                 document.getElementById('periodo-corridos').textContent = dateInputs.length;
             }
         }
-
-        async function generatePDF() {
-            const dadosParaPdf = {
-                clienteNome: document.getElementById('cliente-nome').value || 'Não informado',
-                clienteOficial: document.getElementById('cliente-oficial').value || 'Não informado',
-                clienteResponsavel: document.getElementById('cliente-responsavel').value || 'Não informado',
-                totalAgendamentos: document.getElementById('total-agendamentos').textContent,
-                periodoCorridos: document.getElementById('periodo-corridos').textContent,
-                diaD: 'A definir',
-                observacoes: 'No agendamento de "Configurações Iniciais 1" será feita a instalação do Banco de Dados no Servidor do cartório e do sistema DOC-Windows nas Estações de Trabalho. Dependendo da quantidade de Estações de Trabalho a instalação poderá ser estendida para os agendamentos de "Configurações Iniciais 2 e 3".<br>Todos as datas e horários de agendamento estão baseadas no fuso horário de Brasília.',
-                modules: formDataJson.modulos.map(mod => ({
-                    label: mod.label,
-                    checked: document.getElementById(`chk-${mod.id}`).checked
-                })),
-                activities: formDataJson.atividades.filter(atv => {
-                    const el = document.getElementById(`date-input-row-${atv.id}`);
-                    return el && el.style.display !== 'none';
-                }).map(act => {
-                    const input = document.getElementById(`date-${act.id}`);
-                    let formattedDate = 'Não agendado';
-                    if (input.value) {
-                        const date = new Date(input.value);
-                        formattedDate = date.toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' });
-                    }
-                    return { label: act.label, date: formattedDate };
-                })
-            };
-
-            try {
-                const response = await fetch('../references/template-planejamento-mig.html');
-                if (!response.ok) throw new Error(`Não foi possível carregar o template: ${response.statusText}`);
-                let templateHtml = await response.text();
-
-                const modulosHtml = dadosParaPdf.modules.map(mod => `
-                    <div class="module-item">
-                        <span class="checkbox">${mod.checked ? '☑' : '☐'}</span>
-                        <span>${mod.label}</span>
-                    </div>
-                `).join('');
-
-                const datasHtml = dadosParaPdf.activities.map(act => `
-                    <tr>
-                        <td>${act.label}</td>
-                        <td>${act.date}</td>
-                    </tr>
-                `).join('');
-
-                templateHtml = templateHtml.replace('', assetsData.images.logoPrincipal);
-                templateHtml = templateHtml.replace('', dadosParaPdf.clienteNome);
-                templateHtml = templateHtml.replace('', dadosParaPdf.clienteOficial);
-                templateHtml = templateHtml.replace('', dadosParaPdf.clienteResponsavel);
-                templateHtml = templateHtml.replace('', modulosHtml);
-                templateHtml = templateHtml.replace('', datasHtml);
-                templateHtml = templateHtml.replace('', dadosParaPdf.totalAgendamentos);
-                templateHtml = templateHtml.replace('', dadosParaPdf.periodoCorridos);
-                templateHtml = templateHtml.replace('', dadosParaPdf.diaD);
-                templateHtml = templateHtml.replace('', `<p>${dadosParaPdf.observacoes.replace(/\n/g, '<br>')}</p>`);
-
-                console.log("HTML final que será enviado para o PDF:", templateHtml);
-                
-                const opcoesPdf = {
-                    margin: 0,
-                    filename: `Planejamento - ${dadosParaPdf.clienteNome || 'documento'}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-                
-                html2pdf().from(templateHtml).set(opcoesPdf).save();
-
-            } catch (error) {
-                console.error("Erro ao gerar PDF:", error);
-                alert("Ocorreu um erro ao gerar o PDF. Verifique o console para mais detalhes.");
-            }
-        }
-
+        
         async function generateRTF() {
-            const dadosParaRtf = {
-                clienteNome: document.getElementById('cliente-nome').value || 'Não informado',
-                clienteOficial: document.getElementById('cliente-oficial').value || 'Não informado',
-                clienteResponsavel: document.getElementById('cliente-responsavel').value || 'Não informado',
-                totalAgendamentos: document.getElementById('total-agendamentos').textContent,
-                periodoCorridos: document.getElementById('periodo-corridos').textContent,
-                diaD: 'A definir',
-                observacoes: 'No agendamento de "Configurações Iniciais 1" será feita a instalação do Banco de Dados no Servidor do cartório e do sistema DOC-Windows nas Estações de Trabalho. Dependendo da quantidade de Estações de Trabalho a instalação poderá ser estendida para os agendamentos de "Configurações Iniciais 2 e 3".<br>Todos as datas e horários de agendamento estão baseadas no fuso horário de Brasília.',
-                modules: formDataJson.modulos.map(mod => ({
-                    label: mod.label,
-                    checked: document.getElementById(`chk-${mod.id}`).checked
-                })),
-                activities: formDataJson.atividades.filter(atv => {
-                    const el = document.getElementById(`date-input-row-${atv.id}`);
-                    return el && el.style.display !== 'none';
-                }).map(act => {
-                    const input = document.getElementById(`date-${act.id}`);
-                    let formattedDate = 'Não agendado';
-                    if (input.value) {
-                        const date = new Date(input.value);
-                        formattedDate = date.toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' });
-                    }
-                    return { label: act.label, date: formattedDate };
-                })
+            // Função robusta para escapar caracteres para o formato RTF
+            function rtfEscape(str) {
+                const map = {
+                    'á': '\\\'e1', 'Á': '\\\'c1', 'à': '\\\'e0', 'À': '\\\'c0', 'â': '\\\'e2', 'Â': '\\\'c2', 'ã': '\\\'e3', 'Ã': '\\\'c3',
+                    'é': '\\\'e9', 'É': '\\\'c9', 'ê': '\\\'ea', 'Ê': '\\\'ca', 'í': '\\\'ed', 'Í': '\\\'cd', 'ó': '\\\'f3', 'Ó': '\\\'d3',
+                    'ô': '\\\'f4', 'Ô': '\\\'d4', 'õ': '\\\'f5', 'Õ': '\\\'d5', 'ú': '\\\'fa', 'Ú': '\\\'da', 'ç': '\\\'e7', 'Ç': '\\\'c7',
+                    '\\': '\\\\', '{': '\\{', '}': '\\}'
+                };
+                return str.replace(/[áÁàÀâÂãÃéÉêÊíÍóÓôÔõÕúÚçÇ\\{}]/g, char => map[char] || char);
+            }
+
+            const dados = {
+                cliente: rtfEscape(document.getElementById('cliente-nome').value || 'Não informado'),
+                oficial: rtfEscape(document.getElementById('cliente-oficial').value || 'Não informado'),
+                responsavel: rtfEscape(document.getElementById('cliente-responsavel').value || 'Não informado'),
+                diasTreinamento: document.getElementById('total-agendamentos').textContent,
+                diasCorridos: document.getElementById('periodo-corridos').textContent
             };
 
+            const modulosSelecionados = formDataJson.modulos.filter(mod => document.getElementById(`chk-${mod.id}`).checked);
+            let modulosRTF = '';
+            if (modulosSelecionados.length > 0) {
+                const colWidth = 2250; 
+                let tableRows = [];
+                for (let i = 0; i < modulosSelecionados.length; i += 4) {
+                    const chunk = modulosSelecionados.slice(i, i + 4);
+                    let rowDef = `\\trowd \\trgaph108\\trleft-108\\clbrdrb\\brdrnone\\clbrdrl\\brdrnone\\clbrdrr\\brdrnone\\clbrdrt\\brdrnone\\cellx${colWidth}\\cellx${colWidth*2}\\cellx${colWidth*3}\\cellx${colWidth*4}`;
+                    let cells = chunk.map(mod => `\\pard\\intbl {\\pntext\\f0\\'B7\\tab}${rtfEscape(mod.label)}\\cell`).join('');
+                    for (let j = chunk.length; j < 4; j++) {
+                        cells += `\\pard\\intbl \\cell`;
+                    }
+                    tableRows.push(rowDef + cells + '\\row');
+                }
+                modulosRTF = tableRows.join('');
+            } else {
+                modulosRTF = '\\pard\\sa200\\sl276\\slmult1 Nenhum m\\\'f3dulo selecionado.\\par';
+            }
+
+            const atividadesAgendadas = formDataJson.atividades
+                .filter(atv => {
+                    const input = document.getElementById(`date-${atv.id}`);
+                    const row = document.getElementById(`row-${atv.id}`);
+                    return row && row.style.display !== 'none' && input && input.value;
+                })
+                .map(atv => {
+                    const input = document.getElementById(`date-${atv.id}`);
+                    const date = new Date(input.value);
+                    // Formato: dd/mm/aaaa hh:mm h
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const dataFormatada = `${day}/${month}/${year} ${hours}:${minutes} h`;
+                    
+                    // Sintaxe RTF para um item de lista com data em negrito
+                    return `\\pard\\sa200\\sl276\\slmult1\\fi360{\\pntext\\f0\\'B7\\tab}${rtfEscape(atv.label)}: \\b ${rtfEscape(dataFormatada)}\\b0\\par`;
+                })
+                .join('');
+
             try {
-                const response = await fetch('../references/template-planejamento-mig.html');
-                if (!response.ok) throw new Error(`Não foi possível carregar o template: ${response.statusText}`);
-                let templateHtml = await response.text();
-
-                const modulosHtml = dadosParaRtf.modules.map(mod => `
-                    <div class="module-item">
-                        <span class="checkbox">${mod.checked ? '☑' : '☐'}</span>
-                        <span>${mod.label}</span>
-                    </div>
-                `).join('');
-
-                const datasHtml = dadosParaRtf.activities.map(act => `
-                    <tr>
-                        <td>${act.label}</td>
-                        <td>${act.date}</td>
-                    </tr>
-                `).join('');
-
-                // LÓGICA DE SUBSTITUIÇÃO CORRIGIDA
-                templateHtml = templateHtml.replace('', assetsData.images.logoPrincipal);
-                templateHtml = templateHtml.replace('', dadosParaRtf.clienteNome);
-                templateHtml = templateHtml.replace('', dadosParaRtf.clienteOficial);
-                templateHtml = templateHtml.replace('', dadosParaRtf.clienteResponsavel);
-                templateHtml = templateHtml.replace('', modulosHtml);
-                templateHtml = templateHtml.replace('', datasHtml);
-                templateHtml = templateHtml.replace('', dadosParaRtf.totalAgendamentos);
-                templateHtml = templateHtml.replace('', dadosParaRtf.periodoCorridos);
-                templateHtml = templateHtml.replace('', dadosParaRtf.diaD);
-                templateHtml = templateHtml.replace('', `<p>${dadosParaRtf.observacoes.replace(/\n/g, '<br>')}</p>`);
-
-                console.log("HTML final que será enviado para o RTF:", templateHtml);
-
-                /*const rtfContent = htmlToRtf(templateHtml);
-                const blob = new Blob([rtfContent], { type: 'application/rtf' });
+                const response = await fetch('../references/modelo.rtf');
+                if (!response.ok) throw new Error('Não foi possível carregar o arquivo modelo.rtf');
+                
+                const fileBlob = await response.blob();
+                const rtfContent = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = (e) => reject(e);
+                    reader.readAsText(fileBlob, 'windows-1252');
+                });
+                
+                let finalRtf = rtfContent.replace('varCliente', dados.cliente);
+                finalRtf = finalRtf.replace('varOficial', dados.oficial);
+                finalRtf = finalRtf.replace('varResponsavel', dados.responsavel);
+                finalRtf = finalRtf.replace('varModulos', modulosRTF);
+                finalRtf = finalRtf.replace('varDatas', atividadesAgendadas);
+                finalRtf = finalRtf.replace('countDias', dados.diasTreinamento);
+                finalRtf = finalRtf.replace('countDiasCorridos', dados.diasCorridos);
+                
+                const finalBlob = new Blob([finalRtf], { type: 'application/rtf;charset=utf-8' });
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `Planejamento - ${dadosParaRtf.clienteNome || 'documento'}.rtf`;
+                link.href = URL.createObjectURL(finalBlob);
+                link.download = `Planejamento - ${document.getElementById('cliente-nome').value || 'documento'}.rtf`;
                 document.body.appendChild(link);
                 link.click();
-                document.body.removeChild(link);*/
-
-                window.html2rtf.toFile(`Planejamento - ${dadosParaRtf.clienteNome || 'documento'}.rtf`, templateHtml)
-                .then(() => {
-                    console.log('Arquivo RTF criado com sucesso.');
-                })
-                .catch(e => {
-                    console.error('Erro ao criar arquivo RTF:', e);
-                });
+                document.body.removeChild(link);
 
             } catch (error) {
                 console.error("Erro ao gerar RTF:", error);
-                alert("Ocorreu um erro ao gerar o arquivo RTF.");
+                alert("Ocorreu um erro ao gerar o arquivo RTF. Verifique o console para mais detalhes.");
             }
         }
     </script>
 </body>
 </html>
+

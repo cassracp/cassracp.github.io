@@ -41,7 +41,6 @@
     { "id": "treinamento_aan", "label": "Treinamento de A. A. N.", "modulo_id": "aan" },
     { "id": "treinamento_financeiro1", "label": "Treinamento Financeiro 1", "modulo_id": "financeiro" },
     { "id": "treinamento_financeiro2", "label": "Treinamento Financeiro 2", "modulo_id": "financeiro" },
-    { "id": "treinamento_funaux", "label": "Treinamento Fun. Aux.", "modulo_id": null },
-    { "id": "diad", "label": "Data prevista para início do uso do sistema (Dia D)", "modulo_id": null }
+    { "id": "treinamento_funaux", "label": "Treinamento Funções Aux.", "modulo_id": null }
   ]
 }
