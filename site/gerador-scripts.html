@@ -126,6 +126,8 @@
             }
         }
 
+        
+
         async function generateUnifiedScript() {
             const btn = document.getElementById('btn-gerar');
             const checkedBoxes = document.querySelectorAll('#scripts-container input[type="checkbox"]:checked');
@@ -221,7 +223,7 @@ exit /b
 `.replace(/\n/g, '\r\n');
 
 
-                if (window.parent.salvarTexto) {
+                if (window.parent.salvarTexto && window.parent.salvarBlob) {
                     // Converte a string para WIN-1252 usando TextEncoder
                     const encoder = new TextEncoder('windows-1252', { NONSTANDARD_allowLegacyEncoding: true });
                     const win1252ByteArray = encoder.encode(finalSqlString);
@@ -237,7 +239,7 @@ exit /b
 
                     Swal.fire('Sucesso!', 'Os arquivos ScriptsUnificados.sql e RodarScripts.bat foram gerados e baixados.', 'success');
                 } else {
-                    throw new Error('A função salvarTexto não foi encontrada.');
+                    throw new Error('As funções salvarTexto e/ou salvarBlob do \\scripts\\app.js não foram encontradas.');
                 }
 
             } catch (error) {

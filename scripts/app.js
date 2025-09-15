@@ -39,6 +39,22 @@ function salvarTexto(content, filename) {
 }
 
 /**
+ * Função para salvar um Blob como um arquivo, usando um link <a>.
+ * @param {Blob} blob - O Blob a ser salvo.
+ * @param {string} fileName - O nome do arquivo para o Blob.
+ */
+function salvarBlob(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a); // Necessário para Firefox
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url); // Limpa o objeto URL
+}
+
+/**
  * Limpa o conteúdo de um elemento (ex: textarea).
  * @param {string} elementId - O ID do elemento a ser limpo.
  */
