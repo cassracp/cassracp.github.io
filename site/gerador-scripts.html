@@ -144,12 +144,18 @@
                     name: chk.labels[0].textContent.trim()
                 }));
 
+                 // Vamos ler os arquivos como bytes e decodificar como WIN-1252 para evitar corrompimento.
                 const scriptContents = await Promise.all(
                     filesToFetch.map(file =>
                         fetch(`${VERCEL_API_URL}/get-script-content?path=${encodeURIComponent(file.path)}`)
                             .then(res => {
                                 if (!res.ok) throw new Error(`Falha ao baixar ${file.name}`);
-                                return res.text();
+                                return res.arrayBuffer(); // 1. Pega os bytes brutos em vez do texto
+                            })
+                            .then(buffer => {
+                                // 2. Decodifica os bytes usando a codificação correta (windows-1252)
+                                const decoder = new TextDecoder('windows-1252');
+                                return decoder.decode(buffer);
                             })
                     )
                 );
