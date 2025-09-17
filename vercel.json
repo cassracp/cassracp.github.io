@@ -1,7 +1,8 @@
 {
-  "functions": {
-    "api/**/*.php": {
-      "runtime": "vercel-php@0.6.0"
+  "builds": [
+    {
+      "src": "/api/spellcheck.php",
+      "use": "@vercel/php"
     }
-  }
+  ]
 }
