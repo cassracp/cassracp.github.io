@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
             plugins: [
                 'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
                 'code', 'insertdatetime', 'help', 'quickbars',
-                'visualchars', 'preview'
+                'visualchars', 'preview', 'spellchecker'
             ],
             codesample_languages: formatsData.code_languages,
             menu: {
@@ -452,6 +452,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     wrapper: true
                 }
             },
+            browser_spellcheck: false, // Desativa o corretor do navegador para usar o nosso
+            spellchecker_rpc_url: '/api/spellcheck.php', // Aponta para nossa função na Vercel
+            spellchecker_language: 'pt_BR', // Define o idioma padrão
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent responderMensagem',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
