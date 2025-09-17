@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'nanospell charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
+                    items: 'charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
                 },
                 demaria: { 
                     title: 'DeMaria', 
@@ -453,12 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             browser_spellcheck: false, // Desativa o corretor do navegador para usar o nosso
-            external_plugins: {
-                'nanospell': 'plugins/nanospell/plugin.js'
-            },
-            nanospell_server: "php", // Indica que o backend é PHP
-            nanospell_dictionary: "pt_BR",
-            nanospell_autostart: true,
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent responderMensagem',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
