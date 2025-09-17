@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             browser_spellcheck: false, // Desativa o corretor do navegador para usar o nosso
             external_plugins: {
-                'nanospell': 'scripts/my_tinymce_app/plugins/nanospell/plugin.js'
+                'nanospell': 'plugins/nanospell/plugin.js'
             },
             nanospell_server: "php", // Indica que o backend é PHP
             nanospell_dictionary: "pt_BR",
