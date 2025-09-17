@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
+                    items: 'nanospell charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
                 },
                 demaria: { 
                     title: 'DeMaria', 
