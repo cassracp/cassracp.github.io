@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
             plugins: [
                 'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
                 'code', 'insertdatetime', 'help', 'quickbars',
-                'visualchars', 'preview', 'spellchecker'
+                'visualchars', 'preview'
             ],
             codesample_languages: formatsData.code_languages,
             menu: {
@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'spellchecker charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
+                    items: 'charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
                 },
                 demaria: { 
                     title: 'DeMaria', 
@@ -453,8 +453,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             browser_spellcheck: false, // Desativa o corretor do navegador para usar o nosso
-            spellchecker_rpc_url: '/api/spellcheck.php', // Aponta para nossa função na Vercel
-            spellchecker_language: 'pt_BR', // Define o idioma padrão
+            external_plugins: {
+                'nanospell': 'scripts/my_tinymce_app/plugins/nanospell/plugin.js'
+            },
+            nanospell_server: "php", // Indica que o backend é PHP
+            nanospell_dictionary: "pt_BR",
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent responderMensagem',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
