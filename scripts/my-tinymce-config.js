@@ -452,7 +452,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     wrapper: true
                 }
             },
-            browser_spellcheck: false, // Desativa o corretor do navegador para usar o nosso
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent responderMensagem',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
