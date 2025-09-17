@@ -379,8 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
             license_key: 'gpl',
             newline_behavior: 'invert',
             placeholder: 'Digite aqui...',
-            height: '100%',
-            resize: false,
+            height: '200%',
+            resize: true,
             skin_url: `scripts/my_tinymce_app/skins/ui/${activeTheme}`,
             content_css: activeTheme.includes('dark') ? 'dark' : 'default',
             promotion: false,
@@ -455,6 +455,44 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent responderMensagem',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
+            toolbar_mode: 'sliding',
+            toolbar_sticky: true,
+            automatic_uploads: true,
+            images_upload_handler: (blobInfo) => new Promise((resolve, reject) => {
+                const blob = blobInfo.blob();
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = () => {
+                    const img = new Image();
+                    img.src = reader.result;
+                    img.onload = () => {
+                        // Configurações de otimização: 1280px de largura e 80% de qualidade
+                        // é excelente para evidências visuais sem gerar arquivos enormes.
+                        const MAX_WIDTH = 1280;
+                        const QUALITY = 0.8; 
+                        let width = img.width, height = img.height;
+
+                        if (width > MAX_WIDTH) {
+                            height *= (MAX_WIDTH / width);
+                            width = MAX_WIDTH;
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Converte para JPEG para aplicar compressão com qualidade
+                        const optimizedBase64 = canvas.toDataURL('image/jpeg', QUALITY);
+                        
+                        // Devolve o Base64 otimizado para o TinyMCE, que o inserirá no editor.
+                        resolve(optimizedBase64);
+                    };
+                    img.onerror = (err) => reject('Falha ao carregar imagem para otimização.');
+                };
+                reader.onerror = (err) => reject('Falha ao ler o arquivo de imagem.');
+            }),
             setup: function (editor) {
 
                 // ===================================================================================
@@ -682,59 +720,102 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(activeTabId) {
                         closeTab({ stopPropagation: () => {} }, activeTabId);
                     }
-                 };
+                };
 
                 const copiarHTML = (editor) => {
-                    let htmlContent = editor.getContent();
-
-                    if (!htmlContent) {
+                    const originalContent = editor.getContent();
+                    if (!originalContent) {
                         Swal.fire('Atenção', 'Não há conteúdo para copiar.', 'warning');
                         return;
                     }
 
-                    // =================================================================================
-                    // == NOVO: Lógica para remover quebras de linha APENAS dentro de tabelas ========
-                    // =================================================================================
-                    // Esta expressão regular encontra todos os blocos de <table>...</table> no conteúdo.
-                    // O modificador 'g' garante que todas as tabelas sejam encontradas, não apenas a primeira.
-                    // O [\s\S]*? permite que a regex capture conteúdo que tenha quebras de linha.
-                    htmlContent = htmlContent.replace(/<table[\s\S]*?<\/table>/gi, (tableHtml) => {
-                        // Para cada tabela encontrada, executamos uma segunda substituição.
-                        // Esta regex remove todos os espaços em branco (incluindo \n, \r, \t) 
-                        // que estão entre o fechamento de uma tag (>) e a abertura de outra (<).
-                        return tableHtml.replace(/>\s+</g, '><');
-                    });
-                    // =================================================================================
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = originalContent;
 
-                    // 1. Remove a tag de abertura <p> (e qualquer atributo) - Lógica original mantida
-                    let processedHtml = htmlContent.replace(/<p\b[^>]*>/g, '');
+                    const images = tempDiv.querySelectorAll('img');
+                    const promises = [];
 
-                    // 2. Substitui a tag de fechamento </p> - Lógica original mantida
-                    processedHtml = processedHtml.replace(/<\/p>/g, '');
-                    processedHtml = processedHtml.replace(/<br\s*\/?>/g, '\n');
+                    images.forEach(img => {
+                        if (img.closest('a')) {
+                            return;
+                        }
 
-                    // 3. Remove múltiplos espaços e quebras de linha do final - Lógica original mantida
-                    // ANTIGO: processedHtml = processedHtml.trim();
-                    // NOVO: Remove espaços E &nbsp; do início e do fim da string.
-                    processedHtml = processedHtml.replace(/(^(&nbsp;|\s)+|(&nbsp;|\s)+$)/g, '');
+                        const promise = new Promise((resolve) => {
+                            const processImage = (base64Data) => {
+                                const link = document.createElement('a');
+                                // Mantemos o href como fallback
+                                link.href = base64Data;
+                                link.target = '_blank';
+                                link.rel = 'noopener noreferrer';
 
+                                // --- A MUDANÇA ESTÁ AQUI ---
+                                // Criamos o JavaScript para ser executado no clique.
+                                // Usamos aspas simples e duplas cuidadosamente para não quebrar a string.
+                                const onclickJs = `event.preventDefault(); const newWindow=window.open(); newWindow.document.write('<body style="margin:0; background:#222; text-align:center;"><img style="max-width:100%;" src="${base64Data}"></body>'); newWindow.document.close();`;
+                                link.setAttribute('onclick', onclickJs);
+                                // --- FIM DA MUDANÇA ---
 
+                                if (img.src !== base64Data) {
+                                    img.src = base64Data;
+                                }
+                                
+                                img.parentNode.insertBefore(link, img);
+                                link.appendChild(img);
+                                resolve();
+                            };
 
-                    navigator.clipboard.writeText(processedHtml).then(() => {
-                          Swal.fire({
-                            toast: true,
-                            position: 'top', // Posição no canto superior direito
-                            icon: 'success',
-                            title: 'HTML copiado com sucesso!',
-                            showConfirmButton: false,
-                            timer: 2000, // Fecha automaticamente após 2 segundos
-                            timerProgressBar: true
+                            if (img.src.startsWith('data:image')) {
+                                processImage(img.src);
+                            } else { // Converte blob para Base64
+                                const newImg = new Image();
+                                newImg.crossOrigin = 'Anonymous';
+                                newImg.onload = () => {
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = newImg.naturalWidth;
+                                    canvas.height = newImg.naturalHeight;
+                                    const ctx = canvas.getContext('2d');
+                                    ctx.drawImage(newImg, 0, 0);
+                                    const dataURL = canvas.toDataURL();
+                                    processImage(dataURL);
+                                };
+                                newImg.onerror = () => {
+                                    console.error("Não foi possível converter a imagem blob:", img.src);
+                                    resolve(); // Resolve mesmo em caso de erro para não travar o processo
+                                }
+                                newImg.src = img.src;
+                            }
                         });
-                    }).catch(err => {
-                        console.error('Erro ao copiar o HTML: ', err);
-                        Swal.fire('Erro', 'Não foi possível copiar o conteúdo.', 'error');
+                        promises.push(promise);
                     });
-                }
+
+                    Promise.all(promises).then(() => {
+                        let processedHtml = tempDiv.innerHTML;
+
+                        // Sua lógica de limpeza original
+                        processedHtml = processedHtml.replace(/<table[\s\S]*?<\/table>/gi, (tableHtml) => {
+                            return tableHtml.replace(/>\s+</g, '><');
+                        });
+                        processedHtml = processedHtml.replace(/<p\b[^>]*>/g, '');
+                        processedHtml = processedHtml.replace(/<\/p>/g, '');
+                        processedHtml = processedHtml.replace(/<br\s*\/?>/g, '\n');
+                        processedHtml = processedHtml.replace(/(^(&nbsp;|\s)+|(&nbsp;|\s)+$)/g, '');
+
+                        navigator.clipboard.writeText(processedHtml).then(() => {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top',
+                                icon: 'success',
+                                title: 'HTML copiado com sucesso!',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true
+                            });
+                        }).catch(err => {
+                            console.error('Erro ao copiar o HTML: ', err);
+                            Swal.fire('Erro', 'Não foi possível copiar o conteúdo.', 'error');
+                        });
+                    });
+                };
 
                 const salvarComoHTML = (editor, filename) => {
                     const editorContent = editor.getContent(); // Pega o conteúdo HTML original
@@ -1626,13 +1707,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     text: 'Unificador de Scripts SQL',
                     icon: 'unificador',
                     onAction: () => ExibirGeradorScripts()
-                });
-
-                editor.on('contextmenu', function (event) {
-                    if (event.ctrlKey) {
-                        return;
-                    }
-                    event.preventDefault();
                 });
 
                 // REGISTRO PARA O NOVO MENU CLICKUP
