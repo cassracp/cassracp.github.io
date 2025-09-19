@@ -1289,7 +1289,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 summaryHtml = summaryHtml.slice(0, -4);
                             }
                             summaryHtml += `<br>`;
-                            const prazoHtml = `<br>Prazo para desenvolvimento: <strong>${prazo}</strong><br>`;
+                            const prazoHtml = `<br>Prazo para desenvolvimento: <strong>${prazo}</strong>`;
                             const finalHtml = [
                                 'Realizada análise de migração.',
                                 '<br<br>Segue relatório completo em anexo.>',
