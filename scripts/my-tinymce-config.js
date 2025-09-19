@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
             language_url: 'scripts/my_tinymce_app/langs/pt_BR.js',
             language: 'pt_BR',
             plugins: [
-                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                'anchor', 'accordion', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'advlist', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
                 'code', 'insertdatetime', 'help', 'quickbars',
                 'visualchars', 'preview'
             ],
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 insert: { 
                     title: 'Inserir', 
-                    items: 'hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' 
+                    items: 'accordion hr | image imagemComLink link media linkOS linkTarefa inseriraudio emoticons charmap | insertdatetime insertCalendarDate | codesample' 
                 },
                 format: { 
                     title: 'Formatar', 
@@ -1279,7 +1279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     records.push({ key: match[1].trim(), value: match[2].trim() });
                                 }
                             }
-                            let summaryHtml = `<p>Banco de dados analisado: <strong>${dbName}</strong><br>Data de coleta do Backup: <strong>${backupDate}</strong>`;
+                            let summaryHtml = `Banco de dados analisado: <strong>${dbName}</strong><br>Data de coleta do Backup: <strong>${backupDate}</strong>`;
                             if (records.length > 0) {
                                 summaryHtml += `<br>`;
                                 records.forEach(record => {
@@ -1288,18 +1288,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                 });
                                 summaryHtml = summaryHtml.slice(0, -4);
                             }
-                            summaryHtml += `</p>`;
-                            const prazoHtml = `<p>Prazo para desenvolvimento: <strong>${prazo}</strong></p>`;
+                            summaryHtml += `<br>`;
+                            const prazoHtml = `<br>Prazo para desenvolvimento: <strong>${prazo}</strong><br>`;
                             const finalHtml = [
-                                '<p>Realizada análise de migração.</p>',
-                                '<p>Segue relatório completo em anexo.</p>',
-                                '<p><strong>RESUMO</strong></p>',
+                                'Realizada análise de migração.',
+                                '<br<br>Segue relatório completo em anexo.>',
+                                '<br><br><strong>RESUMO</strong><br>',
                                 summaryHtml,
                                 prazoHtml,
-                                '<p>&nbsp;</p>',
+                                '<br>',
                                 '<hr>',
-                                '<p><strong>INFORMAÇÕES INTERNAS</strong></p>',
-                                `<p>Projeto de migração ${dbName} <strong>desenvolvido</strong>.</p>`
+                                '<strong>INFORMAÇÕES INTERNAS</strong>',
+                                `<br><br>Projeto de migração ${dbName} <strong>desenvolvido</strong>.`
                             ].join('\n');
 
                             editor.insertContent(finalHtml);
