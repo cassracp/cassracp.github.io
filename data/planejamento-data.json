@@ -15,7 +15,9 @@
     { "id": "livroscomerciais", "label": "Livros Comerciais [L]" },
     { "id": "aan", "label": "Acervo de Atos Notariais [AAN]" },
     { "id": "financeiro", "label": "Financeiro [U]" },
-    { "id": "backup", "label": "Backup em Nuvem [K]" }
+    { "id": "backup", "label": "Backup em Nuvem [K]" },
+    { "id": "fila", "label": "DOC-Fila [Q]" },
+    { "id": "multiscan", "label": "DOC-Multiscan [M]" }
   ],
   "atividades": [
     { "id": "config1", "label": "Configurações Iniciais 1", "modulo_id": null },
