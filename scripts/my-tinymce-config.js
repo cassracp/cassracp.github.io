@@ -487,7 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_insert_toolbar: false,
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent responderMensagem',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
-            toolbar_sticky: true,
+            toolbar_sticky: false,
             toolbar_sticky_offset: (document.getElementById('main-header')?.offsetHeight || 0) + (document.getElementById('tab-container')?.offsetHeight || 0),
             automatic_uploads: true,
             toolbar_mode: 'sliding',

@@ -76,3 +76,21 @@ body {
     z-index: 1020; /* Garante que as abas fiquem sobre outros elementos */
     background-color: #fff; /* Adapte a cor de fundo conforme o design do seu site */
 }
+
+/*
+ * Solução definitiva para o layout do TinyMCE: Scroll Interno.
+ * 1. O contêiner principal do editor é transformado em uma coluna flexível.
+ * 2. A área de texto (e seu iframe) é instruída a crescer e a ter sua própria barra de rolagem.
+ * Isso mantém a barra de ferramentas sempre visível no topo, sem sobreposições.
+*/
+.tox.tox-tinymce {
+    height: 100% !important; /* Garante que o editor preencha seu contêiner pai */
+    display: flex;
+    flex-direction: column;
+}
+
+.tox-editor-container {
+    flex-grow: 1; /* Faz a área do editor crescer para preencher o espaço */
+    overflow-y: auto; /* ADICIONA O SCROLL APENAS AQUI */
+    min-height: 0; /* Essencial para o cálculo correto do flexbox */
+}
