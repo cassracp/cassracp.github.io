@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 help: { 
                     title: 'Ajuda', 
-                    items: 'help' 
+                    items: 'help | sobre' 
                 }
             },
             menubar: 'file edit view insert format tools demaria table help',
@@ -1499,6 +1499,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
+
+                  editor.ui.registry.addMenuItem('sobre', {
+                    text: 'Sobre',
+                    icon: 'info', // Ícone de informação padrão do TinyMCE
+                    onAction: () => {
+                        tinymce.activeEditor.windowManager.open({
+                            title: 'Sobre o Auxiliar DeMaria',
+                            body: {
+                                type: 'panel',
+                                items: [{
+                                    type: 'htmlpanel',
+                                    html: `<div style="text-align: center; font-size: 13px; line-height: 1.6;">
+                                        <p>Ferramenta desenvolvida por <strong>Cássio Rodolfo Alves de Carvalho Pinto</strong><br>(cassio@demaria.com.br).</p>
+                                        <p>Sem fins lucrativos e para uso interno dos colaboradores da DeMaria Software®.<br>DeMaria Software® é uma marca registrada e tem todos os seus direitos reservados.</p>
+                                    </div>`
+                                }]
+                            },
+                            buttons: [{
+                                type: 'cancel',
+                                text: 'Fechar',
+                                primary: true
+                            }]
+                        });
+                    }
+                });
 
                 editor.ui.registry.addMenuItem('planejamentoimplantacao', {
                     text: 'Planejamento de Implantação',
