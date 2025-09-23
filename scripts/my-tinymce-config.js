@@ -457,6 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
             toolbar_mode: 'sliding',
             toolbar_sticky: true,
+            toolbar_sticky_offset: 50,
             automatic_uploads: true,
             images_upload_handler: (blobInfo) => new Promise((resolve, reject) => {
                 const blob = blobInfo.blob();

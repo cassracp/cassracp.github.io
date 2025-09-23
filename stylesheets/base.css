@@ -69,3 +69,10 @@ body {
 .editor-wrapper.active {
     display: block; /* Mostra APENAS o editor da aba ativa */
 }
+
+.tab-container {
+    position: sticky;
+    top: 0;
+    z-index: 1020; /* Garante que as abas fiquem sobre outros elementos */
+    background-color: #fff; /* Adapte a cor de fundo conforme o design do seu site */
+}
