@@ -1,9 +1,16 @@
 [
   {
     "type": "menuitem",
+    "text": "Tarefa de Implantação",
+    "icon": "clickup-form",
+    "actionType": "openUrl",
+    "actionValue": "https://forms.clickup.com/90132076147/f/2ky4mnkk-5853/4C9MM71JV2VXSMK6QZ"
+  },
+  {
+    "type": "menuitem",
     "text": "Tarefa de Migração (Correção/Coleta Backup)",
     "icon": "clickup-form",
     "actionType": "openUrl",
     "actionValue": "https://forms.clickup.com/90132076147/f/2ky4mnkk-5693/LWOOZVB33M3BD3SSVD"
-  }
+  }  
 ]
