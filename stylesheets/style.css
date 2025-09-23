@@ -1,23 +1,39 @@
-html, body {
-    height: 100%; /* Garante que o body possa ter altura de 100% */
+/* --- LAYOUT PRINCIPAL DA APLICAÇÃO --- */
+
+/* Garante que o tamanho dos elementos inclua padding e borda */
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* Transforma o corpo da página em um contêiner flexível de tela cheia */
+body {
+    height: 100vh;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-}
+    overflow: hidden; /* Impede a barra de rolagem na página inteira */
 
-body {
+    display: flex;
+    flex-direction: column; /* Organiza os filhos (cabeçalho, editor) em uma coluna */
+
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
-    display: flex; /* Transforma o body em um container flexível */
-    flex-direction: column; /* Organiza os filhos em uma coluna */
 }
 
+/* Garante que o cabeçalho mantenha seu tamanho e não seja comprimido */
+#main-header {
+    flex-shrink: 0;
+}
+
+/* Configura o contêiner do editor para ser flexível e ocupar todo o espaço restante */
 .editor-container-main {
+    flex-grow: 1; /* Faz este contêiner crescer e preencher o espaço vertical */
+    min-height: 0; /* Permite que o contêiner encolha se necessário, eliminando o scroll */
+
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* FAZ ESTE ELEMENTO CRESCER E OCUPAR O ESPAÇO */
-    min-height: 0; /* Ajuda o flexbox a calcular o tamanho corretamente */
-    padding: 0 10px; /* Adiciona o espaçamento lateral que removemos do body */
 }
 
 /* --- ESTILOS DAS ABAS --- */
