@@ -182,23 +182,25 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.classList.toggle('active', wrapper.id === `wrapper-${tabId}`);
         });
 
-        // LÓGICA DE INICIALIZAÇÃO PREGUIÇOSA
         let editorInstance = tinymce.get(tabId);
 
-        // Se a instância não existe E está marcada como `null` (não inicializada)
         if (!editorInstance && editors[tabId] === null) {
             Swal.fire({
                 title: 'Carregando editor...',
                 allowOutsideClick: false,
                 didOpen: () => Swal.showLoading()
             });
-            // Chamamos a nova função para inicializar o editor AGORA,
-            // que o contêiner já está visível.
             editorInstance = await initializeEditor(tabId);
             Swal.close();
         }
 
         if (editorInstance) {
+            // FORÇA O REDESENHO TODA VEZ QUE UMA ABA É EXIBIDA.
+            // Isso corrige o bug de a barra de ferramentas quebrar ao voltar para uma aba.
+            setTimeout(() => {
+                editorInstance.execCommand('mceRepaint');
+            }, 50);
+
             editorInstance.focus();
         }
         
@@ -409,8 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
             license_key: 'gpl',
             newline_behavior: 'invert',
             placeholder: 'Digite aqui...',
-            height: '100%',
             resize: true,
+            height: '100%',
             skin_url: `scripts/my_tinymce_app/skins/ui/${activeTheme}`,
             content_css: activeTheme.includes('dark') ? 'dark' : 'default',
             promotion: false,

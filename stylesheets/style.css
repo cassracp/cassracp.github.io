@@ -1,15 +1,23 @@
+html, body {
+    height: 100%; /* Garante que o body possa ter altura de 100% */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
 body {
-    padding: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
-    margin: 0;
+    display: flex; /* Transforma o body em um container flexível */
+    flex-direction: column; /* Organiza os filhos em uma coluna */
 }
 
 .editor-container-main {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 20px); /* Altura total da viewport menos o padding do body */
-    padding: 0;
+    flex-grow: 1; /* FAZ ESTE ELEMENTO CRESCER E OCUPAR O ESPAÇO */
+    min-height: 0; /* Ajuda o flexbox a calcular o tamanho corretamente */
+    padding: 0 10px; /* Adiciona o espaçamento lateral que removemos do body */
 }
 
 /* --- ESTILOS DAS ABAS --- */
@@ -70,10 +78,11 @@ body {
 }
 
 /* --- ESTILOS DA ÁREA DO EDITOR --- */
-.editor-area-container {
+#editor-area-container {
     flex-grow: 1;
     position: relative;
-    background-color: white;
+    overflow: hidden;
+    min-height: 0; /* Adicione esta linha */
 }
 
 .editor-wrapper {
@@ -84,4 +93,24 @@ body {
 
 .editor-wrapper.active {
     display: block; /* Visível quando a aba está ativa */
+}
+
+/*
+ * Correção para a altura do editor e o problema do "espaço em branco".
+ * Faz com que o contêiner principal do TinyMCE (e a área de edição dentro dele)
+ * se expandam para preencher o espaço vertical disponível.
+*/
+.tox.tox-tinymce {
+    height: 100% !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.tox .tox-editor-container {
+    flex-grow: 1;
+}
+
+.footer-container {
+    flex-shrink: 0; /* Impede que o rodapé encolha */
+    padding: 0 10px 10px; /* Adiciona espaçamento inferior */
 }
