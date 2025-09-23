@@ -168,11 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Alterna para uma aba específica, mostrando seu editor e destacando a aba.
      */
-    function switchTab(tabId) {
-        if (!tabId || !editors[tabId]) return;
+    async function switchTab(tabId) {
+        if (tabId === undefined || tabId === null) return;
 
         activeTabId = tabId;
-
         localStorage.setItem('tinymceActiveTabId', tabId);
 
         document.querySelectorAll('.tab-item').forEach(tab => {
@@ -183,7 +182,26 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.classList.toggle('active', wrapper.id === `wrapper-${tabId}`);
         });
 
-        tinymce.get(tabId).focus();
+        // LÓGICA DE INICIALIZAÇÃO PREGUIÇOSA
+        let editorInstance = tinymce.get(tabId);
+
+        // Se a instância não existe E está marcada como `null` (não inicializada)
+        if (!editorInstance && editors[tabId] === null) {
+            Swal.fire({
+                title: 'Carregando editor...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+            // Chamamos a nova função para inicializar o editor AGORA,
+            // que o contêiner já está visível.
+            editorInstance = await initializeEditor(tabId);
+            Swal.close();
+        }
+
+        if (editorInstance) {
+            editorInstance.focus();
+        }
+        
         console.log(`Switched to tab: ${tabId}`);
     }
 
@@ -245,25 +263,43 @@ document.addEventListener('DOMContentLoaded', () => {
             closeTabAction();
         }
     }
+
+    /**
+     * NOVO: Inicializa o editor para uma aba específica.
+     * Esta função agora centraliza a chamada tinymce.init.
+     */
+    async function initializeEditor(tabId) {
+        const textarea = document.getElementById(tabId);
+        if (!textarea) return null;
+
+        const initialContent = textarea.value; // Pega o conteúdo salvo na textarea
+        const config = await getTinyMceConfig(`#${tabId}`, initialContent);
+
+        const initedEditors = await tinymce.init(config);
+        const newEditor = initedEditors[0];
+        
+        editors[tabId] = newEditor; // Atualiza o objeto 'editors' com a instância real
+        newEditor.on('input change', saveAllTabs);
+
+        return newEditor;
+    }
     
     /**
      * Cria uma nova aba e um novo editor TinyMCE.
      */
      async function createTab(tabIdToCreate = null, initialContent = '') {
-        return new Promise(async (resolve) => {
+        return new Promise((resolve) => {
             let newTabNumber;
             let tabId;
-            
 
             if (tabIdToCreate) {
                 tabId = tabIdToCreate;
-                newTabNumber = parseInt(tabIdToCreate.split('-')[1], 10);
             } else {
                 newTabNumber = findNextTabNumber();
                 tabId = `editor-${newTabNumber}`;
             }
             
-            const tabTitle = `Documento ${newTabNumber}`;
+            const tabTitle = `Documento ${parseInt(tabId.split('-')[1], 10)}`;
 
             const tabElement = document.createElement('div');
             tabElement.className = 'tab-item';
@@ -279,24 +315,18 @@ document.addEventListener('DOMContentLoaded', () => {
             editorWrapper.className = 'editor-wrapper';
             const textarea = document.createElement('textarea');
             textarea.id = tabId;
+            // Guardamos o conteúdo inicial na própria textarea
+            textarea.value = initialContent; 
             editorWrapper.appendChild(textarea);
             editorAreaContainer.appendChild(editorWrapper);
 
             tabElement.addEventListener('click', () => switchTab(tabId));
             tabElement.querySelector('.tab-close-btn').addEventListener('click', (e) => closeTab(e, tabId));
             
-           const config = await getTinyMceConfig(`#${tabId}`, initialContent);
-            tinymce.init(config).then(initedEditors => {
-                const newEditor = initedEditors[0];
-                editors[tabId] = newEditor;
-                
-                newEditor.on('input change', saveAllTabs);
-                
-                // A linha que chamava updateTabContainerVisibility() foi removida daqui
-                
-                // A Promise agora retorna o ID da aba criada
-                resolve(tabId);
-            });
+            // Apenas marcamos que o editor para esta aba ainda não foi criado
+            editors[tabId] = null;
+            
+            resolve(tabId);
         });
     }
 
@@ -456,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
             quickbars_selection_toolbar: 'bold italic underline togglecodeformat | upperCaselowerCase melhorarTextoIA | removeformat | fontfamily fontsize fontsizeselect forecolor backcolor  quicklink blockquote indent outdent responderMensagem',
             quickbars_image_toolbar: 'alignleft aligncenter alignright | rotateleft rotateright | imageoptions',
             toolbar_sticky: true,
-            toolbar_sticky_offset: (document.getElementById('main-header')?.offsetHeight || 0) + 0,
+            toolbar_sticky_offset: (document.getElementById('main-header')?.offsetHeight || 0) + (document.getElementById('tab-container')?.offsetHeight || 0),
             automatic_uploads: true,
             toolbar_mode: 'sliding',
             images_upload_handler: (blobInfo) => new Promise((resolve, reject) => {
