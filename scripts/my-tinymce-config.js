@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
             license_key: 'gpl',
             newline_behavior: 'invert',
             placeholder: 'Digite aqui...',
-            height: '200%',
+            height: '100%',
             resize: true,
             skin_url: `scripts/my_tinymce_app/skins/ui/${activeTheme}`,
             content_css: activeTheme.includes('dark') ? 'dark' : 'default',
