@@ -598,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Lista de modelos em ordem de preferência
                     const MODELS_TO_TRY = [
                         'gemini-1.5-flash-latest', // 1ª opção: rápido e eficiente
-                        'gemini-pro'               // 2ª opção: fallback robusto
+                        'gemini-1.5-pro-latest'    // 2ª opção: fallback robusto
                     ];
 
                     for (const model of MODELS_TO_TRY) {
