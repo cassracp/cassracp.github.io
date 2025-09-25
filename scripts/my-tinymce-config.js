@@ -595,27 +595,30 @@ document.addEventListener('DOMContentLoaded', () => {
                  * @returns {Promise<string>} O texto gerado.
                  */
                 const gerarTextoComGemini = async (prompt) => {
-                    // Lista de modelos em ordem de preferência
+                    // Lista de modelos em ordem de preferência, com nomes estáveis e atualizados
                     const MODELS_TO_TRY = [
-                        'gemini-1.5-flash-latest', // 1ª opção: rápido e eficiente
-                        'gemini-1.5-pro-latest'    // 2ª opção: fallback robusto
+                        'gemini-1.5-flash-002', // 1ª opção: versão estável do modelo Flash (sugerido pelo erro)
+                        'gemini-1.5-pro-001',   // 2ª opção: versão estável e robusta do modelo Pro
+                        'gemini-pro'            // 3ª opção: fallback para o modelo original (se a versão 1.5 falhar)
                     ];
 
                     for (const model of MODELS_TO_TRY) {
                         try {
                             console.log(`Tentando usar o modelo: ${model}`);
-                            // Chama a função com a lógica de retry para o modelo atual
                             const result = await _gerarTextoComRetry(prompt, model);
                             console.log(`Sucesso com o modelo: ${model}`);
-                            return result; // Se tiver sucesso, retorna o resultado e para.
+                            return result;
                         } catch (error) {
                             console.error(`Falha ao usar o modelo ${model} após todas as tentativas.`, error.message);
-                            // Se este não for o último modelo da lista, o loop continuará para o próximo.
+                            // Se o erro for 429, não haverá outro modelo gratuito disponível.
+                            if (error.code === 429) {
+                                console.error("Cota de uso excedida. Faça o upgrade ou espere.");
+                                throw new Error('Cota de uso da API Gemini excedida.');
+                            }
                         }
                     }
 
-                    // Se o loop terminar e nenhum modelo tiver funcionado, joga um erro final.
-                    throw new Error('Todos os modelos da API Gemini falharam.');
+                    throw new Error('Falha ao gerar texto após todas as tentativas com os modelos Gemini.');
                 };
 
 
