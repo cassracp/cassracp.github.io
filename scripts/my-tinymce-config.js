@@ -597,9 +597,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const gerarTextoComGemini = async (prompt) => {
                     // Lista de modelos em ordem de preferência, com nomes estáveis e atualizados
                     const MODELS_TO_TRY = [
-                        'gemini-1.5-flash-002', // 1ª opção: versão estável do modelo Flash (sugerido pelo erro)
-                        'gemini-1.5-pro-001',   // 2ª opção: versão estável e robusta do modelo Pro
-                        'gemini-pro'            // 3ª opção: fallback para o modelo original (se a versão 1.5 falhar)
+                        'gemini-2.5-flash-lite',
+                        'gemini-2.5-flash',
+                        'text-multilingual-embedding-002',
+                        'gemini-2.5-pro'
                     ];
 
                     for (const model of MODELS_TO_TRY) {
