@@ -1104,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 };
 
-                const melhorarTextoComIA = async (action, editor) => {
+                const melhorarTextoComIA = async (action) => {
                     const selectedText = editor.selection.getContent({ format: 'text' });
 
                     if (!selectedText || selectedText.trim().length === 0) {
@@ -1696,10 +1696,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     text: 'Editar com IA',
                     icon: 'edit-sparkles',
                     getSubmenuItems: () => [
-                        { type: 'menuitem', text: 'Melhorar Escrita', onAction: () => melhorarTextoComIA('melhorar', editor) },
-                        { type: 'menuitem', text: 'Corrigir Gramática', onAction: () => melhorarTextoComIA('corrigir', editor) },
-                        { type: 'menuitem', text: 'Tornar mais Curto', onAction: () => melhorarTextoComIA('encurtar', editor) },
-                        { type: 'menuitem', text: 'Tornar mais Longo', onAction: () => melhorarTextoComIA('expandir', editor) }
+                        { type: 'menuitem', text: 'Melhorar Escrita', onAction: () => melhorarTextoComIA('melhorar') },
+                        { type: 'menuitem', text: 'Corrigir Gramática', onAction: () => melhorarTextoComIA('corrigir') },
+                        { type: 'menuitem', text: 'Tornar mais Curto', onAction: () => melhorarTextoComIA('encurtar') },
+                        { type: 'menuitem', text: 'Tornar mais Longo', onAction: () => melhorarTextoComIA('expandir') }
                     ]
                 });
 
@@ -1708,10 +1708,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     tooltip: 'Editar com IA',
                     fetch: (callback) => {
                         const items = [
-                            { type: 'menuitem', text: 'Melhorar Escrita', onAction: () => melhorarTextoComIA('melhorar', editor) },
-                            { type: 'menuitem', text: 'Corrigir Gramática', onAction: () => melhorarTextoComIA('corrigir', editor) },
-                            { type: 'menuitem', text: 'Tornar mais Curto', onAction: () => melhorarTextoComIA('encurtar', editor) },
-                            { type: 'menuitem', text: 'Tornar mais Longo', onAction: () => melhorarTextoComIA('expandir', editor) }
+                            { type: 'menuitem', text: 'Melhorar Escrita', onAction: () => melhorarTextoComIA('melhorar') },
+                            { type: 'menuitem', text: 'Corrigir Gramática', onAction: () => melhorarTextoComIA('corrigir') },
+                            { type: 'menuitem', text: 'Tornar mais Curto', onAction: () => melhorarTextoComIA('encurtar') },
+                            { type: 'menuitem', text: 'Tornar mais Longo', onAction: () => melhorarTextoComIA('expandir') }
                         ];
                         callback(items);
                     }
