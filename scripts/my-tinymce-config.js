@@ -597,6 +597,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const gerarTextoComGemini = async (prompt) => {
                     // Lista de modelos em ordem de preferência, com nomes estáveis e atualizados
                     const MODELS_TO_TRY = [
+                        'gemini-2.0-flash',
+                        'gemini-2.0-flash-lite',
                         'gemini-2.5-flash-lite',
                         'gemini-2.5-flash',
                         'text-multilingual-embedding-002',
