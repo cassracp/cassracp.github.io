@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ai-sdk/groq": "^2.0.22",
+    "ai": "^5.0.59",
     "axios": "^1.12.2",
     "html-to-rtf": "^2.1.0",
     "html-to-rtf-browser": "^1.6.1",

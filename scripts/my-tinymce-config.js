@@ -529,13 +529,51 @@ document.addEventListener('DOMContentLoaded', () => {
             setup: function (editor) {
 
                 // ===================================================================================
-                // == FUNÇÃO DA API GEMINI (COM RETRY, BACKOFF E FALLBACK) ===========================
+                // == FUNÇÕES DE API (GEMINI COM FALLBACKS INTERNOS + FALLBACK FINAL PARA GROQ/VERCEL) =
                 // ===================================================================================
 
                 /**
-                 * NOVO: Função interna que executa a chamada fetch para um modelo específico.
+                 * NOVO: Função de fallback FINAL que chama nosso endpoint na Vercel.
                  * @param {string} prompt - O prompt para a IA.
-                 * @param {string} model - O nome do modelo a ser usado (ex: 'gemini-1.5-flash-latest').
+                 * @returns {Promise<string>} O texto gerado.
+                 */
+                const _callFallbackAPI = async (prompt) => {
+                    console.log("Todos os modelos Gemini falharam. Acionando fallback final para Vercel/Groq...");
+                    try {
+                        const response = await fetch('/api/generate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ prompt: prompt }),
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`Erro na API de fallback: ${response.statusText}`);
+                        }
+
+                        const reader = response.body.getReader();
+                        const decoder = new TextDecoder();
+                        let generatedText = '';
+                        while (true) {
+                            const { value, done } = await reader.read();
+                            if (done) break;
+                            generatedText += decoder.decode(value);
+                        }
+
+                        if (generatedText.startsWith('"') && generatedText.endsWith('"')) {
+                            return generatedText.slice(1, -1);
+                        }
+                        return generatedText;
+
+                    } catch (error) {
+                        console.error('A API de fallback (Vercel/Groq) também falhou:', error);
+                        throw error;
+                    }
+                };
+
+                /**
+                 * Função interna que executa a chamada fetch para um modelo específico do Gemini.
+                 * @param {string} prompt - O prompt para a IA.
+                 * @param {string} model - O nome do modelo a ser usado.
                  * @returns {Promise<string>} O texto gerado.
                  */
                 const _fazerRequisicaoGemini = async (prompt, model) => {
@@ -550,7 +588,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (!response.ok) {
                         const errorBody = await response.text();
-                        // Cria um erro customizado que inclui o status para a lógica de retry
                         const error = new Error(`Erro na API com o modelo ${model}: ${response.status} - ${errorBody}`);
                         error.status = response.status;
                         throw error;
@@ -564,64 +601,75 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 /**
-                 * NOVO: Função que tenta gerar texto com um modelo, implementando retry com backoff.
+                 * Função que tenta gerar texto com um modelo, implementando retry com backoff.
                  * @param {string} prompt - O prompt para a IA.
                  * @param {string} model - O nome do modelo.
                  * @param {number} maxRetries - O número máximo de tentativas.
                  * @returns {Promise<string>} O texto gerado.
                  */
                 const _gerarTextoComRetry = async (prompt, model, maxRetries = 3) => {
-                    let delay = 1000; // Começa com 1 segundo de espera
+                    let delay = 1000;
                     for (let i = 0; i < maxRetries; i++) {
                         try {
-                            return await _fazerRequisicaoGemini(prompt, model); // Tenta a requisição
+                            return await _fazerRequisicaoGemini(prompt, model);
                         } catch (error) {
-                            // Só tenta novamente se for um erro de servidor (5xx) e se ainda houver tentativas
                             if (error.status >= 500 && i < maxRetries - 1) {
                                 console.warn(`Modelo ${model} sobrecarregado (tentativa ${i + 1}/${maxRetries}). Tentando novamente em ${delay / 1000}s...`);
                                 await new Promise(resolve => setTimeout(resolve, delay));
-                                delay *= 2; // Dobra o tempo de espera (backoff exponencial)
+                                delay *= 2;
                             } else {
-                                throw error; // Se for outro erro ou se acabaram as tentativas, desiste e joga o erro
+                                throw error;
                             }
                         }
                     }
                 };
 
                 /**
-                 * NOVO: Função principal e resiliente para chamar a API Gemini.
-                 * Gerencia o fallback para outros modelos se o principal falhar.
+                 * Função principal e resiliente para chamar a IA.
+                 * Tenta múltiplos modelos Gemini e, se TODOS falharem, usa o fallback (Vercel/Groq).
                  * @param {string} prompt - O prompt para a IA.
                  * @returns {Promise<string>} O texto gerado.
                  */
                 const gerarTextoComGemini = async (prompt) => {
-                    // Lista de modelos em ordem de preferência, com nomes estáveis e atualizados
+                    // Lista de modelos Gemini para tentar em ordem de preferência.
                     const MODELS_TO_TRY = [
-                        'gemini-2.0-flash',
                         'gemini-2.0-flash-lite',
                         'gemini-2.5-flash-lite',
+                        'gemini-2.0-flash',
                         'gemini-2.5-flash',
-                        'text-multilingual-embedding-002',
                         'gemini-2.5-pro'
                     ];
 
+                    // Tenta cada modelo Gemini da lista.
                     for (const model of MODELS_TO_TRY) {
                         try {
-                            console.log(`Tentando usar o modelo: ${model}`);
+                            console.log(`Tentando usar o modelo Gemini: ${model}`);
                             const result = await _gerarTextoComRetry(prompt, model);
-                            console.log(`Sucesso com o modelo: ${model}`);
-                            return result;
+                            console.log(`Sucesso com o modelo Gemini: ${model}`);
+                            return result; // Se tiver sucesso, retorna o resultado e encerra a função.
                         } catch (error) {
                             console.error(`Falha ao usar o modelo ${model} após todas as tentativas.`, error.message);
-                            // Se o erro for 429, não haverá outro modelo gratuito disponível.
-                            if (error.code === 429) {
-                                console.error("Cota de uso excedida. Faça o upgrade ou espere.");
-                                throw new Error('Cota de uso da API Gemini excedida.');
+                            // Se o erro for de cota excedida (429), não adianta tentar outros modelos Gemini.
+                            // Pulamos direto para o fallback.
+                            if (error.status === 429) {
+                                console.warn("Cota de uso da API Gemini excedida. Acionando fallback final.");
+                                break; // Sai do loop para acionar o fallback.
                             }
+                            // Se for outro erro, o loop continuará para o próximo modelo.
                         }
                     }
 
-                    throw new Error('Falha ao gerar texto após todas as tentativas com os modelos Gemini.');
+                    // Se o loop terminar sem sucesso, todos os modelos Gemini falharam.
+                    // Agora, e somente agora, acionamos o fallback final na Vercel.
+                    try {
+                        console.log(`Tentando usar o modelo Groq via Vercel`);
+                        const result = await _callFallbackAPI(prompt);
+                        console.log(`Sucesso com o modelo Groq`);
+                        return result;
+                    } catch (fallbackError) {
+                        // Se o fallback também falhar, lança um erro final para o usuário.
+                        throw new Error('Todos os modelos de fallback da Gemini e Groq via Vercel falharam.');
+                    }
                 };
 
 
