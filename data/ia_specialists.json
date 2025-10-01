@@ -1,0 +1,65 @@
+[
+    {
+        "type": "nestedmenuitem",
+        "text": "Selos",
+        "icon": "selos",
+        "getSubmenuItems": [ 
+            {
+                "type": "menuitem",
+                "text": "GPT - Selo Digital AL",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68a92b5ed904819187b4881f8efc9366-selo-digital-de-al"
+            },
+            {
+                "type": "menuitem",
+                "text": "GPT - Selo Digital PE",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68a91bfa0f3c8191848220e103b92286-selo-digital-de-pe"
+            },
+            {
+                "type": "menuitem",
+                "text": "GPT - Selo Digital PR",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68ac6f0695e08191a536c5a86e8f61ba-selo-digital-de-pr"
+            },
+            {
+                "type": "menuitem",
+                "text": "GPT - Selo Digital BA",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68ade97d7b6881919b7bbb268a857440-selo-digital-de-ba"
+            },
+            {
+                "type": "menuitem",
+                "text": "GPT - Selo Digital SP",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68addbc7209c8191ab9790c3931d9f22-selo-digital-de-sp"
+            }
+        ]
+    },
+    {
+        "type": "nestedmenuitem",
+        "text": "Em teste",
+        "icon": "engrenagem",
+        "getSubmenuItems": [ 
+            {
+                "type": "menuitem",
+                "text": "GPT - Procurações e Escrituras",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68b7aa636fc88191a6b20baf55ad5425-procuracoes-e-escrituras"
+            },
+            {
+                "type": "menuitem",
+                "text": "GPT - Preferências do DOC-Windows",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68b85c218248819192b205d84bf879bc-preferencias"
+            }
+        ]
+    }
+]

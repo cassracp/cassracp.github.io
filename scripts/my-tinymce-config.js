@@ -1,3 +1,257 @@
+// ===================================================================================
+// == LÓGICA DE TRANSCRIÇÃO (ESCOPO GLOBAL) ==========================================
+// ===================================================================================
+// Esta seção fica FORA do DOMContentLoaded para ser definida globalmente.
+
+/**
+ * NOVO: Classe para gerenciar a instância do FFmpeg.
+ * VERSÃO 3: Adaptado para carregar como um Módulo ES (import).
+ */
+class FFmpegManager {
+    static instance = null;
+    static loading = false;
+
+    static async getInstance(progress_callback = null) {
+        const waitForFFmpegGlobal = async (timeoutMs = 20000, intervalMs = 200) => {
+            const start = Date.now();
+            while (Date.now() - start < timeoutMs) {
+                // Procurando pela variável global "FFmpeg" que a versão 0.11.6 deve criar
+                if (typeof window !== 'undefined' && window.FFmpeg) {
+                    return window.FFmpeg;
+                }
+                await new Promise(r => setTimeout(r, intervalMs));
+            }
+            return null;
+        };
+
+        if (this.instance) return this.instance;
+        if (this.loading) {
+            await new Promise(resolve => {
+                const checkInterval = setInterval(() => {
+                    if (this.instance) {
+                        clearInterval(checkInterval);
+                        resolve(this.instance);
+                    }
+                }, 100);
+            });
+            return this.instance;
+        }
+
+        this.loading = true;
+        const FFmpegModule = await waitForFFmpegGlobal();
+
+        if (!FFmpegModule) {
+            this.loading = false;
+            throw new Error("A biblioteca FFmpeg (CDN) não foi carregada. Verifique a conexão e a tag <script>.");
+        }
+
+        const { createFFmpeg, fetchFile } = FFmpegModule;
+
+        if (typeof createFFmpeg !== 'function') {
+            throw new TypeError("A função 'createFFmpeg' não foi encontrada no objeto FFmpeg. A versão do CDN pode não ser a correta.");
+        }
+
+        const ffmpeg = createFFmpeg({
+            log: false,
+            progress: (p) => {
+                if (progress_callback) {
+                    const percentage = (p.ratio * 100).toFixed(0);
+                    progress_callback({
+                        status: 'loading_ffmpeg',
+                        message: `Carregando conversor de áudio... ${percentage}%`,
+                    });
+                }
+            },
+        });
+
+        await ffmpeg.load();
+        this.instance = { ffmpeg, fetchFile };
+        this.loading = false;
+        return this.instance;
+    }
+}
+
+/**
+ * Classe para gerenciar a instância do modelo de IA, garantindo que seja carregada apenas uma vez.
+ */
+class TranscriptionPipeline {
+    static task = "automatic-speech-recognition";
+    static model = "Xenova/whisper-tiny";
+    static instance = null;
+
+    static async getInstance(progress_callback = null) {
+        // Função auxiliar: espera Xenova aparecer no escopo global
+        const waitForXenova = async (timeoutMs = 10000, intervalMs = 200) => {
+            const start = Date.now();
+            while (Date.now() - start < timeoutMs) {
+                if (typeof self !== 'undefined' && self.Xenova) {
+                    return self.Xenova;
+                }
+                await new Promise(r => setTimeout(r, intervalMs));
+            }
+            return null;
+        };
+
+        // Se já existe instância, retorna
+        if (this.instance) return this.instance;
+
+        // Aguarda até 10s para Xenova estar carregado
+        const xen = await waitForXenova();
+        if (!xen) {
+            throw new Error(
+                "A biblioteca Xenova/transformers.js não foi carregada a tempo. " +
+                "Verifique se o <script type='module'> import(...) </script> foi incluído antes deste arquivo."
+            );
+        }
+
+        // Alguns builds exportam como default, outros como objeto direto
+        const namespace = xen.default ? xen.default : xen;
+        const { pipeline, env } = namespace;
+
+        if (!pipeline) {
+            throw new Error(
+                "A biblioteca Xenova foi encontrada, mas não expõe 'pipeline'. " +
+                "Verifique a versão correta do bundle."
+            );
+        }
+
+        // Configurações do ambiente
+        env.allowLocalModels = false;
+
+        // Cria a pipeline de transcrição
+        this.instance = await pipeline(this.task, this.model, { progress_callback });
+        return this.instance;
+    }
+}
+
+/**
+ * Função principal que lida com a transcrição de um arquivo de áudio ou URL.
+ */
+const transcribeAudio = async (audioSource, onProgress) => {
+    onProgress({
+        status: 'loading',
+        message: 'Carregando o modelo de IA... (isso pode demorar na primeira vez)',
+    });
+
+    const [transcriber, ffmpegInstance] = await Promise.all([
+        TranscriptionPipeline.getInstance((progress) => {
+            if (progress.status === 'progress') {
+                const percentage = (progress.progress || 0).toFixed(2);
+                onProgress({
+                    status: 'loading',
+                    message: `Baixando arquivos do modelo... ${percentage}%`,
+                });
+            }
+        }),
+        FFmpegManager.getInstance(onProgress)
+    ]);
+
+    // 2. Converte o áudio para um formato compatível (WAV)
+    onProgress({ status: 'converting', message: 'Preparando o áudio para o modelo...' });
+    
+    const { ffmpeg, fetchFile } = ffmpegInstance;
+
+    // helper: mapeia mime -> extensão simplificada
+    const mimeToExt = (mime) => {
+    if (!mime) return 'bin';
+    if (mime.includes('opus')) return 'opus';
+    if (mime.includes('ogg')) return 'ogg';
+    if (mime.includes('mpeg') || mime.includes('mp3')) return 'mp3';
+    if (mime.includes('wav') || mime.includes('wave')) return 'wav';
+    if (mime.includes('m4a') || mime.includes('mp4')) return 'm4a';
+    return 'bin';
+    };
+
+    let inputExt = 'bin';
+    let inputFileName;
+    if (typeof audioSource === 'string') {
+    // URL: tenta extrair extensão da URL
+    try {
+        inputExt = audioSource.split('.').pop().split(/[?#]/)[0].toLowerCase();
+    } catch (e) { inputExt = 'bin'; }
+    inputFileName = `input.${inputExt}`;
+    } else if (audioSource instanceof File) {
+    inputExt = (audioSource.name && audioSource.name.split('.').pop()) ? audioSource.name.split('.').pop().toLowerCase() : mimeToExt(audioSource.type);
+    inputFileName = `input.${inputExt}`;
+    } else if (audioSource instanceof Blob) {
+    inputExt = mimeToExt(audioSource.type);
+    inputFileName = `input.${inputExt}`;
+    } else {
+    inputFileName = 'input.bin';
+    }
+
+    const outputFileName = 'output.wav';
+
+    // Ler dados
+    let data;
+    if (audioSource instanceof File || audioSource instanceof Blob) {
+    data = new Uint8Array(await audioSource.arrayBuffer());
+    } else {
+    data = await fetchFile(audioSource); // quando vier URL
+    }
+
+    // opcional: habilita logger do ffmpeg para debug (bom em dev)
+    try {
+    if (typeof ffmpeg.setLogger === 'function') {
+        ffmpeg.setLogger(({ type, message }) => console.log(`[ffmpeg ${type}] ${message}`));
+    }
+    } catch (e) { /* ignora se não disponível */ }
+
+    ffmpeg.FS('writeFile', inputFileName, data);
+
+    // tenta conversão padrão; se falhar e for opus/ogg tenta forçar -f ogg
+    try {
+    await ffmpeg.run('-i', inputFileName, '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le', '-f', 'wav', outputFileName);
+    } catch (e) {
+    console.warn('ffmpeg conversão padrão falhou, tentando fallback por formato...', e.message);
+    if (['opus','ogg'].includes(inputExt)) {
+        // força container/codec quando for opus/ogg
+        await ffmpeg.run('-f', 'ogg', '-i', inputFileName, '-ar', '16000', '-ac', '1', '-c:a', 'pcm_s16le', outputFileName);
+    } else {
+        throw new Error('Falha ao converter áudio com ffmpeg: ' + e.message);
+    }
+    }
+
+    // lê o WAV resultante
+    const wavData = ffmpeg.FS('readFile', outputFileName);
+
+    // opcional: limpe arquivos (pode esperar até terminar)
+    ffmpeg.FS('unlink', inputFileName);
+    ffmpeg.FS('unlink', outputFileName);
+
+    //const { read_audio } = self.Xenova;
+
+    // opção A: passar como Blob
+    // const wavBlob = new Blob([wavData.buffer], { type: 'audio/wav' });
+    //const audioForModel = await read_audio(wavBlob, 16000);
+
+    // opção B (alternativa, se ainda falhar): forçar Uint8Array
+    //const audioForModel = await read_audio(new Uint8Array(wavData), 16000);
+
+    //const audioForModel = Float32Array.from(wavData); 
+
+
+    // agora chama o transcriber
+    /*const output = await transcriber(audioForModel, {
+    language: 'portuguese',
+    task: 'transcribe'
+    });*/
+
+    const ctx = new AudioContext({ sampleRate: 16000 });
+    const audioBuffer = await ctx.decodeAudioData(wavData.buffer);
+    const channelData = audioBuffer.getChannelData(0); // Float32Array
+    const output = await transcriber(channelData, {
+    language: 'portuguese',
+    task: 'transcribe',
+    temperature: 0.3,      // reduz criatividade, mais literal
+    without_timestamps: true
+    });
+
+    return output.text;
+};
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -66,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let activeTabId = null; // ID da aba atualmente ativa
     let cachedProtocolsData = null;
     let cachedClickUpData = null;
+    let cachedIASpecialistsData = null;
 
     const tabContainer = document.getElementById('tab-container');
     const editorAreaContainer = document.getElementById('editor-area-container');
@@ -443,11 +698,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 tools: { 
                     title: 'Ferramentas', 
-                    items: 'charmap emoticons | gerarTextoGemini datecalculator | responderMensagem'                 
+                    items: 'charmap emoticons | gerarTextoGemini transcribeaudio | datecalculator responderMensagem'                 
                 },
                 demaria: { 
                     title: 'DeMaria', 
-                    items: 'planejamentoimplantacao clickupMenu | formatarTelefone topicoTarefa topicoOS protocolosDeMariaMenu | geradorscripts'
+                    items: 'planejamentoimplantacao clickupMenu especialistasIAMenu | formatarTelefone topicoTarefa topicoOS protocolosDeMariaMenu | geradorscripts'
                 },
                 table: { 
                     title: 'Tabela', 
@@ -459,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             menubar: 'file edit view insert format tools demaria table help',
-            toolbar: 'undo redo novodocumento copyhtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria | gerarTextoGemini geradorscripts customcodeview modofoco preview',
+            toolbar: 'undo redo novodocumento copyhtml limpartexto | blocks fontfamily fontsize | forecolor backcolor bold italic underline strikethrough togglecodeformat blockquote removeformat | align lineheight numlist bullist indent outdent hr | responderMensagem linkOS linkTarefa imagemComLink inseriraudio insertCalendarDate | formatarTelefone topicoTarefa topicoOS protocolosDeMaria geradorscripts | gerarTextoGemini transcribeaudio | customcodeview modofoco preview',
             font_family_formats: fontFamilyFormats,
             font_size_formats: fontSizeFormats,
             insertdatetime_timeformat: '%H:%M:%S',
@@ -670,6 +925,94 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Se o fallback também falhar, lança um erro final para o usuário.
                         throw new Error('Todos os modelos de fallback da Gemini e Groq via Vercel falharam.');
                     }
+                };
+
+                // ===================================================================================
+                // == FUNÇÃO DO DIÁLOGO DE TRANSCRIÇÃO DE ÁUDIO =====================================
+                // ===================================================================================
+                const openTranscribeAudioDialog = () => {
+                    editor.windowManager.open({
+                        title: 'Transcrever Áudio para Texto',
+                        size: 'medium',
+                        body: {
+                            type: 'tabpanel',
+                            tabs: [
+                                {
+                                    name: 'from_file',
+                                    title: 'Enviar Arquivo',
+                                    items: [
+                                        {
+                                            type: 'htmlpanel',
+                                            html: '<p style="margin-bottom: 15px;">Selecione um arquivo de áudio (MP3, WAV, OPUS, etc.) do seu computador.</p><input type="file" id="audio-file-input" accept="audio/*" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />'
+                                        }
+                                    ]
+                                },
+                                {
+                                    name: 'from_url',
+                                    title: 'Usar URL',
+                                    items: [
+                                        {
+                                            type: 'input',
+                                            name: 'audioUrl',
+                                            label: 'URL do Áudio',
+                                            placeholder: 'https://exemplo.com/audio.opus'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        buttons: [
+                            { type: 'cancel', text: 'Cancelar' },
+                            { type: 'submit', text: 'Transcrever', primary: true, buttonType: 'primary' }
+                        ],
+                        onSubmit: async (dialogApi) => {
+                            const data = dialogApi.getData();
+                            let audioSource = null;
+
+                            if (data.audioUrl && data.audioUrl.trim() !== '') {
+                                audioSource = data.audioUrl.trim();
+                            } else {
+                                const fileInput = document.getElementById('audio-file-input');
+                                if (fileInput && fileInput.files.length > 0) {
+                                    audioSource = fileInput.files[0];
+                                }
+                            }
+
+                            if (!audioSource) {
+                                Swal.fire('Atenção', 'Você precisa fornecer um arquivo de áudio ou uma URL.', 'warning');
+                                return;
+                            }
+
+                            dialogApi.close();
+                            
+                            Swal.fire({
+                                title: 'Iniciando Transcrição',
+                                text: 'Aguarde, preparando o ambiente...',
+                                allowOutsideClick: false,
+                                didOpen: () => Swal.showLoading()
+                            });
+
+                            const updateProgress = (progress) => {
+                                const swalContent = Swal.getHtmlContainer();
+                                if (swalContent) {
+                                    const textContainer = swalContent.querySelector('.swal2-html-container');
+                                    if (textContainer) {
+                                        textContainer.textContent = progress.message;
+                                    }
+                                }
+                            };
+
+                            try {
+                                const transcribedText = await transcribeAudio(audioSource, updateProgress);
+                                Swal.close();
+                                const formattedText = transcribedText.split('\n').map(p => `<p>${p.trim() || '&nbsp;'}</p>`).join('');
+                                editor.insertContent(formattedText);
+                            } catch (error) {
+                                console.error("Erro ao transcrever áudio:", error);
+                                Swal.fire('Erro na Transcrição', `Ocorreu um problema: ${error.message}`, 'error');
+                            }
+                        }
+                    });
                 };
 
 
@@ -1503,16 +1846,44 @@ document.addEventListener('DOMContentLoaded', () => {
                          console.error('Falha ao carregar clickup_menu.json:', error);
                          cachedClickUpData = 'error';
                      });
-             };
+                };
+                             
+                // NOVO: Função para carregar o JSON dos Especialistas IA
+                const loadIASpecialistsIfNeeded = () => {
+                    if (cachedIASpecialistsData !== null) return;
+                    cachedIASpecialistsData = 'loading';
+
+                    fetch('data/ia_specialists.json')
+                        .then(response => {
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                            return response.json();
+                        })
+                        .then(data => {
+                            cachedIASpecialistsData = data;
+                        })
+                        .catch(error => {
+                            console.error('Falha ao carregar ia_specialists.json:', error);
+                            cachedIASpecialistsData = 'error';
+                        });
+                };
 
                 loadProtocolsIfNeeded();
-                loadClickUpMenuIfNeeded();
+                loadClickUpMenuIfNeeded();                
+                loadIASpecialistsIfNeeded();
+
 
                 // ===================================================================================
                 // == ÍCONES PERSONALIZADOS ==========================================================
                 // ===================================================================================
 
-                editor.ui.registry.addIcon('sparkles', '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.25L13.06 5.69L16.5 6.75L13.06 7.81L12 11.25L10.94 7.81L7.5 6.75L10.94 5.69L12 2.25ZM6 9L7.06 12.44L10.5 13.5L7.06 14.56L6 18L4.94 14.56L1.5 13.5L4.94 12.44L6 9ZM18 12L16.94 15.44L13.5 16.5L16.94 17.56L18 21L19.06 17.56L22.5 16.5L19.06 15.44L18 12Z" fill="currentColor"/></svg>');
+                // Ícone de Transcrição
+                editor.ui.registry.addIcon('transcribe', `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.9);"><!-- Barras de áudio --><path d="M4 14h2V10H4v4zm4 3h2V7H8v10zm4-2h2V5h-2v10zm4 4h2V9h-2v10zm4-3h2v-4h-2v4z" fill="currentColor"/><!-- Sparkle principal --><path d="M17 2l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z" fill="currentColor"/><!-- Sparkle pequeno --><path d="M21 7.5l0.5 1 1 0.5-1 0.5-0.5 1-0.5-1-1-0.5 1-0.5 0.5-1z" fill="currentColor"/></svg>`);
+                
+                editor.ui.registry.addIcon('engrenagem', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M9.99996 2C9.44768 2 8.99996 2.44772 8.99996 3V4.58178C8.30471 4.86318 7.65844 5.23923 7.07704 5.69365L5.70573 4.90193C5.47605 4.76932 5.20309 4.73338 4.94691 4.80202C4.69073 4.87067 4.47232 5.03827 4.33971 5.26795L2.33971 8.73205C2.06357 9.21034 2.22744 9.82193 2.70573 10.0981L4.07654 10.8895C4.02603 11.2528 3.99997 11.6236 3.99997 12C3.99997 12.3764 4.02603 12.7471 4.07654 13.1105L2.70574 13.9019C2.47605 14.0345 2.30846 14.2529 2.23981 14.5091C2.17117 14.7653 2.2071 15.0382 2.33971 15.2679L4.33971 18.732C4.47232 18.9617 4.69074 19.1293 4.94692 19.198C5.2031 19.2666 5.47605 19.2307 5.70574 19.0981L7.07706 18.3063C7.65846 18.7607 8.30472 19.1368 8.99996 19.4182V21C8.99996 21.5523 9.44768 22 9.99996 22H14C14.5522 22 15 21.5523 15 21V19.4182C15.6952 19.1368 16.3415 18.7607 16.9229 18.3063L18.2942 19.0981C18.5239 19.2307 18.7968 19.2666 19.053 19.198C19.3092 19.1293 19.5276 18.9617 19.6602 18.7321L21.6602 15.268C21.7928 15.0383 21.8288 14.7653 21.7601 14.5091C21.6915 14.253 21.5239 14.0345 21.2942 13.9019L19.9234 13.1105C19.9739 12.7472 20 12.3764 20 12C20 11.6236 19.9739 11.2528 19.9234 10.8895L21.2942 10.0981C21.7725 9.82191 21.9364 9.21032 21.6602 8.73203L19.6602 5.26793C19.5276 5.03824 19.3092 4.87065 19.053 4.802C18.7968 4.73336 18.5239 4.76929 18.2942 4.9019L16.9229 5.69364C16.3415 5.23922 15.6952 4.86318 15 4.58178V3C15 2.44772 14.5522 2 14 2H9.99996ZM11 5.28986V4H13V5.28986C13 5.73228 13.2907 6.12211 13.7147 6.24831C14.6258 6.51947 15.4475 7.00198 16.1223 7.64029C16.4436 7.94424 16.9264 8.00099 17.3095 7.77984L18.4282 7.13395L19.4282 8.866L18.3109 9.51107C17.9281 9.73205 17.7358 10.1781 17.8379 10.6081C17.9437 11.0538 18 11.5197 18 12C18 12.4803 17.9437 12.9462 17.8379 13.3919C17.7358 13.8219 17.9281 14.2679 18.3109 14.4889L19.4282 15.134L18.4282 16.866L17.3094 16.2201C16.9264 15.999 16.4436 16.0557 16.1222 16.3597C15.4475 16.998 14.6258 17.4805 13.7147 17.7516C13.2907 17.8778 13 18.2677 13 18.7101V20H11V18.7101C11 18.2677 10.7092 17.8778 10.2852 17.7516C9.37409 17.4805 8.55246 16.998 7.87767 16.3597C7.55635 16.0557 7.07352 15.999 6.69048 16.2201L5.57176 16.866L4.57176 15.134L5.68905 14.4889C6.0718 14.2679 6.26409 13.8219 6.16201 13.3919C6.05621 12.9462 5.99997 12.4803 5.99997 12C5.99997 11.5197 6.0562 11.0538 6.16201 10.6081C6.26409 10.1781 6.07179 9.73207 5.68905 9.51109L4.57176 8.86603L5.57176 7.13398L6.69046 7.77986C7.07351 8.00101 7.55633 7.94425 7.87766 7.6403C8.55245 7.00199 9.37409 6.51948 10.2852 6.24831C10.7092 6.12211 11 5.73228 11 5.28986ZM9.99998 12C9.99998 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 9.99998 13.1046 9.99998 12ZM12 8C9.79084 8 7.99998 9.79086 7.99998 12C7.99998 14.2091 9.79084 16 12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8Z" fill="currentColor"></path> </g></svg>');
+                editor.ui.registry.addIcon('selos', '<svg fill="currentColor" width="18px" height="18px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>stamp</title> <path d="M0 30.016q0 0.832 0.576 1.408t1.44 0.576h4q0-0.8 0.576-1.408t1.408-0.576 1.408 0.576 0.608 1.408h4q0-0.8 0.576-1.408t1.408-0.576 1.408 0.576 0.608 1.408h4q0-0.8 0.576-1.408t1.408-0.576 1.408 0.576 0.608 1.408h4q0.8 0 1.408-0.576t0.576-1.408v-4q-0.832 0-1.408-0.576t-0.576-1.44 0.576-1.408 1.408-0.576v-4q-0.832 0-1.408-0.576t-0.576-1.44 0.576-1.408 1.408-0.576v-4q-0.832 0-1.408-0.576t-0.576-1.44 0.576-1.408 1.408-0.576v-4q0-0.832-0.576-1.408t-1.408-0.608h-4q0 0.832-0.608 1.44t-1.408 0.576-1.408-0.576-0.576-1.44h-4q0 0.832-0.608 1.44t-1.408 0.576-1.408-0.576-0.576-1.44h-4q0 0.832-0.608 1.44t-1.408 0.576-1.408-0.576-0.576-1.44h-4q-0.832 0-1.44 0.608t-0.576 1.408v4q0.832 0 1.408 0.576t0.608 1.408-0.608 1.44-1.408 0.576v4q0.832 0 1.408 0.576t0.608 1.408-0.608 1.44-1.408 0.576v4q0.832 0 1.408 0.576t0.608 1.408-0.608 1.44-1.408 0.576v4zM4 28v-24h24v24h-24zM6.016 26.016h20v-20h-20v20zM8 24v-16h16v16h-16z"></path> </g></svg>');
+                editor.ui.registry.addIcon('ai-brain', '<svg width="24px" height="24px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>ai</title> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="icon" fill="currentColor" transform="translate(64.000000, 64.000000)"> <path d="M320,64 L320,320 L64,320 L64,64 L320,64 Z M171.749388,128 L146.817842,128 L99.4840387,256 L121.976629,256 L130.913039,230.977 L187.575039,230.977 L196.319607,256 L220.167172,256 L171.749388,128 Z M260.093778,128 L237.691519,128 L237.691519,256 L260.093778,256 L260.093778,128 Z M159.094727,149.47526 L181.409039,213.333 L137.135039,213.333 L159.094727,149.47526 Z M341.333333,256 L384,256 L384,298.666667 L341.333333,298.666667 L341.333333,256 Z M85.3333333,341.333333 L128,341.333333 L128,384 L85.3333333,384 L85.3333333,341.333333 Z M170.666667,341.333333 L213.333333,341.333333 L213.333333,384 L170.666667,384 L170.666667,341.333333 Z M85.3333333,0 L128,0 L128,42.6666667 L85.3333333,42.6666667 L85.3333333,0 Z M256,341.333333 L298.666667,341.333333 L298.666667,384 L256,384 L256,341.333333 Z M170.666667,0 L213.333333,0 L213.333333,42.6666667 L170.666667,42.6666667 L170.666667,0 Z M256,0 L298.666667,0 L298.666667,42.6666667 L256,42.6666667 L256,0 Z M341.333333,170.666667 L384,170.666667 L384,213.333333 L341.333333,213.333333 L341.333333,170.666667 Z M0,256 L42.6666667,256 L42.6666667,298.666667 L0,298.666667 L0,256 Z M341.333333,85.3333333 L384,85.3333333 L384,128 L341.333333,128 L341.333333,85.3333333 Z M0,170.666667 L42.6666667,170.666667 L42.6666667,213.333333 L0,213.333333 L0,170.666667 Z M0,85.3333333 L42.6666667,85.3333333 L42.6666667,128 L0,128 L0,85.3333333 Z" id="Combined-Shape"> </path> </g> </g> </g></svg>');
+                editor.ui.registry.addIcon('gpt', '<svg width="20px" height="20px" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg"><path d="m297.06 130.97c7.26-21.79 4.76-45.66-6.85-65.48-17.46-30.4-52.56-46.04-86.84-38.68-15.25-17.18-37.16-26.95-60.13-26.81-35.04-.08-66.13 22.48-76.91 55.82-22.51 4.61-41.94 18.7-53.31 38.67-17.59 30.32-13.58 68.54 9.92 94.54-7.26 21.79-4.76 45.66 6.85 65.48 17.46 30.4 52.56 46.04 86.84 38.68 15.24 17.18 37.16 26.95 60.13 26.8 35.06.09 66.16-22.49 76.94-55.86 22.51-4.61 41.94-18.7 53.31-38.67 17.57-30.32 13.55-68.51-9.94-94.51zm-120.28 168.11c-14.03.02-27.62-4.89-38.39-13.88.49-.26 1.34-.73 1.89-1.07l63.72-36.8c3.26-1.85 5.26-5.32 5.24-9.07v-89.83l26.93 15.55c.29.14.48.42.52.74v74.39c-.04 33.08-26.83 59.9-59.91 59.97zm-128.84-55.03c-7.03-12.14-9.56-26.37-7.15-40.18.47.28 1.3.79 1.89 1.13l63.72 36.8c3.23 1.89 7.23 1.89 10.47 0l77.79-44.92v31.1c.02.32-.13.63-.38.83l-64.41 37.19c-28.69 16.52-65.33 6.7-81.92-21.95zm-16.77-139.09c7-12.16 18.05-21.46 31.21-26.29 0 .55-.03 1.52-.03 2.2v73.61c-.02 3.74 1.98 7.21 5.23 9.06l77.79 44.91-26.93 15.55c-.27.18-.61.21-.91.08l-64.42-37.22c-28.63-16.58-38.45-53.21-21.95-81.89zm221.26 51.49-77.79-44.92 26.93-15.54c.27-.18.61-.21.91-.08l64.42 37.19c28.68 16.57 38.51 53.26 21.94 81.94-7.01 12.14-18.05 21.44-31.2 26.28v-75.81c.03-3.74-1.96-7.2-5.2-9.06zm26.8-40.34c-.47-.29-1.3-.79-1.89-1.13l-63.72-36.8c-3.23-1.89-7.23-1.89-10.47 0l-77.79 44.92v-31.1c-.02-.32.13-.63.38-.83l64.41-37.16c28.69-16.55 65.37-6.7 81.91 22 6.99 12.12 9.52 26.31 7.15 40.1zm-168.51 55.43-26.94-15.55c-.29-.14-.48-.42-.52-.74v-74.39c.02-33.12 26.89-59.96 60.01-59.94 14.01 0 27.57 4.92 38.34 13.88-.49.26-1.33.73-1.89 1.07l-63.72 36.8c-3.26 1.85-5.26 5.31-5.24 9.06l-.04 89.79zm14.63-31.54 34.65-20.01 34.65 20v40.01l-34.65 20-34.65-20z"/></svg>');
+                editor.ui.registry.addIcon('sparkles', '<svg width="20px" height="20px" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z" fill="currentColor"/><defs><radialGradient id="prefix__paint0_radial_980_20147" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(16.1326 5.4553 -43.70045 129.2322 1.588 6.503)"><stop offset=".067" stop-color="#9168C0"/><stop offset=".343" stop-color="#5684D1"/><stop offset=".672" stop-color="#1BA1E3"/></radialGradient></defs></svg>');
                 editor.ui.registry.addIcon('edit-sparkles', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" transform="matrix(-1, 0, 0, 1, 0, 0)" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.5" d="M3.84453 3.84453C2.71849 4.97056 2.71849 6.79623 3.84453 7.92226L5.43227 9.51C5.44419 9.49622 5.98691 10.013 6 9.99989L10 5.99989C10.0131 5.98683 9.49625 5.44415 9.50999 5.43226L7.92226 3.84453C6.79623 2.71849 4.97056 2.71849 3.84453 3.84453Z" fill="currentColor"></path> <path opacity="0.5" d="M5.1332 15.3072C5.29414 14.8976 5.87167 14.8976 6.03261 15.3072L6.18953 15.7065C6.23867 15.8316 6.33729 15.9306 6.46188 15.9799L6.85975 16.1374C7.26783 16.2989 7.26783 16.8786 6.85975 17.0401L6.46188 17.1976C6.33729 17.2469 6.23867 17.3459 6.18953 17.471L6.03261 17.8703C5.87167 18.2799 5.29414 18.2799 5.1332 17.8703L4.97628 17.471C4.92714 17.3459 4.82852 17.2469 4.70393 17.1976L4.30606 17.0401C3.89798 16.8786 3.89798 16.2989 4.30606 16.1374L4.70393 15.9799C4.82852 15.9306 4.92714 15.8316 4.97628 15.7065L5.1332 15.3072Z" fill="currentColor"></path> <path opacity="0.2" d="M19.9672 9.12945C20.1281 8.71987 20.7057 8.71987 20.8666 9.12945L21.0235 9.5288C21.0727 9.65385 21.1713 9.75284 21.2959 9.80215L21.6937 9.95965C22.1018 10.1212 22.1018 10.7009 21.6937 10.8624L21.2959 11.0199C21.1713 11.0692 21.0727 11.1682 21.0235 11.2932L20.8666 11.6926C20.7057 12.1022 20.1281 12.1022 19.9672 11.6926L19.8103 11.2932C19.7611 11.1682 19.6625 11.0692 19.5379 11.0199L19.14 10.8624C18.732 10.7009 18.732 10.1212 19.14 9.95965L19.5379 9.80215C19.6625 9.75284 19.7611 9.65385 19.8103 9.5288L19.9672 9.12945Z" fill="currentColor"></path> <path opacity="0.7" d="M16.1 2.30719C16.261 1.8976 16.8385 1.8976 16.9994 2.30719L17.4298 3.40247C17.479 3.52752 17.5776 3.62651 17.7022 3.67583L18.7934 4.1078C19.2015 4.26934 19.2015 4.849 18.7934 5.01054L17.7022 5.44252C17.5776 5.49184 17.479 5.59082 17.4298 5.71587L16.9995 6.81115C16.8385 7.22074 16.261 7.22074 16.1 6.81116L15.6697 5.71587C15.6205 5.59082 15.5219 5.49184 15.3973 5.44252L14.3061 5.01054C13.898 4.849 13.898 4.26934 14.3061 4.1078L15.3973 3.67583C15.5219 3.62651 15.6205 3.52752 15.6697 3.40247L16.1 2.30719Z" fill="currentColor"></path> <path d="M10.5681 6.48999C10.5562 6.50373 10.0133 5.9867 10.0002 5.99975L6.00024 9.99975C5.98715 10.0128 6.50414 10.5558 6.49036 10.5677L16.078 20.1553C17.204 21.2814 19.0297 21.2814 20.1557 20.1553C21.2818 19.0293 21.2818 17.2036 20.1557 16.0776L10.5681 6.48999Z" fill="currentColor"></path> </g></svg>');
                 editor.ui.registry.addIcon('fone', '<svg width="20px" height="20px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16.5562 12.9062L16.1007 13.359C16.1007 13.359 15.0181 14.4355 12.0631 11.4972C9.10812 8.55901 10.1907 7.48257 10.1907 7.48257L10.4775 7.19738C11.1841 6.49484 11.2507 5.36691 10.6342 4.54348L9.37326 2.85908C8.61028 1.83992 7.13596 1.70529 6.26145 2.57483L4.69185 4.13552C4.25823 4.56668 3.96765 5.12559 4.00289 5.74561C4.09304 7.33182 4.81071 10.7447 8.81536 14.7266C13.0621 18.9492 17.0468 19.117 18.6763 18.9651C19.1917 18.9171 19.6399 18.6546 20.0011 18.2954L21.4217 16.883C22.3806 15.9295 22.1102 14.2949 20.8833 13.628L18.9728 12.5894C18.1672 12.1515 17.1858 12.2801 16.5562 12.9062Z" fill="currentColor"></path> </g></svg>');
                 editor.ui.registry.addIcon('topicotarefa', '<svg width="20px" height="20px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor" transform="matrix(-1, 0, 0, 1, 0, 0)" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>topic-filled</title> <g id="Page-1" stroke="none" stroke-width="1" fill="currentColor" fill-rule="evenodd"> <g id="icon" fill="currentColor" transform="translate(21.333333, 85.333333)"> <path d="M448,1.42108547e-14 L448,341.333333 L106.666667,341.333333 L3.55271368e-15,170.666667 L106.666667,1.42108547e-14 L448,1.42108547e-14 Z M254.919831,64 L222.348588,64 L213.208698,124.371677 L181.135995,124.371677 L181.135995,151.32063 L209.054203,151.32063 L203.07173,190.91602 L170.666667,190.91602 L170.666667,217.864973 L198.917235,217.864973 L189.943525,277.333333 L222.514768,277.333333 L231.488478,217.864973 L265.389159,217.864973 L256.41545,277.333333 L288.986693,277.333333 L297.960402,217.864973 L330.864005,217.864973 L330.864005,190.91602 L302.114898,190.91602 L308.097371,151.32063 L341.333333,151.32063 L341.333333,124.371677 L312.251866,124.371677 L321.391756,64 L288.820513,64 L279.680623,124.371677 L245.779942,124.371677 L254.919831,64 Z M277.333333,149.333333 L270.933333,192 L234.666667,192 L241.066667,149.333333 L277.333333,149.333333 Z" id="Combined-Shape"> </path> </g> </g> </g></svg>');
@@ -1553,6 +1924,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ===================================================================================
                 // == REGISTRO DE BOTÕES E ITENS DE MENU =============================================
                 // ===================================================================================
+
+                // Botão e Item de Menu para Transcrição
+                editor.ui.registry.addMenuItem('transcribeaudio', { text: 'Transcrever Áudio', icon: 'transcribe', onAction: openTranscribeAudioDialog });
+                editor.ui.registry.addButton('transcribeaudio', { icon: 'transcribe', tooltip: 'Transcrever Áudio para Texto', onAction: openTranscribeAudioDialog });
 
                   editor.ui.registry.addMenuItem('sobre', {
                     text: 'Sobre',
@@ -1822,20 +2197,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // REGISTRO PARA O NOVO MENU CLICKUP
-             editor.ui.registry.addNestedMenuItem('clickupMenu', {
-                 text: 'ClickUp',
-                 icon: 'clickup',
-                 getSubmenuItems: () => {
-                     // Constrói o menu a partir do cache no momento do clique
-                     if (Array.isArray(cachedClickUpData)) {
-                         return buildMenuFromJson(cachedClickUpData, tinymce.activeEditor, actionFunctions);
-                     }
-                     // Se ainda não carregou ou deu erro, mostra um estado
-                     return [{ text: cachedClickUpData === 'loading' ? 'Carregando...' : 'Erro ao carregar', enabled: false }];
-                 }
-             });
+                editor.ui.registry.addNestedMenuItem('clickupMenu', {
+                    text: 'ClickUp',
+                    icon: 'clickup',
+                    getSubmenuItems: () => {
+                        // Constrói o menu a partir do cache no momento do clique
+                        if (Array.isArray(cachedClickUpData)) {
+                            return buildMenuFromJson(cachedClickUpData, tinymce.activeEditor, actionFunctions);
+                        }
+                        // Se ainda não carregou ou deu erro, mostra um estado
+                        return [{ text: cachedClickUpData === 'loading' ? 'Carregando...' : 'Erro ao carregar', enabled: false }];
+                    }
+                });
 
-              editor.ui.registry.addNestedMenuItem('saveasMenu', {
+                // REGISTRO PARA O MENU ESPECIALISTAS IA
+                editor.ui.registry.addNestedMenuItem('especialistasIAMenu', {
+                    text: 'Especialistas IA',
+                    icon: 'ai-brain', // Usando o novo ícone
+                    getSubmenuItems: () => {
+                        // Constrói o menu a partir do cache no momento do clique
+                        if (Array.isArray(cachedIASpecialistsData)) {
+                            return buildMenuFromJson(cachedIASpecialistsData, tinymce.activeEditor, actionFunctions);
+                        }
+                        // Se ainda não carregou ou deu erro, mostra um estado
+                        return [{ text: cachedIASpecialistsData === 'loading' ? 'Carregando...' : 'Erro ao carregar', enabled: false }];
+                    }
+                });
+
+
+                editor.ui.registry.addNestedMenuItem('saveasMenu', {
                     text: 'Salvar como...',
                     icon: 'save-as',
                     getSubmenuItems: () => [
