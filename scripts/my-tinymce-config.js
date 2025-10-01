@@ -1509,19 +1509,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     let titleAction;
                     switch (action) {
                         case 'melhorar':
-                            promptAction = 'Reescreva o texto a seguir para melhorar a clareza e o estilo';
+                            promptAction = 'Reescreva o texto a seguir para melhorar a clareza e o estilo. **Considere que o texto melhorado será diretamente incluso em um editor, então Retorne APENAS o texto modificado.**. Apenas melhore o texto, com foco no teor e na escrita origianl. Mantenha o tom profissional, claro e objetivo exigido em comunicações corporativas.';
                             titleAction = 'Melhorando escrita...';
                             break;
                         case 'corrigir':
-                            promptAction = 'Corrija a gramática e a ortografia do texto a seguir';
+                            promptAction = 'Revise o texto a seguir. Corrija a gramática, ortografia, pontuação e sintaxe para garantir que o resultado seja claro, formal e corporativo. **Retorne APENAS o texto modificado.**.';
                             titleAction = 'Corrigindo texto...';
                             break;
                         case 'encurtar':
-                            promptAction = 'Torne o texto a seguir mais conciso, mantendo o significado original';
+                            promptAction = 'Condense o texto a seguir em uma versão significativamente mais curta, mantendo seu **significado essencial** e aderindo a um tom **objetivo e profissional**. O texto final deve ser direto e educado. **Retorne APENAS o texto modificado.**.';
                             titleAction = 'Encurtando texto...';
                             break;
                         case 'expandir':
-                            promptAction = 'Expanda o texto a seguir, adicionando mais detalhes e elaboração';
+                            promptAction = 'Expanda o texto a seguir, elaborando os pontos existentes com **detalhes relevantes** e **linguagem formal**. Mantenha a intenção e o **estilo do autor** e garanta que o novo texto seja claro, coeso e corporativo. **Retorne APENAS o texto modificado.**.';
                             titleAction = 'Expandindo texto...';
                             break;
                         default:
