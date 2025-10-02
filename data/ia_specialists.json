@@ -13,6 +13,13 @@
             },
             {
                 "type": "menuitem",
+                "text": "GPT - Selo Digital BA",
+                "icon": "gpt",
+                "actionType": "openUrl",
+                "actionValue": "https://chatgpt.com/g/g-68ade97d7b6881919b7bbb268a857440-selo-digital-de-ba"
+            },
+            {
+                "type": "menuitem",
                 "text": "GPT - Selo Digital PE",
                 "icon": "gpt",
                 "actionType": "openUrl",
@@ -24,13 +31,6 @@
                 "icon": "gpt",
                 "actionType": "openUrl",
                 "actionValue": "https://chatgpt.com/g/g-68ac6f0695e08191a536c5a86e8f61ba-selo-digital-de-pr"
-            },
-            {
-                "type": "menuitem",
-                "text": "GPT - Selo Digital BA",
-                "icon": "gpt",
-                "actionType": "openUrl",
-                "actionValue": "https://chatgpt.com/g/g-68ade97d7b6881919b7bbb268a857440-selo-digital-de-ba"
             },
             {
                 "type": "menuitem",
