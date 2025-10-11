@@ -832,27 +832,22 @@ document.addEventListener('DOMContentLoaded', () => {
                  * @returns {Promise<string>} O texto gerado.
                  */
                 const _fazerRequisicaoGemini = async (prompt, model) => {
-                    const apiKey = 'AIzaSyA2OQvGwLMD2DJiES4k4uNyx1F4QP_JEsE'; // Mantenha sua chave de API aqui
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-                    const headers = { 'Content-Type': 'application/json' };
-                    const body = JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
+                    // Agora chama nossa API segura
+                    const response = await fetch('/api/gemini', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ prompt, model })
                     });
 
-                    const response = await fetch(url, { method: 'POST', headers: headers, body: body });
-
                     if (!response.ok) {
-                        const errorBody = await response.text();
-                        const error = new Error(`Erro na API com o modelo ${model}: ${response.status} - ${errorBody}`);
+                        const errorData = await response.json().catch(() => ({}));
+                        const error = new Error(errorData.error || `Erro na API: ${response.status}`);
                         error.status = response.status;
                         throw error;
                     }
 
                     const data = await response.json();
-                    if (!data.candidates || data.candidates.length === 0) {
-                        throw new Error('A API não retornou candidatos válidos.');
-                    }
-                    return data.candidates[0].content.parts[0].text;
+                    return data.text;
                 };
 
                 /**
