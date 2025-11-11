@@ -671,6 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
             skin_url: `scripts/my_tinymce_app/skins/ui/${activeTheme}`,
             content_css: activeTheme.includes('dark') ? 'dark' : 'default',
             promotion: false,
+            convert_urls: false,
             language_url: 'scripts/my_tinymce_app/langs/pt_BR.js',
             language: 'pt_BR',
             plugins: [
@@ -1335,10 +1336,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 
                 const FormatarAudio = (url) => {
-                    const encodedUrl = url.replace(/%([0-9A-Fa-f]{2})/g, '%25$1');
                     const extensao = extrairExtensao(url);
                     const tipoMIME = { mp3: 'audio/mpeg', ogg: 'audio/ogg', opus: 'audio/ogg', oga: 'audio/ogg', wav: 'audio/wav', aac: 'audio/aac', m4a: 'audio/mp4' };
-                    return tipoMIME[extensao] ? `<audio controls><source src="${encodedUrl}" type="${tipoMIME[extensao]}"></audio>` : "";
+                    return tipoMIME[extensao] ? `<audio controls><source src="${url}" type="${tipoMIME[extensao]}"></audio>` : "";
                 };
                 
                 const openLinkOSDialog = (editor) => {
