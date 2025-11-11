@@ -1338,7 +1338,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const FormatarAudio = (url) => {
                     const extensao = extrairExtensao(url);
                     const tipoMIME = { mp3: 'audio/mpeg', ogg: 'audio/ogg', opus: 'audio/ogg', oga: 'audio/ogg', wav: 'audio/wav', aac: 'audio/aac', m4a: 'audio/mp4' };
-                    return tipoMIME[extensao] ? `<audio controls><source src="${url}" type="${tipoMIME[extensao]}"></audio>` : "";
+                    const proxyUrl = `/api/proxy-audio?url=${encodeURIComponent(url)}`;
+                    return tipoMIME[extensao] ? `<audio controls><source src="${proxyUrl}" type="${tipoMIME[extensao]}"></audio>` : "";
                 };
                 
                 const openLinkOSDialog = (editor) => {
