@@ -21,11 +21,19 @@ export default async function handler(req, res) {
         }
 
         // Set appropriate headers for streaming the audio
-        // Crucially, set Access-Control-Allow-Origin to allow your frontend to access it
         res.setHeader('Access-Control-Allow-Origin', '*'); // Or specific origin like 'https://cassracp.github.io'
         res.setHeader('Content-Type', response.headers.get('content-type') || 'application/octet-stream');
-        res.setHeader('Content-Length', response.headers.get('content-length'));
         
+        // Crucial for duration and seeking: Content-Length and Accept-Ranges
+        const contentLength = response.headers.get('content-length');
+        if (contentLength) {
+            res.setHeader('Content-Length', contentLength);
+        }
+        res.setHeader('Accept-Ranges', 'bytes'); // Indicate support for byte-range requests
+
+        // Optional: Add Cache-Control for better performance
+        res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+
         // Stream the audio back to the client
         response.body.pipe(res);
 
