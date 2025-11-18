@@ -134,10 +134,15 @@
                         fetch(`${VERCEL_API_URL}/get-script-content?path=${encodeURIComponent(file.path)}`)
                         .then(res => {
                             if (!res.ok) throw new Error(`Falha ao baixar ${file.name}`);
-                            return res.arrayBuffer();
+                            return res.json(); // 1. Espera uma resposta JSON
                         })
-                        .then(buffer => {
-                            const decoder = new TextDecoder('windows-1252');
+                        .then(async (data) => {
+                            // 2. Decodifica o Base64 para um ArrayBuffer
+                            const fetchRes = await fetch(`data:application/octet-stream;base64,${data.content_base64}`);
+                            const buffer = await fetchRes.arrayBuffer();
+                            
+                            // 3. Usa o encoding detectado pelo servidor para obter o texto limpo
+                            const decoder = new TextDecoder(data.detected_encoding);
                             return decoder.decode(buffer);
                         })
                     )

@@ -1,10 +1,11 @@
+import chardet from 'chardet';
+
 export default async function handler(request, response) {
-  // Configuração do repositório (deve ser a mesma da outra função)
+  // Configuração do repositório
   const GITHUB_OWNER = 'demariainfo';
   const GITHUB_REPO = 'doc-windows2017';
   const GITHUB_BRANCH = 'bombeiro';
 
-  // Pega o caminho do arquivo do parâmetro da URL (ex: ?path=scripts/001.sql)
   const { path } = request.query;
 
   if (!path) {
@@ -16,7 +17,6 @@ export default async function handler(request, response) {
     return response.status(500).json({ error: 'Token de acesso não configurado.' });
   }
 
-  // A API para buscar o conteúdo de um arquivo é a mesma, mas com o caminho completo do arquivo
   const apiUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`;
 
   try {
@@ -29,14 +29,29 @@ export default async function handler(request, response) {
     }
 
     const data = await githubResponse.json();
-
-    // O conteúdo do arquivo vem codificado em Base64, precisamos decodificar.
     const contentBase64 = data.content;
-    const contentDecoded = Buffer.from(contentBase64, 'base64').toString('utf-8');
 
+    // 1. Manter o conteúdo como um Buffer (array de bytes)
+    const contentBuffer = Buffer.from(contentBase64, 'base64');
+
+    // 2. Detectar o encoding a partir do Buffer
+    // chardet.detect retorna uma string como 'UTF-8', 'ISO-8859-1', etc.
+    // Usamos um fallback para 'UTF-8' se a detecção falhar.
+    const detectedEncoding = chardet.detect(contentBuffer, { returnAllMatches: false }) || 'UTF-8';
+
+    // ISO-8859-1 é frequentemente como o Win-1252 é detectado.
+    // Para o TextDecoder do navegador, 'windows-1252' é mais robusto.
+    const finalEncoding = detectedEncoding.toUpperCase().includes('8859') ? 'windows-1252' : detectedEncoding;
+
+    // 3. Montar a nova resposta da API
+    const responsePayload = {
+      detected_encoding: finalEncoding,
+      content_base64: contentBase64
+    };
+    
     response.setHeader('Access-Control-Allow-Origin', '*');
-    // Retorna o conteúdo como texto puro
-    return response.status(200).send(contentDecoded);
+    // 4. Retornar o objeto JSON
+    return response.status(200).json(responsePayload);
 
   } catch (error) {
     console.error(error);
