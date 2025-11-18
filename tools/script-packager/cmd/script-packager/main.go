@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"path/filepath"
 
 	"github.com/cassracp/script-packager/internal/github"
 	"github.com/cassracp/script-packager/internal/packager"
@@ -19,9 +18,13 @@ func main() {
 		log.Println("Warning: .env file not found, relying on system environment variables")
 	}
 
-	// Define os flags para a seleção de scripts e o nome do arquivo de saída
+	// Define os flags para a seleção de scripts e os parâmetros de conexão com o banco de dados
 	selection := flag.String("s", "", "Comma-separated numbers of scripts to select (e.g., '1,3,5') or 'all'")
-	outputFile := flag.String("o", "ScriptsUnificados.zip", "Output zip file name")
+	dbHost := flag.String("dbhost", "localhost", "Database host")
+	dbPort := flag.String("dbport", "5432", "Database port")
+	dbUser := flag.String("dbuser", "postgres", "Database user")
+	dbPass := flag.String("dbpass", "", "Database password")
+	dbName := flag.String("dbname", "docwin", "Database name")
 	flag.Parse()
 
 	fmt.Println("Script Packager Initializing...")
@@ -52,19 +55,13 @@ func main() {
 		log.Fatalf("Failed to parse script selection: %v", err)
 	}
 
-	// Create packager instance
-	pkg := packager.NewPackager(ghClient)
+	// Create packager instance with DB connection details
+	pkg := packager.NewPackager(ghClient, *dbHost, *dbPort, *dbUser, *dbPass, *dbName)
 
-	// Ensure output path is absolute or relative to current working directory
-	absOutputPath, err := filepath.Abs(*outputFile)
+	err = pkg.ExecuteUnifiedScript(selectedScripts)
 	if err != nil {
-		log.Fatalf("Failed to get absolute path for output file: %v", err)
+		log.Fatalf("Failed to execute unified script: %v", err)
 	}
 
-	err = pkg.CreateUnifiedPackage(selectedScripts, absOutputPath)
-	if err != nil {
-		log.Fatalf("Failed to create unified package: %v", err)
-	}
-
-	fmt.Printf("Unified package successfully created at %s\n", absOutputPath)
+	fmt.Println("Unified script execution completed successfully.")
 }
