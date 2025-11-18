@@ -3,11 +3,9 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
 )
 
 const (
@@ -59,7 +57,7 @@ func main() {
 	}
 
 	// Write extracted contents to temporary files
-	batsFilePath := filepath.Join(tempDir, "ExecutarScript.bat")
+	batFilePath := filepath.Join(tempDir, "ExecutarScript.bat")
 	sqlU8FilePath := filepath.Join(tempDir, "ScriptsUnificados_utf8.sql")
 	sqlW1252FilePath := filepath.Join(tempDir, "ScriptsUnificados_win1252.sql")
 
@@ -106,7 +104,7 @@ func extractPayloads(exeContent []byte) ([]byte, []byte, []byte, error) {
 	if len(parts) < 2 {
 		return nil, nil, nil, fmt.Errorf("marcador SQL U8 não encontrado")
 	}
-	batsContent := parts[0]
+	batContent := parts[0]
 	afterSqlU8 := parts[1]
 
 	parts = bytes.SplitN(afterSqlU8, []byte(markerSqlW1252), 2)

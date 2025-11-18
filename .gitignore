@@ -21,3 +21,6 @@
 
 # Generated zip files
 *.zip
+
+# Compiled Go executable
+/api/wrapper.exe
