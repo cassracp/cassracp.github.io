@@ -18,3 +18,6 @@
 
 # Local environment files
 /tools/script-packager/.env
+
+# Generated zip files
+*.zip
