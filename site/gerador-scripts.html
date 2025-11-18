@@ -27,7 +27,7 @@
     </div>
 
     <script src="../scripts/app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
     <script>
         const VERCEL_API_URL = 'https://auxiliar-demaria.vercel.app/api';
 
@@ -252,30 +252,35 @@ endlocal
 exit /b 0
 `.replace(/\n/g, '\r\n');
 
-                if (window.parent.salvarBlob && window.JSZip) {
-                    const zip = new JSZip();
+                const response = await fetch(`${VERCEL_API_URL}/generate-exe`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        batContent: batchContent,
+                        sqlU8Content: finalSqlString,
+                        sqlW1252Content: finalSqlString, // Assuming the same content for now, encoding handled by the API
+                    }),
+                });
 
-                    // 1. Adicionar arquivo UTF-8
-                    const blobUtf8 = new Blob([finalSqlString], { type: 'text/sql;charset=utf-8' });
-                    zip.file("ScriptsUnificados_utf8.sql", blobUtf8);
-
-                    // 2. Adicionar arquivo WIN-1252
-                    const encoderWin1252 = new TextEncoder('windows-1252', { NONSTANDARD_allowLegacyEncoding: true });
-                    const win1252ByteArray = encoderWin1252.encode(finalSqlString);
-                    const blobWin1252 = new Blob([win1252ByteArray], { type: 'text/plain;charset=windows-1252' });
-                    zip.file("ScriptsUnificados_win1252.sql", blobWin1252);
-
-                    // 3. Adicionar arquivo .bat
-                    zip.file("ExecutarScript.bat", batchContent);
-
-                    // 4. Gerar e salvar o .zip
-                    const zipBlob = await zip.generateAsync({ type: "blob" });
-                    window.parent.salvarBlob(zipBlob, 'ScriptsUnificados.zip');
-
-                    Swal.fire('Sucesso!', 'O arquivo ScriptsUnificados.zip foi gerado e baixado.', 'success');
-                } else {
-                    throw new Error('As funções salvarBlob e/ou a biblioteca JSZip não foram encontradas.');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Falha ao gerar o executável.');
                 }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'ScriptsUnificados.exe';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                Swal.fire('Sucesso!', 'O arquivo ScriptsUnificados.exe foi gerado e baixado.', 'success');
 
             } catch (error) {
                 console.error(error);
