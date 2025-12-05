@@ -16,5 +16,6 @@
     { "id": "chkUI", "label": "UI - Unidade Interligada", "value": "I" },
     { "id": "chkAol", "label": "AOL - Atendimento Online", "value": " AOL" },
     { "id": "chkDOCFila", "label": "DOC-Fila", "value": "Q" },
-    { "id": "chkDOCMultiscan", "label": "DOC-Multiscan", "value": "M" }
+    { "id": "chkDOCMultiscan", "label": "DOC-Multiscan", "value": "M" },
+    { "id": "chkDOCMobile", "label": "DOC-Mobile", "value": "m" }
 ]
