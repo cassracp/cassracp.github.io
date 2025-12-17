@@ -4,6 +4,7 @@
   "description": "[Clique aqui para abrir o meu programa](index.html)",
   "main": "index.html",
   "scripts": {
+    "dev": "live-server .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,5 +18,8 @@
     "html-to-rtf": "^2.1.0",
     "html-to-rtf-browser": "^1.6.1",
     "require": "^0.4.9"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
   }
 }
