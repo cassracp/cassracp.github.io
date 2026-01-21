@@ -12,7 +12,7 @@ import (
 
 const (
 	apiBaseURL   = "https://api.github.com"
-	githubOwner  = "demariainfo"
+	githubOwner  = "demariasoftware"
 	githubRepo   = "doc-windows2017"
 	githubBranch = "bombeiro"
 	scriptsPath  = "scripts"
